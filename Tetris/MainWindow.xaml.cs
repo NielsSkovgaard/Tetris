@@ -23,6 +23,10 @@ namespace Tetris
         public MainWindow()
         {
             InitializeComponent();
+
+            // Official guidelines for building Tetris:
+            // http://tetris.wikia.com/wiki/Tetris_Guideline
+            // https://en.wikipedia.org/wiki/Tetromino
         }
     }
 }
