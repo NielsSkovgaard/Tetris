@@ -7,42 +7,44 @@ namespace Tetris
 {
     public class GameBoard : Canvas
     {
+        //Parameters configured in the XAML file
         public int NumberOfVerticalBlocks { get; set; } //20
         public int NumberOfHorizontalBlocks { get; set; } //10
         public int BlockSizeInPixels { get; set; } //25
 
+        //Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; set; }
         public Piece CurrentPiece { get; set; }
 
-        public PieceBlockManager PieceBlockManager = new PieceBlockManager();
-        private readonly Random _random = new Random();
+        //Constants
         private const int CurrentPieceSideLengths = 4;
 
-        //Graphics
-        private readonly SolidColorBrush[] _blockBrushes;
-        private readonly Pen _blockBorderPen;
+        //Helpers
+        private readonly PieceBlockManager _pieceBlockManager = new PieceBlockManager();
+        private readonly Random _random = new Random();
 
+        //Graphics
+        private readonly Pen _blockBorderPen = new Pen { Brush = new SolidColorBrush { Color = Colors.DarkGray } };
+        private readonly SolidColorBrush[] _blockBrushes = {
+            new SolidColorBrush(Colors.Cyan),
+            new SolidColorBrush(Colors.Yellow),
+            new SolidColorBrush(Colors.Purple),
+            new SolidColorBrush(Colors.Blue),
+            new SolidColorBrush(Colors.Orange),
+            new SolidColorBrush(Colors.Green),
+            new SolidColorBrush(Colors.Red)
+        };
+
+        //Constructor
         public GameBoard()
         {
-            _blockBrushes = new[]
-            {
-                new SolidColorBrush(Colors.Cyan),
-                new SolidColorBrush(Colors.Yellow),
-                new SolidColorBrush(Colors.Purple),
-                new SolidColorBrush(Colors.Blue),
-                new SolidColorBrush(Colors.Orange),
-                new SolidColorBrush(Colors.Green),
-                new SolidColorBrush(Colors.Red)
-            };
-
-            _blockBorderPen = new Pen { Brush = new SolidColorBrush { Color = Colors.DarkGray } };
         }
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
 
-            //Canvas height and width in pixels
+            //Set Canvas height and width (in pixels)
             Height = NumberOfVerticalBlocks * BlockSizeInPixels;
             Width = NumberOfHorizontalBlocks * BlockSizeInPixels;
 
@@ -78,7 +80,7 @@ namespace Tetris
             }
 
             //Render currently moving piece
-            int[,] currentBlocks = CurrentPiece.GetCurrentBlocks(PieceBlockManager);
+            int[,] currentBlocks = CurrentPiece.GetCurrentBlocks(_pieceBlockManager);
 
             for (int y = 0; y < CurrentPieceSideLengths; y++)
             {

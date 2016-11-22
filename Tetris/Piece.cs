@@ -1,4 +1,6 @@
-﻿namespace Tetris
+﻿using System;
+
+namespace Tetris
 {
     public class Piece
     {

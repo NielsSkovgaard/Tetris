@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Threading;
 
 namespace Tetris
 {
@@ -13,5 +8,17 @@ namespace Tetris
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        //TODO: For debugging purposes. Consider writing to a log file
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            string errorMessage = $"Unhandled exception: {e.Exception.Message}";
+            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
+        }
     }
 }
