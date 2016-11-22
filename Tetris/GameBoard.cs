@@ -7,8 +7,8 @@ namespace Tetris
 {
     public class GameBoard : Canvas
     {
-        public int NumberOfBlocksHeight { get; set; } //20
-        public int NumberOfBlocksWidth { get; set; } //10
+        public int NumberOfVerticalBlocks { get; set; } //20
+        public int NumberOfHorizontalBlocks { get; set; } //10
         public int BlockSizeInPixels { get; set; } //25
 
         public int[,] StaticBlocks { get; set; }
@@ -40,14 +40,16 @@ namespace Tetris
             base.OnInitialized(e);
 
             //Canvas width and height in pixels
-            Height = NumberOfBlocksHeight * BlockSizeInPixels;
-            Width = NumberOfBlocksWidth * BlockSizeInPixels;
+            Height = NumberOfVerticalBlocks * BlockSizeInPixels;
+            Width = NumberOfHorizontalBlocks * BlockSizeInPixels;
 
-            StaticBlocks = new int[NumberOfBlocksHeight, NumberOfBlocksWidth];
+            StaticBlocks = new int[NumberOfVerticalBlocks, NumberOfHorizontalBlocks];
 
             CurrentPiece = GetRandomPiece();
             CurrentPiece.CoordsY = 0;
-            CurrentPiece.CoordsX = 3 * BlockSizeInPixels; //Todo: Magic number
+
+            int offsetBlocksX = (NumberOfHorizontalBlocks - _currentPieceSideLengths) / 2;
+            CurrentPiece.CoordsX = offsetBlocksX * BlockSizeInPixels;
         }
 
         //Random integer between 1 and 7
@@ -58,9 +60,9 @@ namespace Tetris
             base.OnRender(dc);
 
             //Render static blocks
-            for (int y = 0; y < NumberOfBlocksHeight; y++)
+            for (int y = 0; y < NumberOfVerticalBlocks; y++)
             {
-                for (int x = 0; x < NumberOfBlocksWidth; x++)
+                for (int x = 0; x < NumberOfHorizontalBlocks; x++)
                 {
                     int blockNumber = StaticBlocks[y, x];
 

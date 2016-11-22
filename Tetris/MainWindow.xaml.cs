@@ -16,7 +16,9 @@ namespace Tetris
             // http://tetris.wikia.com/wiki/Tetris_Guideline
             // https://en.wikipedia.org/wiki/Tetromino
 
-            //Todo: This is just test code
+            // TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
+
+            // TODO: This is just test code
             int[,] staticBlocks = GameBoard1.StaticBlocks;
             staticBlocks[19, 0] = 1;
             staticBlocks[19, 1] = 2;
@@ -33,20 +35,25 @@ namespace Tetris
             {
                 case Key.Left:
                 case Key.A:
-                    //Todo: Move left
+                    GameBoard1.CurrentPiece.CoordsX -= GameBoard1.BlockSizeInPixels;
+
+                    //TODO: Is this the right way to do it?
+                    //TODO: Update the UI in a separate thread: http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
+                    GameBoard1.InvalidateVisual();
                     break;
                 case Key.Right:
                 case Key.D:
-                    //Todo: Move right
-                    //GameBoard1.
+                    GameBoard1.CurrentPiece.CoordsX += GameBoard1.BlockSizeInPixels;
+                    GameBoard1.InvalidateVisual();
                     break;
                 case Key.Up:
                 case Key.W:
-                    //Todo: Rotate
+                    GameBoard1.CurrentPiece.Rotation++;
+                    GameBoard1.InvalidateVisual();
                     break;
                 case Key.Down:
                 case Key.S:
-                    //Todo: Move down
+                    //TODO: Move down
                     break;
             }
         }
