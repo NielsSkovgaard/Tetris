@@ -24,7 +24,7 @@ namespace Tetris
 
         public GameBoard()
         {
-            _blockBrushes = new SolidColorBrush[]
+            _blockBrushes = new[]
             {
                 new SolidColorBrush(Colors.Cyan),
                 new SolidColorBrush(Colors.Yellow),
@@ -71,8 +71,7 @@ namespace Tetris
                     // TODO: How does it work: destruction of rectangles?
                     if (blockNumber != 0)
                     {
-                        Rect rect = new Rect(x * BlockSizeInPixels, y * BlockSizeInPixels, BlockSizeInPixels,
-                            BlockSizeInPixels);
+                        Rect rect = new Rect(x * BlockSizeInPixels, y * BlockSizeInPixels, BlockSizeInPixels, BlockSizeInPixels);
                         dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
                     }
                 }
@@ -89,8 +88,7 @@ namespace Tetris
 
                     if (blockNumber != 0)
                     {
-                        Rect rect = new Rect(CurrentPiece.CoordsX + x * BlockSizeInPixels,
-                            CurrentPiece.CoordsY + y * BlockSizeInPixels, BlockSizeInPixels, BlockSizeInPixels);
+                        Rect rect = new Rect(CurrentPiece.CoordsX + x * BlockSizeInPixels, CurrentPiece.CoordsY + y * BlockSizeInPixels, BlockSizeInPixels, BlockSizeInPixels);
                         dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
                     }
                 }
