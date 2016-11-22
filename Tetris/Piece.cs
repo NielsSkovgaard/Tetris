@@ -16,33 +16,7 @@ namespace Tetris
             //Todo: Set coordinates
         }
 
-        public bool[,] CurrentBlocks => PieceBlockManager.GetBlocks(PieceType, Rotation);
-        public bool[,] NextBlocks => PieceBlockManager.GetBlocks(PieceType, Rotation + 1);
-
-        public Color Color
-        {
-            get
-            {
-                switch (PieceType)
-                {
-                    case PieceType.I:
-                        return Colors.Cyan;
-                    case PieceType.O:
-                        return Colors.Yellow;
-                    case PieceType.T:
-                        return Colors.Purple;
-                    case PieceType.J:
-                        return Colors.Blue;
-                    case PieceType.L:
-                        return Colors.Orange;
-                    case PieceType.S:
-                        return Colors.Green;
-                    case PieceType.Z:
-                        return Colors.Red;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(PieceType), PieceType, null);
-                }
-            }
-        }
+        public int[,] CurrentBlocks => PieceBlockManager.GetBlocks(PieceType, Rotation);
+        public int[,] NextBlocks => PieceBlockManager.GetBlocks(PieceType, Rotation + 1);
     }
 }

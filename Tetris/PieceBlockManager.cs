@@ -4,63 +4,63 @@ namespace Tetris
 {
     public static class PieceBlockManager
     {
-        public static bool[,] GetBlocks(PieceType pieceType, int rotation)
+        public static int[,] GetBlocks(PieceType pieceType, int rotation)
         {
-            bool[][,] blocksForAllRotations = GetBlocksForAllRotations(pieceType);
-            bool[,] blocks = blocksForAllRotations[rotation % blocksForAllRotations.Length];
+            int[][,] blocksForAllRotations = GetBlocksForAllRotations(pieceType);
+            int[,] blocks = blocksForAllRotations[rotation % blocksForAllRotations.Length];
             return blocks;
         }
 
-        public static bool[][,] GetBlocksForAllRotations(PieceType pieceType)
+        public static int[][,] GetBlocksForAllRotations(PieceType pieceType)
         {
             switch (pieceType)
             {
                 case PieceType.I:
                     return new[]
                         {
-                            new[,] { { false, true, false, false }, { false, true, false, false }, { false, true, false, false }, { false, true, false, false } },
-                            new[,] { { false, false, false, false }, { true, true, true, true }, { false, false, false, false }, { false, false, false, false } }
+                            new[,] { { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } }
                         };
                 case PieceType.O:
                     return new[]
                         {
-                            new[,] { { false, false, false, false }, { false, true, true, false }, { false, true, true, false }, { false, true, true, false } }
+                            new[,] { { 0, 0, 0, 0 }, { 0, 2, 2, 0 }, { 0, 2, 2, 0 }, { 0, 2, 2, 0 } }
                         };
                 case PieceType.T:
                     return new[]
                         {
-                            new[,] { { false, true, false, false }, { false, true, true, false }, { false, true, false, false }, { false, false, false, false } },
-                            new[,] { { false, false, false, false }, { false, true, true, true }, { false, false, true, false }, { false, false, false, false } },
-                            new[,] { { false, false, false, false }, { false, false, true, false }, { false, true, true, false }, { false, false, true, false } },
-                            new[,] { { false, false, false, false }, { false, true, false, false }, { true, true, true, false }, { false, false, false, false } }
+                            new[,] { { 0, 3, 0, 0 }, { 0, 3, 3, 0 }, { 0, 3, 0, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 3, 3, 3 }, { 0, 0, 3, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 0, 3, 0 }, { 0, 3, 3, 0 }, { 0, 0, 3, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 3, 0, 0 }, { 3, 3, 3, 0 }, { 0, 0, 0, 0 } }
                         };
                 case PieceType.J:
                     return new[]
                         {
-                            new[,] { { false, false, true, false }, { false, false, true, false }, { false, true, true, false }, { false, false, false, false } },
-                            new[,] { { false, false, false, false }, { false, true, false, false }, { false, true, true, true }, { false, false, false, false } },
-                            new[,] { { false, false, false, false }, { false, true, true, false }, { false, true, false, false }, { false, true, false, false } },
-                            new[,] { { false, false, false, false }, { true, true, true, false }, { false, false, true, false }, { false, false, false, false } }
+                            new[,] { { 0, 0, 4, 0 }, { 0, 0, 4, 0 }, { 0, 4, 4, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 4, 0, 0 }, { 0, 4, 4, 4 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 4, 4, 0 }, { 0, 4, 0, 0 }, { 0, 4, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 4, 4, 4, 0 }, { 0, 0, 4, 0 }, { 0, 0, 0, 0 } }
                         };
                 case PieceType.L:
                     return new[]
                         {
-                            new[,] { { false, true, false, false }, { false, true, false, false }, { false, true, true, false }, { false, false, false, false } },
-                            new[,] { { false, false, false, false }, { false, true, true, true }, { false, true, false, false }, { false, false, false, false } },
-                            new[,] { { false, false, false, false }, { false, true, true, false }, { false, false, true, false }, { false, false, true, false } },
-                            new[,] { { false, false, false, false }, { false, false, true, false }, { true, true, true, false }, { false, false, false, false } }
+                            new[,] { { 0, 5, 0, 0 }, { 0, 5, 0, 0 }, { 0, 5, 5, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 5, 5, 5 }, { 0, 5, 0, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 5, 5, 0 }, { 0, 0, 5, 0 }, { 0, 0, 5, 0 } },
+                            new[,] { { 0, 0, 0, 0 }, { 0, 0, 5, 0 }, { 5, 5, 5, 0 }, { 0, 0, 0, 0 } }
                         };
                 case PieceType.S:
                     return new[]
                         {
-                            new[,] { { false, false, false, false }, { false, true, true, false }, { true, true, false, false }, { false, false, false, false } },
-                            new[,] { { false, true, false, false }, { false, true, true, false }, { false, false, true, false }, { false, false, false, false } }
+                            new[,] { { 0, 0, 0, 0 }, { 0, 6, 6, 0 }, { 6, 6, 0, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 6, 0, 0 }, { 0, 6, 6, 0 }, { 0, 0, 6, 0 }, { 0, 0, 0, 0 } }
                         };
                 case PieceType.Z:
                     return new[]
                         {
-                            new[,] { { false, false, false, false }, { true, true, false, false }, { false, true, true, false }, { false, false, false, false } },
-                            new[,] { { false, false, true, false }, { false, true, true, false }, { false, true, false, false }, { false, false, false, false } }
+                            new[,] { { 0, 0, 0, 0 }, { 7, 7, 0, 0 }, { 0, 7, 7, 0 }, { 0, 0, 0, 0 } },
+                            new[,] { { 0, 0, 7, 0 }, { 0, 7, 7, 0 }, { 0, 7, 0, 0 }, { 0, 0, 0, 0 } }
                         };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pieceType), pieceType, null);

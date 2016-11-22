@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tetris"
         mc:Ignorable="d"
-        Title="Tetris" Height="570" Width="500" ResizeMode="NoResize">
+        Title="Tetris" Height="600" Width="500" ResizeMode="NoResize" KeyDown="MainWindow_OnKeyDown">
     <Grid Background="LightGray">
-        <local:GameBoard Width="250" Height="500" Margin="10,10,234,10" NumberOfBlocksWidth="10" NumberOfBlocksHeight="20" BlockSizeInPixels="25" Background="Black" />
+        <local:GameBoard x:Name="GameBoard1" Height="500" Width="250" Margin="10,10,234,61" NumberOfBlocksHeight="20" NumberOfBlocksWidth="10" BlockSizeInPixels="25" Background="Black" />
     </Grid>
 </Window>
