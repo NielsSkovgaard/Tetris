@@ -2,12 +2,13 @@ namespace Tetris
 {
     public enum PieceType
     {
-        I,
-        O,
-        T,
-        J,
-        L,
-        S,
-        Z
+        //None = 0, //Not needed!
+        I = 1,
+        O = 2,
+        T = 3,
+        J = 4,
+        L = 5,
+        S = 6,
+        Z = 7
     }
 }
