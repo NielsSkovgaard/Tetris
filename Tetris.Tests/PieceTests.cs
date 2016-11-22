@@ -3,7 +3,7 @@
 namespace Tetris.Tests
 {
     [TestClass]
-    public class PieceTests
+    internal class PieceTests
     {
         [TestMethod]
         public void CurrentBlocks()

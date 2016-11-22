@@ -1,6 +1,6 @@
 namespace Tetris
 {
-    public class PieceBlockManager
+    internal class PieceBlockManager
     {
         public int[][][,] PieceTypeBlockRotations { get; set; }
 

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Tetris
+﻿namespace Tetris
 {
-    public class Piece
+    internal class Piece
     {
         public PieceType PieceType { get; set; }
         public int CoordsY { get; set; } = 0;

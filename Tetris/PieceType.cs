@@ -1,6 +1,6 @@
 namespace Tetris
 {
-    public enum PieceType
+    internal enum PieceType
     {
         //None = 0, //Not needed!
         I = 1,
