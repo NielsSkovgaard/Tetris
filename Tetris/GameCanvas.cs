@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace Tetris
 {
-    public class GameBoard : Canvas
+    public class GameCanvas : Canvas
     {
         //Parameters configured in the XAML file
         public int NumberOfVerticalBlocks { get; set; } //20
@@ -37,7 +37,7 @@ namespace Tetris
         };
 
         //Constructor
-        public GameBoard()
+        public GameCanvas()
         {
         }
 

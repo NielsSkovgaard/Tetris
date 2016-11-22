@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="Tetris" Height="600" Width="500" ResizeMode="NoResize" KeyDown="MainWindow_OnKeyDown">
     <Grid Background="LightGray">
-        <local:GameBoard x:Name="GameBoard1" Height="500" Width="250" Margin="10,10,234,61" NumberOfVerticalBlocks="20" NumberOfHorizontalBlocks="10" BlockSizeInPixels="25" Background="Black" />
+        <local:GameCanvas x:Name="GameCanvas1" Height="500" Width="250" Margin="10,10,234,61" NumberOfVerticalBlocks="20" NumberOfHorizontalBlocks="10" BlockSizeInPixels="25" Background="Black" />
     </Grid>
 </Window>

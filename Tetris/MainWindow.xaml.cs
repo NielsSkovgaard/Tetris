@@ -12,14 +12,8 @@ namespace Tetris
         {
             InitializeComponent();
 
-            // Official guidelines for building Tetris:
-            // http://tetris.wikia.com/wiki/Tetris_Guideline
-            // https://en.wikipedia.org/wiki/Tetromino
-
-            // TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
-
             // TODO: This is just test code
-            int[,] staticBlocks = GameBoard1.StaticBlocks;
+            int[,] staticBlocks = GameCanvas1.StaticBlocks;
             staticBlocks[19, 0] = 1;
             staticBlocks[19, 1] = 2;
             staticBlocks[19, 2] = 3;
@@ -31,7 +25,17 @@ namespace Tetris
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            GameBoard1.KeyPressed(e.Key);
+            GameCanvas1.KeyPressed(e.Key);
         }
     }
 }
+
+// Official guidelines for building Tetris:
+// http://tetris.wikia.com/wiki/Tetris_Guideline
+// https://en.wikipedia.org/wiki/Tetromino
+
+// TODO ITEMS:
+// -----------
+// TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
+// TODO: Play MIDI with game theme and sounds when putting pieces etc.
+// TODO: Sometimes the program is still in task manager after closing the program? Maybe because of global exception handling in App class
