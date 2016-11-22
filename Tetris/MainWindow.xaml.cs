@@ -31,25 +31,7 @@ namespace Tetris
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.Left:
-                case Key.A:
-                    GameBoard1.TryMoveCurrentPieceHorizontally(false);
-                    break;
-                case Key.Right:
-                case Key.D:
-                    GameBoard1.TryMoveCurrentPieceHorizontally(true);
-                    break;
-                case Key.Up:
-                case Key.W:
-                    GameBoard1.TryRotate();
-                    break;
-                case Key.Down:
-                case Key.S:
-                    //TODO: Move down
-                    break;
-            }
+            GameBoard1.KeyPressed(e.Key);
         }
     }
 }

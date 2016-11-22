@@ -8,11 +8,6 @@ namespace Tetris
     /// </summary>
     public partial class App : Application
     {
-        public App()
-        {
-            DispatcherUnhandledException += App_DispatcherUnhandledException;
-        }
-
         //TODO: For debugging purposes. Consider writing to a log file
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

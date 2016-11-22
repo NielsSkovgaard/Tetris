@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Tetris
@@ -94,6 +95,29 @@ namespace Tetris
                         dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
                     }
                 }
+            }
+        }
+
+        public void KeyPressed(Key key)
+        {
+            switch (key)
+            {
+                case Key.Left:
+                case Key.A:
+                    TryMoveCurrentPieceHorizontally(false);
+                    break;
+                case Key.Right:
+                case Key.D:
+                    TryMoveCurrentPieceHorizontally(true);
+                    break;
+                case Key.Up:
+                case Key.W:
+                    TryRotate();
+                    break;
+                case Key.Down:
+                case Key.S:
+                    //TODO: Move down
+                    break;
             }
         }
 
