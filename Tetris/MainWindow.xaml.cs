@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Tetris
 {
@@ -8,12 +9,29 @@ namespace Tetris
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const int VerticalBlocks = 20;
+        private const int HorizontalBlocks = 10;
+        private const int BlockSizeInPixels = 25;
+
+        private readonly GameBoard _gameBoard = new GameBoard(VerticalBlocks, HorizontalBlocks, BlockSizeInPixels);
+
         public MainWindow()
         {
             InitializeComponent();
 
+            GameCanvas gameCanvas = new GameCanvas(_gameBoard)
+            {
+                Name = "GameCanvas1",
+                Height = 500,
+                Width = 250,
+                Margin = new Thickness(10, 10, 10, 10), //"10,10,234,61"
+                Background = new SolidColorBrush(Colors.Black)
+            };
+
+            Grid1.Children.Add(gameCanvas);
+
             // TODO: This is just test code
-            int[,] staticBlocks = GameCanvas1.StaticBlocks;
+            int[,] staticBlocks = _gameBoard.StaticBlocks;
             staticBlocks[19, 0] = 1;
             staticBlocks[19, 1] = 2;
             staticBlocks[19, 2] = 3;
@@ -25,7 +43,7 @@ namespace Tetris
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            GameCanvas1.KeyPressed(e.Key);
+            _gameBoard.KeyPressed(e.Key);
         }
     }
 }
@@ -40,5 +58,9 @@ namespace Tetris
 // TODO: Play MIDI with game theme and sounds when putting pieces etc.
 // TODO: Sometimes the program is still in task manager after closing the program? Maybe because of global exception handling in App class
 
-// TODO: Have a separate Thread to do UI stuff: https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
+// TODO: Have a separate Thread to do UI stuff:
+// - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
+// - http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
 // From StackOverflow: canvas.Dispatcher.Invoke(emptyDelegate, DispatcherPriority.Render); where emptyDelegate is Action emptyDelegate = delegate { };
+
+// TODO: Is InvalidateVisual(); the right way to update the UI?
