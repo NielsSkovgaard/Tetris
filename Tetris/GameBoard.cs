@@ -14,10 +14,13 @@ namespace Tetris
         public int[,] StaticBlocks { get; set; }
         public Piece CurrentPiece { get; set; }
 
+        public PieceBlockManager PieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
+        private const int CurrentPieceSideLengths = 4;
+
+        //Graphics
         private readonly SolidColorBrush[] _blockBrushes;
         private readonly Pen _blockBorderPen;
-        private readonly int _currentPieceSideLengths = 4;
 
         public GameBoard()
         {
@@ -49,7 +52,7 @@ namespace Tetris
             CurrentPiece = new Piece((PieceType)_random.Next(1, 8))
             {
                 CoordsY = 0,
-                CoordsX = ((NumberOfHorizontalBlocks - _currentPieceSideLengths) / 2) * BlockSizeInPixels
+                CoordsX = ((NumberOfHorizontalBlocks - CurrentPieceSideLengths) / 2) * BlockSizeInPixels
             };
         }
 
@@ -76,11 +79,11 @@ namespace Tetris
             }
 
             //Render currently moving piece
-            int[,] currentBlocks = CurrentPiece.CurrentBlocks;
+            int[,] currentBlocks = CurrentPiece.GetCurrentBlocks(PieceBlockManager);
 
-            for (int y = 0; y < _currentPieceSideLengths; y++)
+            for (int y = 0; y < CurrentPieceSideLengths; y++)
             {
-                for (int x = 0; x < _currentPieceSideLengths; x++)
+                for (int x = 0; x < CurrentPieceSideLengths; x++)
                 {
                     int blockNumber = currentBlocks[y, x];
 

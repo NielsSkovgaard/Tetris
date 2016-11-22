@@ -12,7 +12,7 @@
             PieceType = pieceType;
         }
 
-        public int[,] CurrentBlocks => PieceBlockManager.GetBlocks(PieceType, Rotation);
-        public int[,] BlocksAfterNextRotation => PieceBlockManager.GetBlocks(PieceType, Rotation + 1);
+        public int[,] GetCurrentBlocks(PieceBlockManager pieceBlockManager) => pieceBlockManager.GetBlocks(PieceType, Rotation);
+        public int[,] GetBlocksAfterNextRotation(PieceBlockManager pieceBlockManager) => pieceBlockManager.GetBlocks(PieceType, Rotation + 1);
     }
 }
