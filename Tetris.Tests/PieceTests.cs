@@ -10,7 +10,7 @@ namespace Tetris.Tests
         {
             Piece piece = new Piece(PieceType.I);
             PieceBlockManager pieceBlockManager = new PieceBlockManager();
-            int[,] expected = { { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 } };
+            int[,] expected = {{0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}};
             int[,] actual = piece.GetCurrentBlocks(pieceBlockManager);
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -20,7 +20,7 @@ namespace Tetris.Tests
         {
             Piece piece = new Piece(PieceType.I);
             PieceBlockManager pieceBlockManager = new PieceBlockManager();
-            int[,] expected = { { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+            int[,] expected = {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}};
             int[,] actual = piece.GetBlocksAfterNextRotation(pieceBlockManager);
             CollectionAssert.AreEqual(expected, actual);
         }
