@@ -1,5 +1,4 @@
-﻿using System.Windows.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tetris.Tests
 {
@@ -16,11 +15,11 @@ namespace Tetris.Tests
         }
 
         [TestMethod]
-        public void NextBlocks()
+        public void BlocksAfterNextRotation()
         {
             Piece piece = new Piece(PieceType.I);
             int[,] expected = { { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-            int[,] actual = piece.NextBlocks;
+            int[,] actual = piece.BlocksAfterNextRotation;
             CollectionAssert.AreEqual(expected, actual);
         }
     }

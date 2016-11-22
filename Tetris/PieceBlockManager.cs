@@ -24,7 +24,7 @@ namespace Tetris
                 case PieceType.O:
                     return new[]
                         {
-                            new[,] { { 0, 0, 0, 0 }, { 0, 2, 2, 0 }, { 0, 2, 2, 0 }, { 0, 2, 2, 0 } }
+                            new[,] { { 0, 0, 0, 0 }, { 0, 2, 2, 0 }, { 0, 2, 2, 0 }, { 0, 0, 0, 0 } }
                         };
                 case PieceType.T:
                     return new[]
