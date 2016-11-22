@@ -35,21 +35,15 @@ namespace Tetris
             {
                 case Key.Left:
                 case Key.A:
-                    GameBoard1.CurrentPiece.CoordsX -= GameBoard1.BlockSizeInPixels;
-
-                    //TODO: Is this the right way to do it?
-                    //TODO: Update the UI in a separate thread: http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
-                    GameBoard1.InvalidateVisual();
+                    GameBoard1.TryMoveCurrentPieceHorizontally(false);
                     break;
                 case Key.Right:
                 case Key.D:
-                    GameBoard1.CurrentPiece.CoordsX += GameBoard1.BlockSizeInPixels;
-                    GameBoard1.InvalidateVisual();
+                    GameBoard1.TryMoveCurrentPieceHorizontally(true);
                     break;
                 case Key.Up:
                 case Key.W:
-                    GameBoard1.CurrentPiece.Rotation++;
-                    GameBoard1.InvalidateVisual();
+                    GameBoard1.TryRotate();
                     break;
                 case Key.Down:
                 case Key.S:

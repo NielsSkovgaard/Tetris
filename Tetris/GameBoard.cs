@@ -39,21 +39,19 @@ namespace Tetris
         {
             base.OnInitialized(e);
 
-            //Canvas width and height in pixels
+            //Canvas height and width in pixels
             Height = NumberOfVerticalBlocks * BlockSizeInPixels;
             Width = NumberOfHorizontalBlocks * BlockSizeInPixels;
 
             StaticBlocks = new int[NumberOfVerticalBlocks, NumberOfHorizontalBlocks];
 
-            CurrentPiece = GetRandomPiece();
-            CurrentPiece.CoordsY = 0;
-
-            int offsetBlocksX = (NumberOfHorizontalBlocks - _currentPieceSideLengths) / 2;
-            CurrentPiece.CoordsX = offsetBlocksX * BlockSizeInPixels;
+            //Currently moving piece (randomly selected, and put in the top middle of the canvas)
+            CurrentPiece = new Piece((PieceType)_random.Next(1, 8))
+            {
+                CoordsY = 0,
+                CoordsX = ((NumberOfHorizontalBlocks - _currentPieceSideLengths) / 2) * BlockSizeInPixels
+            };
         }
-
-        //Random integer between 1 and 7
-        private Piece GetRandomPiece() => new Piece((PieceType)_random.Next(1, 8));
 
         protected override void OnRender(DrawingContext dc)
         {
@@ -66,17 +64,18 @@ namespace Tetris
                 {
                     int blockNumber = StaticBlocks[y, x];
 
-                    //TODO: Or draw black rectangle? Maybe instead have a predefined grid with 20x10 rectangles to color
-                    //TODO: How does it work: destruction of rectangles?
+                    // TODO: Or draw black rectangle? Maybe instead have a predefined grid with 20x10 rectangles to color
+                    // TODO: How does it work: destruction of rectangles?
                     if (blockNumber != 0)
                     {
-                        Rect rect = new Rect(x * BlockSizeInPixels, y * BlockSizeInPixels, BlockSizeInPixels, BlockSizeInPixels);
+                        Rect rect = new Rect(x * BlockSizeInPixels, y * BlockSizeInPixels, BlockSizeInPixels,
+                            BlockSizeInPixels);
                         dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
                     }
                 }
             }
 
-            //Render current piece
+            //Render currently moving piece
             int[,] currentBlocks = CurrentPiece.CurrentBlocks;
 
             for (int y = 0; y < _currentPieceSideLengths; y++)
@@ -85,15 +84,34 @@ namespace Tetris
                 {
                     int blockNumber = currentBlocks[y, x];
 
-                    //TODO: Or draw black rectangle? Maybe instead have a predefined grid with 4x4 rectangles to color
-                    //TODO: How does it work: destruction of rectangles?
                     if (blockNumber != 0)
                     {
-                        Rect rect = new Rect(CurrentPiece.CoordsX + x * BlockSizeInPixels, CurrentPiece.CoordsY + y * BlockSizeInPixels, BlockSizeInPixels, BlockSizeInPixels);
+                        Rect rect = new Rect(CurrentPiece.CoordsX + x * BlockSizeInPixels,
+                            CurrentPiece.CoordsY + y * BlockSizeInPixels, BlockSizeInPixels, BlockSizeInPixels);
                         dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
                     }
                 }
             }
+        }
+
+        // TODO: Detect collision with walls
+        public void TryMoveCurrentPieceHorizontally(bool right)
+        {
+            if (right)
+                CurrentPiece.CoordsX += BlockSizeInPixels;
+            else
+                CurrentPiece.CoordsX -= BlockSizeInPixels;
+
+            // TODO: Is this the right way to do it?
+            // TODO: Update the UI in a separate thread: http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
+            InvalidateVisual();
+        }
+
+        // TODO: Detect collision with walls
+        public void TryRotate()
+        {
+            CurrentPiece.Rotation++;
+            InvalidateVisual();
         }
     }
 }
