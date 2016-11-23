@@ -32,6 +32,7 @@ namespace Tetris
         private void ResetPiece()
         {
             //Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
+            //The random number is >= 1 and < 8, i.e. in the interval 1..7
             Piece = new Piece((PieceType)_random.Next(1, 8));
             Piece.UpdateCurrentBlocks(PieceBlockManager);
             Piece.CoordsX = (HorizontalBlocks - Piece.CurrentBlocks.GetLength(1)) / 2 * BlockSizeInPixels;

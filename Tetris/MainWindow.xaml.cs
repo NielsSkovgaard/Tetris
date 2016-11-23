@@ -9,6 +9,7 @@ namespace Tetris
     /// </summary>
     public partial class MainWindow : Window
     {
+        //Input parameters
         private const int VerticalBlocks = 20;
         private const int HorizontalBlocks = 10;
         private const int BlockSizeInPixels = 25;
@@ -19,6 +20,7 @@ namespace Tetris
         {
             InitializeComponent();
 
+            //Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard)
             {
                 Name = "GameCanvas1",

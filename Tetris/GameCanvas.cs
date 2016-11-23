@@ -21,6 +21,7 @@ namespace Tetris
             Brushes.Red
         };
 
+        //Dependency injection of GameBoard into GameCanvas
         public GameCanvas(GameBoard gameBoard)
         {
             _gameBoard = gameBoard;
@@ -32,6 +33,8 @@ namespace Tetris
             _gameBoard.GameBoardChanged += GameBoard_GameBoardChanged;
         }
 
+        //Update the UI (GameCanvas) every time the model (GameBoard) changes
+        //Soon after, the OnRender method is called
         private void GameBoard_GameBoardChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
@@ -41,7 +44,7 @@ namespace Tetris
         {
             base.OnRender(dc);
 
-            int blockSizeInPixels = _gameBoard.BlockSizeInPixels;
+            int blockSizeInPixels = _gameBoard.BlockSizeInPixels; //25px
 
             //Render static blocks
             for (int y = 0; y < _gameBoard.VerticalBlocks; y++)
