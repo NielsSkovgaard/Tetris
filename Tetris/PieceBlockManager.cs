@@ -18,29 +18,29 @@ namespace Tetris
             return blocks;
         }
 
-        public static int GetLeftmostBlockIndex(int[,] blockArray)
+        public static int GetLeftmostBlockIndex(int[,] blocks)
         {
             //The rows and cols of the blocks of a piece
-            int rows = blockArray.GetLength(0); //3 or 4
-            int cols = blockArray.GetLength(1); //3 or 4
+            int rows = blocks.GetLength(0); //3 or 4
+            int cols = blocks.GetLength(1); //3 or 4
 
             for (int c = 0; c < cols; c++)
                 for (int r = 0; r < rows; r++)
-                    if (blockArray[r, c] > 0)
+                    if (blocks[r, c] > 0)
                         return c;
 
             throw new InvalidOperationException();
         }
 
-        public static int GetRightmostBlockIndex(int[,] blockArray)
+        public static int GetRightmostBlockIndex(int[,] blocks)
         {
             //The rows and cols of the blocks of a piece
-            int rows = blockArray.GetLength(0); //3 or 4
-            int cols = blockArray.GetLength(1); //3 or 4
+            int rows = blocks.GetLength(0); //3 or 4
+            int cols = blocks.GetLength(1); //3 or 4
 
             for (int c = cols - 1; c >= 0; c--)
                 for (int r = 0; r < rows; r++)
-                    if (blockArray[r, c] > 0)
+                    if (blocks[r, c] > 0)
                         return c;
 
             throw new InvalidOperationException();

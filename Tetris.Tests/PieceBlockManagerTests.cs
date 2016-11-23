@@ -10,16 +10,16 @@ namespace Tetris.Tests
         [TestMethod]
         public void GetLeftmostBlockIndex_PieceTypeO()
         {
-            int[,] blockArray = _pieceBlockManager.GetBlocks(PieceType.O, 0);
-            int actual = PieceBlockManager.GetLeftmostBlockIndex(blockArray);
+            int[,] blocks = _pieceBlockManager.GetBlocks(PieceType.O, 0);
+            int actual = PieceBlockManager.GetLeftmostBlockIndex(blocks);
             Assert.AreEqual(1, actual);
         }
 
         [TestMethod]
         public void GetRightmostBlockIndex_PieceTypeS()
         {
-            int[,] blockArray = _pieceBlockManager.GetBlocks(PieceType.S, 0);
-            int actual = PieceBlockManager.GetRightmostBlockIndex(blockArray);
+            int[,] blocks = _pieceBlockManager.GetBlocks(PieceType.S, 0);
+            int actual = PieceBlockManager.GetRightmostBlockIndex(blocks);
             Assert.AreEqual(2, actual);
         }
     }
