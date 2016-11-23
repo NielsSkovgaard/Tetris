@@ -11,11 +11,10 @@ namespace Tetris.Tests
         public void CurrentBlocks()
         {
             //Arrange
-            Piece piece = new Piece(PieceType.I);
+            Piece piece = new Piece(PieceType.I, _pieceBlockManager);
             int[,] expected = {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}};
 
             //Act
-            piece.UpdateCurrentBlocks(_pieceBlockManager);
             int[,] actual = piece.CurrentBlocks;
 
             //Assert

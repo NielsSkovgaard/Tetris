@@ -20,26 +20,28 @@ namespace Tetris
 
         public static int GetLeftmostBlockIndex(int[,] blockArray)
         {
-            int yLength = blockArray.GetLength(0); //1 or 4
-            int xLength = blockArray.GetLength(1); //3 or 4
+            //The rows and cols of the blocks of a piece
+            int rows = blockArray.GetLength(0); //3 or 4
+            int cols = blockArray.GetLength(1); //3 or 4
 
-            for (int x = 0; x < xLength; x++)
-                for (int y = 0; y < yLength; y++)
-                    if (blockArray[y, x] > 0)
-                        return x;
+            for (int c = 0; c < cols; c++)
+                for (int r = 0; r < rows; r++)
+                    if (blockArray[r, c] > 0)
+                        return c;
 
             throw new InvalidOperationException();
         }
 
         public static int GetRightmostBlockIndex(int[,] blockArray)
         {
-            int yLength = blockArray.GetLength(0); //1 or 4
-            int xLength = blockArray.GetLength(1); //3 or 4
+            //The rows and cols of the blocks of a piece
+            int rows = blockArray.GetLength(0); //3 or 4
+            int cols = blockArray.GetLength(1); //3 or 4
 
-            for (int x = xLength - 1; x >= 0; x--)
-                for (int y = 0; y < yLength; y++)
-                    if (blockArray[y, x] > 0)
-                        return x;
+            for (int c = cols - 1; c >= 0; c--)
+                for (int r = 0; r < rows; r++)
+                    if (blockArray[r, c] > 0)
+                        return c;
 
             throw new InvalidOperationException();
         }

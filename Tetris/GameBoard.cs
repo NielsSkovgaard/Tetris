@@ -33,8 +33,7 @@ namespace Tetris
         {
             //Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             //The random number is >= 1 and < 8, i.e. in the interval 1..7
-            Piece = new Piece((PieceType)_random.Next(1, 8));
-            Piece.UpdateCurrentBlocks(PieceBlockManager);
+            Piece = new Piece((PieceType)_random.Next(1, 8), PieceBlockManager);
             Piece.CoordsX = (HorizontalBlocks - Piece.CurrentBlocks.GetLength(1)) / 2 * BlockSizeInPixels;
         }
 
@@ -61,7 +60,7 @@ namespace Tetris
             }
         }
 
-        // TODO: Detect collision with walls and static blocks
+        // TODO: Detect collision with static blocks
         private void TryMovePieceHorizontally(bool right)
         {
             if (right)
@@ -101,8 +100,7 @@ namespace Tetris
             if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 0 &&
                 Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= HorizontalBlocks)
             {
-                Piece.Rotation++;
-                Piece.UpdateCurrentBlocks(PieceBlockManager);
+                Piece.Rotate();
                 RaiseGameBoardChangedEvent();
             }
         }

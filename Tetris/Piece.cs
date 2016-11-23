@@ -2,20 +2,30 @@
 {
     internal class Piece
     {
-        public PieceType PieceType { get; set; }
+        public PieceType PieceType { get; }
         public int CoordsY { get; set; } = 0;
         public int CoordsX { get; set; } = 0;
-        public int Rotation { get; set; } = 0;
-        public int[,] CurrentBlocks { get; set; }
+        public int Rotation { get; private set; }
+        public int[,] CurrentBlocks { get; private set; }
 
-        public Piece(PieceType pieceType)
+        private readonly PieceBlockManager _pieceBlockManager;
+
+        public Piece(PieceType pieceType, PieceBlockManager pieceBlockManager)
         {
             PieceType = pieceType;
+            _pieceBlockManager = pieceBlockManager;
+            UpdateCurrentBlocks();
         }
 
-        public void UpdateCurrentBlocks(PieceBlockManager pieceBlockManager)
+        public void Rotate()
         {
-            CurrentBlocks = pieceBlockManager.GetBlocks(PieceType, Rotation);
+            Rotation++;
+            UpdateCurrentBlocks();
+        }
+
+        private void UpdateCurrentBlocks()
+        {
+            CurrentBlocks = _pieceBlockManager.GetBlocks(PieceType, Rotation);
         }
     }
 }
