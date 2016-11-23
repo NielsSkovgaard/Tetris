@@ -27,8 +27,8 @@ namespace Tetris
             _gameBoard = gameBoard;
 
             //Set Canvas height and width (in pixels)
-            Height = _gameBoard.VerticalBlocks * _gameBoard.BlockSizeInPixels;
-            Width = _gameBoard.HorizontalBlocks * _gameBoard.BlockSizeInPixels;
+            Width = _gameBoard.Cols * _gameBoard.BlockSizeInPixels;
+            Height = _gameBoard.Rows * _gameBoard.BlockSizeInPixels;
 
             _gameBoard.GameBoardChanged += GameBoard_GameBoardChanged;
         }
@@ -47,31 +47,41 @@ namespace Tetris
             int blockSizeInPixels = _gameBoard.BlockSizeInPixels; //25px
 
             //Render static blocks
-            for (int y = 0; y < _gameBoard.VerticalBlocks; y++)
+            for (int r = 0; r < _gameBoard.Rows; r++)
             {
-                for (int x = 0; x < _gameBoard.HorizontalBlocks; x++)
+                for (int c = 0; c < _gameBoard.Cols; c++)
                 {
-                    // TODO: Consider having a predefined grid with 20x10 rectangles to color
+                    // TODO: Consider having a predefined grid with 10x20 rectangles to color
                     // TODO: Here, are many rectangles created and destroyed all the time?
-                    if (_gameBoard.StaticBlocks[y, x] != 0)
+                    if (_gameBoard.StaticBlocks[c, r] != 0)
                     {
-                        Rect rect = new Rect(x * blockSizeInPixels, y * blockSizeInPixels, blockSizeInPixels, blockSizeInPixels);
-                        dc.DrawRectangle(_blockBrushes[_gameBoard.StaticBlocks[y, x] - 1], _blockBorderPen, rect);
+                        Rect rect = new Rect(
+                            c * blockSizeInPixels,
+                            r * blockSizeInPixels,
+                            blockSizeInPixels, blockSizeInPixels);
+
+                        dc.DrawRectangle(_blockBrushes[_gameBoard.StaticBlocks[c, r] - 1], _blockBorderPen, rect);
                     }
                 }
             }
 
             //Render currently moving piece
-            int[,] currentBlocks = _gameBoard.Piece.CurrentBlocks;
+            int[,] currentPieceBlocks = _gameBoard.Piece.Blocks;
+            int rows = currentPieceBlocks.GetLength(0); //3 or 4
+            int cols = currentPieceBlocks.GetLength(1); //3 or 4
 
-            for (int y = 0; y < currentBlocks.GetLength(0); y++)
+            for (int r = 0; r < rows; r++)
             {
-                for (int x = 0; x < currentBlocks.GetLength(1); x++)
+                for (int c = 0; c < cols; c++)
                 {
-                    if (currentBlocks[y, x] != 0)
+                    if (currentPieceBlocks[r, c] != 0)
                     {
-                        Rect rect = new Rect(_gameBoard.Piece.CoordsX + x * blockSizeInPixels, _gameBoard.Piece.CoordsY + y * blockSizeInPixels, blockSizeInPixels, blockSizeInPixels);
-                        dc.DrawRectangle(_blockBrushes[currentBlocks[y, x] - 1], _blockBorderPen, rect);
+                        Rect rect = new Rect(
+                            _gameBoard.Piece.CoordsX + c * blockSizeInPixels,
+                            _gameBoard.Piece.CoordsY + r * blockSizeInPixels,
+                            blockSizeInPixels, blockSizeInPixels);
+
+                        dc.DrawRectangle(_blockBrushes[currentPieceBlocks[r, c] - 1], _blockBorderPen, rect);
                     }
                 }
             }

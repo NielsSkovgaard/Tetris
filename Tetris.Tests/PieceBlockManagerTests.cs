@@ -8,7 +8,7 @@ namespace Tetris.Tests
         private readonly PieceBlockManager _pieceBlockManager = new PieceBlockManager();
 
         [TestMethod]
-        public void LeftmostBlockIndex_PieceTypeO()
+        public void GetLeftmostBlockIndex_PieceTypeO()
         {
             int[,] blockArray = _pieceBlockManager.GetBlocks(PieceType.O, 0);
             int actual = PieceBlockManager.GetLeftmostBlockIndex(blockArray);

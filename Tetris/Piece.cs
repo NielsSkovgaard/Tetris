@@ -6,7 +6,7 @@
         public int CoordsY { get; set; } = 0;
         public int CoordsX { get; set; } = 0;
         public int Rotation { get; private set; }
-        public int[,] CurrentBlocks { get; private set; }
+        public int[,] Blocks { get; private set; }
 
         private readonly PieceBlockManager _pieceBlockManager;
 
@@ -25,7 +25,7 @@
 
         private void UpdateCurrentBlocks()
         {
-            CurrentBlocks = _pieceBlockManager.GetBlocks(PieceType, Rotation);
+            Blocks = _pieceBlockManager.GetBlocks(PieceType, Rotation);
         }
     }
 }

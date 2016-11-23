@@ -8,8 +8,8 @@ namespace Tetris
         public event GameBoardChangedEventHandler GameBoardChanged;
 
         //Input parameters
-        public int VerticalBlocks { get; } //Usually 20
-        public int HorizontalBlocks { get; } //Usually 10
+        public int Cols { get; } //Usually 10
+        public int Rows { get; } //Usually 20
         public int BlockSizeInPixels { get; } //Usually 25
 
         //Static blocks and the currently moving piece
@@ -19,13 +19,13 @@ namespace Tetris
         public PieceBlockManager PieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
 
-        public GameBoard(int verticalBlocks, int horizontalBlocks, int blockSizeInPixels)
+        public GameBoard(int cols, int rows, int blockSizeInPixels)
         {
-            VerticalBlocks = verticalBlocks;
-            HorizontalBlocks = horizontalBlocks;
+            Cols = cols;
+            Rows = rows;
             BlockSizeInPixels = blockSizeInPixels;
 
-            StaticBlocks = new int[verticalBlocks, horizontalBlocks];
+            StaticBlocks = new int[cols, rows];
             ResetPiece();
         }
 
@@ -34,7 +34,7 @@ namespace Tetris
             //Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             //The random number is >= 1 and < 8, i.e. in the interval 1..7
             Piece = new Piece((PieceType)_random.Next(1, 8), PieceBlockManager);
-            Piece.CoordsX = (HorizontalBlocks - Piece.CurrentBlocks.GetLength(1)) / 2 * BlockSizeInPixels;
+            Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2 * BlockSizeInPixels;
         }
 
         public void KeyPressed(Key key)
@@ -65,9 +65,9 @@ namespace Tetris
         {
             if (right)
             {
-                int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(Piece.CurrentBlocks);
+                int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks);
 
-                if (Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= HorizontalBlocks - 1)
+                if (Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= Cols - 1)
                 {
                     // Example with numbers:
                     // if (100 / 25 + 2 + 1 <= 10 - 1)
@@ -79,7 +79,7 @@ namespace Tetris
             }
             else
             {
-                int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(Piece.CurrentBlocks);
+                int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks);
 
                 if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 1)
                 {
@@ -98,7 +98,7 @@ namespace Tetris
 
             //Detects collision with the walls
             if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 0 &&
-                Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= HorizontalBlocks)
+                Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= Cols)
             {
                 Piece.Rotate();
                 RaiseGameBoardChangedEvent();
