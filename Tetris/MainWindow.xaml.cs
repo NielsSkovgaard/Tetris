@@ -68,3 +68,6 @@ namespace Tetris
 // From StackOverflow: canvas.Dispatcher.Invoke(emptyDelegate, DispatcherPriority.Render); where emptyDelegate is Action emptyDelegate = delegate { };
 
 // TODO: Is InvalidateVisual(); the right way to update the UI?
+
+// TODO: Increasing Piece speed
+// TODO: Points, high-score system
