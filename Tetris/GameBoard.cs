@@ -90,7 +90,7 @@ namespace Tetris
             }
         }
 
-        // TODO: Detect collision static blocks
+        // TODO: Detect collision with static blocks
         private void TryRotatePiece()
         {
             int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
