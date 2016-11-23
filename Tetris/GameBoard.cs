@@ -73,7 +73,7 @@ namespace Tetris
                     // if (    4    + 2 + 1 <= 9)        (true, i.e. possible to move right)
 
                     Piece.CoordsX += BlockSizeInPixels;
-                    OnGameBoardChanged();
+                    RaiseGameBoardChangedEvent();
                 }
             }
             else
@@ -81,7 +81,7 @@ namespace Tetris
                 if (Piece.CoordsX / BlockSizeInPixels + Piece.LeftmostBlockIndex >= 1)
                 {
                     Piece.CoordsX -= BlockSizeInPixels;
-                    OnGameBoardChanged();
+                    RaiseGameBoardChangedEvent();
                 }
             }
         }
@@ -91,16 +91,16 @@ namespace Tetris
         {
             Piece.Rotation++;
             Piece.UpdateCurrentBlocks(PieceBlockManager);
-            OnGameBoardChanged();
+            RaiseGameBoardChangedEvent();
         }
 
         private void MovePieceDown()
         {
             //TODO
-            OnGameBoardChanged();
+            RaiseGameBoardChangedEvent();
         }
 
-        protected virtual void OnGameBoardChanged()
+        protected virtual void RaiseGameBoardChangedEvent()
         {
             GameBoardChanged?.Invoke(this, EventArgs.Empty);
         }

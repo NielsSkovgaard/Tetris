@@ -26,8 +26,10 @@ namespace Tetris
                 Name = "GameCanvas1",
                 Height = 500,
                 Width = 250,
-                Margin = new Thickness(10, 10, 10, 10), //"10,10,234,61"
-                Background = Brushes.Black
+                Margin = new Thickness(10), //"10,10,234,61"
+                Background = Brushes.Black,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
             };
 
             Grid1.Children.Add(gameCanvas);
