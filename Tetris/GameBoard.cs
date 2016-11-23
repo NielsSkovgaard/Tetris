@@ -66,7 +66,9 @@ namespace Tetris
         {
             if (right)
             {
-                if (Piece.CoordsX / BlockSizeInPixels + Piece.RightmostBlockIndex + 1 <= HorizontalBlocks - 1)
+                int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(Piece.CurrentBlocks);
+
+                if (Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= HorizontalBlocks - 1)
                 {
                     // Example with numbers:
                     // if (100 / 25 + 2 + 1 <= 10 - 1)
@@ -78,7 +80,9 @@ namespace Tetris
             }
             else
             {
-                if (Piece.CoordsX / BlockSizeInPixels + Piece.LeftmostBlockIndex >= 1)
+                int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(Piece.CurrentBlocks);
+
+                if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 1)
                 {
                     Piece.CoordsX -= BlockSizeInPixels;
                     RaiseGameBoardChangedEvent();
@@ -86,17 +90,26 @@ namespace Tetris
             }
         }
 
-        // TODO: Detect collision with walls and static blocks
+        // TODO: Detect collision static blocks
         private void TryRotatePiece()
         {
-            Piece.Rotation++;
-            Piece.UpdateCurrentBlocks(PieceBlockManager);
-            RaiseGameBoardChangedEvent();
+            int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
+            int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation);
+            int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation);
+
+            //Detects collision with the walls
+            if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 0 &&
+                Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= HorizontalBlocks)
+            {
+                Piece.Rotation++;
+                Piece.UpdateCurrentBlocks(PieceBlockManager);
+                RaiseGameBoardChangedEvent();
+            }
         }
 
+        //TODO
         private void MovePieceDown()
         {
-            //TODO
             RaiseGameBoardChangedEvent();
         }
 

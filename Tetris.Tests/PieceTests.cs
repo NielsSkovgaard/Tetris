@@ -21,21 +21,5 @@ namespace Tetris.Tests
             //Assert
             CollectionAssert.AreEqual(expected, actual);
         }
-
-        [TestMethod]
-        public void LeftmostBlockIndex()
-        {
-            Piece piece = new Piece(PieceType.O);
-            piece.UpdateCurrentBlocks(_pieceBlockManager);
-            Assert.AreEqual(1, piece.LeftmostBlockIndex);
-        }
-
-        [TestMethod]
-        public void RightmostBlockIndex()
-        {
-            Piece piece = new Piece(PieceType.S);
-            piece.UpdateCurrentBlocks(_pieceBlockManager);
-            Assert.AreEqual(2, piece.RightmostBlockIndex);
-        }
     }
 }

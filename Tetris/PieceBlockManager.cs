@@ -1,3 +1,5 @@
+using System;
+
 namespace Tetris
 {
     internal class PieceBlockManager
@@ -14,6 +16,32 @@ namespace Tetris
             int[][,] blocksForAllRotations = PieceTypeBlockRotations[(int)pieceType - 1];
             int[,] blocks = blocksForAllRotations[rotation % blocksForAllRotations.Length];
             return blocks;
+        }
+
+        public static int GetLeftmostBlockIndex(int[,] blockArray)
+        {
+            int yLength = blockArray.GetLength(0); //1 or 4
+            int xLength = blockArray.GetLength(1); //3 or 4
+
+            for (int x = 0; x < xLength; x++)
+                for (int y = 0; y < yLength; y++)
+                    if (blockArray[y, x] > 0)
+                        return x;
+
+            throw new InvalidOperationException();
+        }
+
+        public static int GetRightmostBlockIndex(int[,] blockArray)
+        {
+            int yLength = blockArray.GetLength(0); //1 or 4
+            int xLength = blockArray.GetLength(1); //3 or 4
+
+            for (int x = xLength - 1; x >= 0; x--)
+                for (int y = 0; y < yLength; y++)
+                    if (blockArray[y, x] > 0)
+                        return x;
+
+            throw new InvalidOperationException();
         }
 
         private void BuildPieceTypeBlockRotations()
