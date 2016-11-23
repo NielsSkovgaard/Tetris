@@ -53,14 +53,16 @@ namespace Tetris
                 {
                     // TODO: Consider having a predefined grid with 10x20 rectangles to color
                     // TODO: Here, are many rectangles created and destroyed all the time?
-                    if (_gameBoard.StaticBlocks[c, r] != 0)
+                    int blockType = _gameBoard.StaticBlocks[c, r];
+
+                    if (blockType > 0)
                     {
                         Rect rect = new Rect(
                             c * blockSizeInPixels,
                             r * blockSizeInPixels,
                             blockSizeInPixels, blockSizeInPixels);
 
-                        dc.DrawRectangle(_blockBrushes[_gameBoard.StaticBlocks[c, r] - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
                 }
             }
@@ -74,14 +76,16 @@ namespace Tetris
             {
                 for (int c = 0; c < cols; c++)
                 {
-                    if (currentPieceBlocks[r, c] != 0)
+                    int blockType = currentPieceBlocks[r, c];
+
+                    if (blockType > 0)
                     {
                         Rect rect = new Rect(
                             _gameBoard.Piece.CoordsX + c * blockSizeInPixels,
                             _gameBoard.Piece.CoordsY + r * blockSizeInPixels,
                             blockSizeInPixels, blockSizeInPixels);
 
-                        dc.DrawRectangle(_blockBrushes[currentPieceBlocks[r, c] - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
                 }
             }
