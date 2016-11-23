@@ -60,19 +60,19 @@ namespace Tetris
             }
 
             //Render currently moving piece
-            int[,] currentBlocks = _gameBoard.CurrentPiece.CurrentBlocks;
-            int currentPieceSideLengths = _gameBoard.CurrentPieceSideLengths;
+            int[,] currentBlocks = _gameBoard.Piece.CurrentBlocks;
+            int pieceSideLengths = _gameBoard.PieceSideLengths;
 
-            for (int y = 0; y < currentPieceSideLengths; y++)
+            for (int y = 0; y < pieceSideLengths; y++)
             {
-                for (int x = 0; x < currentPieceSideLengths; x++)
+                for (int x = 0; x < pieceSideLengths; x++)
                 {
                     int blockNumber = currentBlocks[y, x];
 
                     if (blockNumber != 0)
                     {
                         int blockSizeInPixels = _gameBoard.BlockSizeInPixels;
-                        Rect rect = new Rect(_gameBoard.CurrentPiece.CoordsX + x * blockSizeInPixels, _gameBoard.CurrentPiece.CoordsY + y * blockSizeInPixels, blockSizeInPixels, blockSizeInPixels);
+                        Rect rect = new Rect(_gameBoard.Piece.CoordsX + x * blockSizeInPixels, _gameBoard.Piece.CoordsY + y * blockSizeInPixels, blockSizeInPixels, blockSizeInPixels);
                         dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
                     }
                 }

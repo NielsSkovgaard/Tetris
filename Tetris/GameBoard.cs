@@ -14,9 +14,9 @@ namespace Tetris
 
         //Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; private set; }
-        public Piece CurrentPiece { get; set; }
+        public Piece Piece { get; set; }
 
-        public int CurrentPieceSideLengths = 4;
+        public int PieceSideLengths = 4;
         public PieceBlockManager PieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
 
@@ -27,19 +27,19 @@ namespace Tetris
             BlockSizeInPixels = blockSizeInPixels;
 
             StaticBlocks = new int[verticalBlocks, horizontalBlocks];
-            ResetCurrentPiece();
+            ResetPiece();
         }
 
-        private void ResetCurrentPiece()
+        private void ResetPiece()
         {
             //Currently moving piece (randomly selected, and put in the top middle of the canvas)
-            CurrentPiece = new Piece((PieceType)_random.Next(1, 8))
+            Piece = new Piece((PieceType)_random.Next(1, 8))
             {
                 CoordsY = 0,
-                CoordsX = ((HorizontalBlocks - CurrentPieceSideLengths) / 2) * BlockSizeInPixels
+                CoordsX = ((HorizontalBlocks - PieceSideLengths) / 2) * BlockSizeInPixels
             };
 
-            CurrentPiece.UpdateCurrentBlocks(PieceBlockManager);
+            Piece.UpdateCurrentBlocks(PieceBlockManager);
         }
 
         public void KeyPressed(Key key)
@@ -48,57 +48,57 @@ namespace Tetris
             {
                 case Key.Left:
                 case Key.A:
-                    TryMoveCurrentPieceHorizontally(false);
+                    TryMovePieceHorizontally(false);
                     break;
                 case Key.Right:
                 case Key.D:
-                    TryMoveCurrentPieceHorizontally(true);
+                    TryMovePieceHorizontally(true);
                     break;
                 case Key.Up:
                 case Key.W:
-                    TryRotate();
+                    TryRotatePiece();
                     break;
                 case Key.Down:
                 case Key.S:
-                    MoveDown();
+                    MovePieceDown();
                     break;
             }
         }
 
         // TODO: Detect collision with walls and static blocks
-        private void TryMoveCurrentPieceHorizontally(bool right)
+        private void TryMovePieceHorizontally(bool right)
         {
             if (right)
             {
-                if (CurrentPiece.CoordsX / BlockSizeInPixels + CurrentPiece.RightmostBlockIndex + 1 <= HorizontalBlocks - 1)
+                if (Piece.CoordsX / BlockSizeInPixels + Piece.RightmostBlockIndex + 1 <= HorizontalBlocks - 1)
                 {
                     // Example with numbers:
                     // if (100 / 25 + 2 + 1 <= 10 - 1)
                     // if (    4    + 2 + 1 <= 9)        (true, i.e. possible to move right)
 
-                    CurrentPiece.CoordsX += BlockSizeInPixels;
+                    Piece.CoordsX += BlockSizeInPixels;
                     OnGameBoardChanged();
                 }
             }
             else
             {
-                if (CurrentPiece.CoordsX / BlockSizeInPixels + CurrentPiece.LeftmostBlockIndex >= 1)
+                if (Piece.CoordsX / BlockSizeInPixels + Piece.LeftmostBlockIndex >= 1)
                 {
-                    CurrentPiece.CoordsX -= BlockSizeInPixels;
+                    Piece.CoordsX -= BlockSizeInPixels;
                     OnGameBoardChanged();
                 }
             }
         }
 
         // TODO: Detect collision with walls and static blocks
-        private void TryRotate()
+        private void TryRotatePiece()
         {
-            CurrentPiece.Rotation++;
-            CurrentPiece.UpdateCurrentBlocks(PieceBlockManager);
+            Piece.Rotation++;
+            Piece.UpdateCurrentBlocks(PieceBlockManager);
             OnGameBoardChanged();
         }
 
-        private void MoveDown()
+        private void MovePieceDown()
         {
             //TODO
             OnGameBoardChanged();
