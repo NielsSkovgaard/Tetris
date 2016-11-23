@@ -16,7 +16,6 @@ namespace Tetris
         public int[,] StaticBlocks { get; private set; }
         public Piece Piece { get; set; }
 
-        public int PieceSideLengths = 4;
         public PieceBlockManager PieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
 
@@ -32,14 +31,10 @@ namespace Tetris
 
         private void ResetPiece()
         {
-            //Currently moving piece (randomly selected, and put in the top middle of the canvas)
-            Piece = new Piece((PieceType)_random.Next(1, 8))
-            {
-                CoordsY = 0,
-                CoordsX = ((HorizontalBlocks - PieceSideLengths) / 2) * BlockSizeInPixels
-            };
-
+            //Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
+            Piece = new Piece((PieceType)_random.Next(1, 8));
             Piece.UpdateCurrentBlocks(PieceBlockManager);
+            Piece.CoordsX = (HorizontalBlocks - Piece.CurrentBlocks.GetLength(1)) / 2 * BlockSizeInPixels;
         }
 
         public void KeyPressed(Key key)

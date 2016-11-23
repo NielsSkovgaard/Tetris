@@ -12,7 +12,7 @@ namespace Tetris.Tests
         {
             //Arrange
             Piece piece = new Piece(PieceType.I);
-            int[,] expected = {{0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}};
+            int[,] expected = {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}};
 
             //Act
             piece.UpdateCurrentBlocks(_pieceBlockManager);

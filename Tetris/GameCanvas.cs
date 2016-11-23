@@ -41,39 +41,34 @@ namespace Tetris
         {
             base.OnRender(dc);
 
+            int blockSizeInPixels = _gameBoard.BlockSizeInPixels;
+
             //Render static blocks
             for (int y = 0; y < _gameBoard.VerticalBlocks; y++)
             {
                 for (int x = 0; x < _gameBoard.HorizontalBlocks; x++)
                 {
-                    int blockNumber = _gameBoard.StaticBlocks[y, x];
-
-                    // TODO: Or draw black rectangle? Maybe instead have a predefined grid with 20x10 rectangles to color
-                    // TODO: How does it work: destruction of rectangles?
-                    if (blockNumber != 0)
+                    // TODO: Consider having a predefined grid with 20x10 rectangles to color
+                    // TODO: Here, are many rectangles created and destroyed all the time?
+                    if (_gameBoard.StaticBlocks[y, x] != 0)
                     {
-                        int blockSizeInPixels = _gameBoard.BlockSizeInPixels;
                         Rect rect = new Rect(x * blockSizeInPixels, y * blockSizeInPixels, blockSizeInPixels, blockSizeInPixels);
-                        dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(_blockBrushes[_gameBoard.StaticBlocks[y, x] - 1], _blockBorderPen, rect);
                     }
                 }
             }
 
             //Render currently moving piece
             int[,] currentBlocks = _gameBoard.Piece.CurrentBlocks;
-            int pieceSideLengths = _gameBoard.PieceSideLengths;
 
-            for (int y = 0; y < pieceSideLengths; y++)
+            for (int y = 0; y < currentBlocks.GetLength(0); y++)
             {
-                for (int x = 0; x < pieceSideLengths; x++)
+                for (int x = 0; x < currentBlocks.GetLength(1); x++)
                 {
-                    int blockNumber = currentBlocks[y, x];
-
-                    if (blockNumber != 0)
+                    if (currentBlocks[y, x] != 0)
                     {
-                        int blockSizeInPixels = _gameBoard.BlockSizeInPixels;
                         Rect rect = new Rect(_gameBoard.Piece.CoordsX + x * blockSizeInPixels, _gameBoard.Piece.CoordsY + y * blockSizeInPixels, blockSizeInPixels, blockSizeInPixels);
-                        dc.DrawRectangle(_blockBrushes[blockNumber - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(_blockBrushes[currentBlocks[y, x] - 1], _blockBorderPen, rect);
                     }
                 }
             }
