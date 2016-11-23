@@ -8,9 +8,9 @@ namespace Tetris
         public event GameBoardChangedEventHandler GameBoardChanged;
 
         //Input parameters
-        public int VerticalBlocks { get; private set; } //Usually 20
-        public int HorizontalBlocks { get; private set; } //Usually 10
-        public int BlockSizeInPixels { get; private set; } //Usually 25
+        public int VerticalBlocks { get; } //Usually 20
+        public int HorizontalBlocks { get; } //Usually 10
+        public int BlockSizeInPixels { get; } //Usually 25
 
         //Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; private set; }
