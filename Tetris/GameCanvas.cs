@@ -10,15 +10,15 @@ namespace Tetris
         private readonly GameBoard _gameBoard;
 
         //Graphics
-        private readonly Pen _blockBorderPen = new Pen { Brush = new SolidColorBrush { Color = Colors.DarkGray } };
+        private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.DarkGray };
         private readonly SolidColorBrush[] _blockBrushes = {
-            new SolidColorBrush(Colors.Cyan),
-            new SolidColorBrush(Colors.Yellow),
-            new SolidColorBrush(Colors.Purple),
-            new SolidColorBrush(Colors.Blue),
-            new SolidColorBrush(Colors.Orange),
-            new SolidColorBrush(Colors.Green),
-            new SolidColorBrush(Colors.Red)
+            Brushes.Cyan,
+            Brushes.Yellow,
+            Brushes.Purple,
+            Brushes.Blue,
+            Brushes.Orange,
+            Brushes.Green,
+            Brushes.Red
         };
 
         public GameCanvas(GameBoard gameBoard)
@@ -60,7 +60,7 @@ namespace Tetris
             }
 
             //Render currently moving piece
-            int[,] currentBlocks = _gameBoard.CurrentPiece.GetCurrentBlocks(_gameBoard.PieceBlockManager);
+            int[,] currentBlocks = _gameBoard.CurrentPiece.CurrentBlocks;
             int currentPieceSideLengths = _gameBoard.CurrentPieceSideLengths;
 
             for (int y = 0; y < currentPieceSideLengths; y++)

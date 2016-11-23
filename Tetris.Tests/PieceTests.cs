@@ -3,26 +3,39 @@
 namespace Tetris.Tests
 {
     [TestClass]
-    internal class PieceTests
+    public class PieceTests
     {
+        private readonly PieceBlockManager _pieceBlockManager = new PieceBlockManager();
+
         [TestMethod]
         public void CurrentBlocks()
         {
+            //Arrange
             Piece piece = new Piece(PieceType.I);
-            PieceBlockManager pieceBlockManager = new PieceBlockManager();
             int[,] expected = {{0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}};
-            int[,] actual = piece.GetCurrentBlocks(pieceBlockManager);
+
+            //Act
+            piece.UpdateCurrentBlocks(_pieceBlockManager);
+            int[,] actual = piece.CurrentBlocks;
+
+            //Assert
             CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void BlocksAfterNextRotation()
+        public void LeftmostBlockIndex()
         {
-            Piece piece = new Piece(PieceType.I);
-            PieceBlockManager pieceBlockManager = new PieceBlockManager();
-            int[,] expected = {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}};
-            int[,] actual = piece.GetBlocksAfterNextRotation(pieceBlockManager);
-            CollectionAssert.AreEqual(expected, actual);
+            Piece piece = new Piece(PieceType.O);
+            piece.UpdateCurrentBlocks(_pieceBlockManager);
+            Assert.AreEqual(1, piece.LeftmostBlockIndex);
+        }
+
+        [TestMethod]
+        public void RightmostBlockIndex()
+        {
+            Piece piece = new Piece(PieceType.S);
+            piece.UpdateCurrentBlocks(_pieceBlockManager);
+            Assert.AreEqual(2, piece.RightmostBlockIndex);
         }
     }
 }

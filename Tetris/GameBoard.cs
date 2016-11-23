@@ -38,6 +38,8 @@ namespace Tetris
                 CoordsY = 0,
                 CoordsX = ((HorizontalBlocks - CurrentPieceSideLengths) / 2) * BlockSizeInPixels
             };
+
+            CurrentPiece.UpdateCurrentBlocks(PieceBlockManager);
         }
 
         public void KeyPressed(Key key)
@@ -63,21 +65,36 @@ namespace Tetris
             }
         }
 
-        // TODO: Detect collision with walls
+        // TODO: Detect collision with walls and static blocks
         private void TryMoveCurrentPieceHorizontally(bool right)
         {
             if (right)
-                CurrentPiece.CoordsX += BlockSizeInPixels;
-            else
-                CurrentPiece.CoordsX -= BlockSizeInPixels;
+            {
+                if (CurrentPiece.CoordsX / BlockSizeInPixels + CurrentPiece.RightmostBlockIndex + 1 <= HorizontalBlocks - 1)
+                {
+                    // Example with numbers:
+                    // if (100 / 25 + 2 + 1 <= 10 - 1)
+                    // if (    4    + 2 + 1 <= 9)        (true, i.e. possible to move right)
 
-            OnGameBoardChanged();
+                    CurrentPiece.CoordsX += BlockSizeInPixels;
+                    OnGameBoardChanged();
+                }
+            }
+            else
+            {
+                if (CurrentPiece.CoordsX / BlockSizeInPixels + CurrentPiece.LeftmostBlockIndex >= 1)
+                {
+                    CurrentPiece.CoordsX -= BlockSizeInPixels;
+                    OnGameBoardChanged();
+                }
+            }
         }
 
-        // TODO: Detect collision with walls
+        // TODO: Detect collision with walls and static blocks
         private void TryRotate()
         {
             CurrentPiece.Rotation++;
+            CurrentPiece.UpdateCurrentBlocks(PieceBlockManager);
             OnGameBoardChanged();
         }
 

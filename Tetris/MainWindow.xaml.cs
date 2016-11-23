@@ -25,7 +25,7 @@ namespace Tetris
                 Height = 500,
                 Width = 250,
                 Margin = new Thickness(10, 10, 10, 10), //"10,10,234,61"
-                Background = new SolidColorBrush(Colors.Black)
+                Background = Brushes.Black
             };
 
             Grid1.Children.Add(gameCanvas);
