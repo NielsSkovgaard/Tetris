@@ -47,7 +47,12 @@ namespace Tetris
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            _gameBoard.KeyPressed(e.Key);
+            _gameBoard.KeyDown(e.Key, e.IsRepeat);
+        }
+
+        private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            _gameBoard.KeyUp(e.Key, e.IsRepeat);
         }
     }
 }
