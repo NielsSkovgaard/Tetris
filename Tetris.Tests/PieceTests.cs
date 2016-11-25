@@ -10,14 +10,14 @@ namespace Tetris.Tests
         [TestMethod]
         public void Blocks_PieceTypeI()
         {
-            //Arrange
+            // Arrange
             Piece piece = new Piece(PieceType.I, _pieceBlockManager);
             int[,] expected = {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}};
 
-            //Act
+            // Act
             int[,] actual = piece.Blocks;
 
-            //Assert
+            // Assert
             CollectionAssert.AreEqual(expected, actual);
         }
     }

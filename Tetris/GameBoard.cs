@@ -8,20 +8,25 @@ namespace Tetris
     {
         public event GameBoardChangedEventHandler GameBoardChanged;
 
-        //Input parameters
-        public int Cols { get; } //Usually 10
-        public int Rows { get; } //Usually 20
-        public int BlockSizeInPixels { get; } //Usually 25
+        // Input parameters
+        public int Cols { get; } // Usually 10
+        public int Rows { get; } // Usually 20
+        public int BlockSizeInPixels { get; } // Usually 25
 
-        //Static blocks and the currently moving piece
+        // Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; private set; }
         public Piece Piece { get; set; }
 
         public PieceBlockManager PieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
 
-        //Dropping a piece
+        // Dropping a piece
         private readonly DispatcherTimer _dropTimer;
+        
+        // TODO: Status
+        //public int Score { get; set; }
+        //public int Level { get; set; }
+        //public int Lines { get; set; }
 
         public GameBoard(int cols, int rows, int blockSizeInPixels)
         {
@@ -32,18 +37,18 @@ namespace Tetris
             StaticBlocks = new int[cols, rows];
             ResetPiece();
 
-            //Timer
+            // Timer
             _dropTimer = new DispatcherTimer
             {
-                Interval = new TimeSpan(400000) //40 ms = 25 FPS
+                Interval = new TimeSpan(500000) // 500000 = 50 ms = 20 FPS
             };
             _dropTimer.Tick += _dropTimer_Tick;
         }
 
         private void ResetPiece()
         {
-            //Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
-            //The random number is >= 1 and < 8, i.e. in the interval 1..7
+            // Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
+            // The random number is >= 1 and < 8, i.e. in the interval 1..7
             Piece = new Piece((PieceType)_random.Next(1, 8), PieceBlockManager);
             Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2 * BlockSizeInPixels;
         }
@@ -66,8 +71,7 @@ namespace Tetris
         {
             // TODO: Collision detection
             Piece.CoordsY += BlockSizeInPixels;
-            RaiseGameBoardChangedEvent();
-            _dropTimer.Start();
+            RaiseGameBoardChangedEvent(); 
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -77,7 +81,10 @@ namespace Tetris
                 case Key.Down:
                 case Key.S:
                     if (!isRepeat)
+                    {
                         TryMovePieceDown();
+                        _dropTimer.Start();
+                    }
                     break;
                 case Key.Up:
                 case Key.W:
@@ -110,7 +117,7 @@ namespace Tetris
             int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation);
             int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation);
 
-            //Detects collision with the walls
+            // Detects collision with the walls
             if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 0 &&
                 Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= Cols)
             {

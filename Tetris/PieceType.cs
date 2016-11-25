@@ -2,7 +2,7 @@ namespace Tetris
 {
     internal enum PieceType
     {
-        //None = 0, //Not needed!
+        //None = 0, // Not needed!
         I = 1,
         O = 2,
         T = 3,

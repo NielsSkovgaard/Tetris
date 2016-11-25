@@ -26,7 +26,7 @@ namespace Tetris
                 Name = "GameCanvas1",
                 Width = 250,
                 Height = 500,
-                Margin = new Thickness(10), //"10,10,234,61"
+                Margin = new Thickness(10), // TODO: Before: "10,10,234,61"
                 Background = Brushes.Black,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
@@ -76,3 +76,6 @@ namespace Tetris
 
 // TODO: Increasing Piece speed
 // TODO: Points, high-score system
+
+// TODO: Score, Level, Lines
+// TODO: Start/Pause buttons -- see http://www.colinfahey.com/tetris/tetris.html

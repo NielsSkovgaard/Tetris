@@ -9,7 +9,7 @@ namespace Tetris
     {
         private readonly GameBoard _gameBoard;
 
-        //Graphics
+        // Graphics
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.DarkGray };
         private readonly SolidColorBrush[] _blockBrushes = {
             Brushes.Cyan,
@@ -21,7 +21,7 @@ namespace Tetris
             Brushes.Red
         };
 
-        //Dependency injection of GameBoard into GameCanvas
+        // Dependency injection of GameBoard into GameCanvas
         public GameCanvas(GameBoard gameBoard)
         {
             _gameBoard = gameBoard;
@@ -33,8 +33,8 @@ namespace Tetris
             _gameBoard.GameBoardChanged += GameBoard_GameBoardChanged;
         }
 
-        //Update the UI (GameCanvas) every time the model (GameBoard) changes
-        //Soon after, the OnRender method is called
+        // Update the UI (GameCanvas) every time the model (GameBoard) changes
+        // Soon after, the OnRender method is called
         private void GameBoard_GameBoardChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
@@ -44,9 +44,9 @@ namespace Tetris
         {
             base.OnRender(dc);
 
-            int blockSizeInPixels = _gameBoard.BlockSizeInPixels; //25px
+            int blockSizeInPixels = _gameBoard.BlockSizeInPixels; // 25px
 
-            //Render static blocks
+            // Render static blocks
             for (int r = 0; r < _gameBoard.Rows; r++)
             {
                 for (int c = 0; c < _gameBoard.Cols; c++)
@@ -67,10 +67,10 @@ namespace Tetris
                 }
             }
 
-            //Render currently moving piece
+            // Render currently moving piece
             int[,] currentPieceBlocks = _gameBoard.Piece.Blocks;
-            int rows = currentPieceBlocks.GetLength(0); //3 or 4
-            int cols = currentPieceBlocks.GetLength(1); //3 or 4
+            int rows = currentPieceBlocks.GetLength(0); // 3 or 4
+            int cols = currentPieceBlocks.GetLength(1); // 3 or 4
 
             for (int r = 0; r < rows; r++)
             {
