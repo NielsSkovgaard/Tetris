@@ -19,7 +19,8 @@ namespace Tetris
         private readonly Random _random = new Random();
 
         // Dropping a piece
-        private readonly DispatcherTimer _dropPieceTimer;
+        private readonly DispatcherTimer _movePieceDownTimer;
+        private readonly DispatcherTimer _rotatePieceTimer;
 
         // TODO: Status
         //public int Score { get; set; }
@@ -34,12 +35,13 @@ namespace Tetris
             StaticBlocks = new int[cols, rows];
             ResetPiece();
 
-            // Timer
-            _dropPieceTimer = new DispatcherTimer
-            {
-                Interval = new TimeSpan(500000) // 500000 = 50 ms = 20 FPS
-            };
-            _dropPieceTimer.Tick += DropPieceTimerTick;
+            // Timers. 
+            _rotatePieceTimer = new DispatcherTimer();
+            _rotatePieceTimer.Interval = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
+            _rotatePieceTimer.Tick += (sender, args) => TryRotatePiece();
+            _movePieceDownTimer = new DispatcherTimer();
+            _movePieceDownTimer.Interval = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
+            _movePieceDownTimer.Tick += (sender, args) => TryMovePieceDown();
         }
 
         private void ResetPiece()
@@ -55,22 +57,6 @@ namespace Tetris
             GameBoardChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        // ----------------------------------------------------------------------------------------
-        // KEY DOWN/UP AND TIMER -- START
-        // ----------------------------------------------------------------------------------------
-
-        private void DropPieceTimerTick(object sender, EventArgs e)
-        {
-            TryMovePieceDown();
-        }
-
-        private void TryMovePieceDown()
-        {
-            // TODO: Collision detection
-            Piece.MoveDown();
-            RaiseGameBoardChangedEvent();
-        }
-
         public void KeyDown(Key key, bool isRepeat)
         {
             switch (key)
@@ -83,55 +69,46 @@ namespace Tetris
                 case Key.D:
                     TryMovePieceHorizontally(true);
                     break;
+                case Key.Up:
+                case Key.W:
+                    if (!isRepeat)
+                    {
+                        TryRotatePiece();
+                        _rotatePieceTimer.Start();
+                    }
+                    break;
                 case Key.Down:
                 case Key.S:
                     if (!isRepeat)
                     {
                         TryMovePieceDown();
-                        _dropPieceTimer.Start();
+                        _movePieceDownTimer.Start();
                     }
-                    break;
-                case Key.Up:
-                case Key.W:
-                    TryRotatePiece();
                     break;
             }
         }
 
         public void KeyUp(Key key)
         {
-            if (key == Key.Down || key == Key.S)
-                _dropPieceTimer.Stop();
-        }
-
-        // ----------------------------------------------------------------------------------------
-        // KEY DOWN/UP AND TIMER -- END
-        // ----------------------------------------------------------------------------------------
-
-        // TODO: Detect collision with static blocks
-        private void TryRotatePiece()
-        {
-            int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
-            int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation);
-            int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation);
-
-            // Detects collision with the walls
-            if (Piece.CoordsX + leftmostBlockIndex >= 0 &&
-                Piece.CoordsX + rightmostBlockIndex + 1 <= Cols)
+            switch (key)
             {
-                Piece.Rotate();
-                RaiseGameBoardChangedEvent();
+                case Key.Up:
+                case Key.W:
+                    _rotatePieceTimer.Stop();
+                    break;
+                case Key.Down:
+                case Key.S:
+                    _movePieceDownTimer.Stop();
+                    break;
             }
         }
 
-        // TODO: Detect collision with static blocks
+        // TODO: Detect collision with static blocks (then stop timer - if using a timer)
         private void TryMovePieceHorizontally(bool right)
         {
             if (right)
             {
-                int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks);
-
-                if (Piece.CoordsX + rightmostBlockIndex + 1 <= Cols - 1)
+                if (Piece.CoordsX + PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks) + 1 <= Cols - 1)
                 {
                     // Example with numbers:
                     // if (4 + 2 + 1 <= 10 - 1) // true, i.e. possible to move right
@@ -142,14 +119,37 @@ namespace Tetris
             }
             else
             {
-                int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks);
-
-                if (Piece.CoordsX + leftmostBlockIndex >= 1)
+                if (Piece.CoordsX + PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks) >= 1)
                 {
                     Piece.MoveLeft();
                     RaiseGameBoardChangedEvent();
                 }
             }
+        }
+
+        // TODO: Detect collision with static blocks (then stop timer)
+        private void TryRotatePiece()
+        {
+            int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
+
+            // Check if next rotation would make the Piece collide with the walls
+            if (Piece.CoordsX + PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation) >= 0 &&
+                Piece.CoordsX + PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation) + 1 <= Cols)
+            {
+                Piece.Rotate();
+                RaiseGameBoardChangedEvent();
+            }
+            else
+            {
+                _rotatePieceTimer.Stop();
+            }
+        }
+
+        private void TryMovePieceDown()
+        {
+            // TODO: Detect collision (then stop timer)
+            Piece.MoveDown();
+            RaiseGameBoardChangedEvent();
         }
     }
 }

@@ -24,15 +24,15 @@
             CoordsX++;
         }
 
-        public void MoveDown()
-        {
-            CoordsY++;
-        }
-
         public void Rotate()
         {
             Rotation++;
             UpdateCurrentBlocks();
+        }
+
+        public void MoveDown()
+        {
+            CoordsY++;
         }
 
         private void UpdateCurrentBlocks()
