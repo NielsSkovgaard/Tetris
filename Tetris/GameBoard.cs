@@ -22,7 +22,7 @@ namespace Tetris
 
         // Dropping a piece
         private readonly DispatcherTimer _dropTimer;
-        
+
         // TODO: Status
         //public int Score { get; set; }
         //public int Level { get; set; }
@@ -71,7 +71,7 @@ namespace Tetris
         {
             // TODO: Collision detection
             Piece.CoordsY += BlockSizeInPixels;
-            RaiseGameBoardChangedEvent(); 
+            RaiseGameBoardChangedEvent();
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -101,7 +101,7 @@ namespace Tetris
             }
         }
 
-        public void KeyUp(Key key, bool isRepeat)
+        public void KeyUp(Key key)
         {
             _dropTimer.Stop();
         }

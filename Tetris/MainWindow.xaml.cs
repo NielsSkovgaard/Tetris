@@ -52,7 +52,7 @@ namespace Tetris
 
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            _gameBoard.KeyUp(e.Key, e.IsRepeat);
+            _gameBoard.KeyUp(e.Key);
         }
     }
 }
