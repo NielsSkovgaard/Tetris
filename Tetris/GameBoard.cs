@@ -16,7 +16,6 @@ namespace Tetris
         public int[,] StaticBlocks { get; }
         public Piece Piece { get; private set; }
 
-        private readonly PieceBlockManager _pieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
 
         // Dropping a piece
@@ -47,7 +46,7 @@ namespace Tetris
         {
             // Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             // The random number is >= 1 and < 8, i.e. in the interval 1..7
-            Piece = new Piece((PieceType)_random.Next(1, 8), _pieceBlockManager);
+            Piece = new Piece((PieceType)_random.Next(1, 8));
             Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2;
         }
 
@@ -111,7 +110,7 @@ namespace Tetris
         // TODO: Detect collision with static blocks
         private void TryRotatePiece()
         {
-            int[,] blocksAfterNextRotation = _pieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
+            int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
             int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation);
             int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation);
 

@@ -8,12 +8,9 @@
         public int Rotation { get; private set; }
         public int[,] Blocks { get; private set; }
 
-        private readonly PieceBlockManager _pieceBlockManager;
-
-        public Piece(PieceType pieceType, PieceBlockManager pieceBlockManager)
+        public Piece(PieceType pieceType)
         {
             PieceType = pieceType;
-            _pieceBlockManager = pieceBlockManager;
             UpdateCurrentBlocks();
         }
 
@@ -40,7 +37,7 @@
 
         private void UpdateCurrentBlocks()
         {
-            Blocks = _pieceBlockManager.GetBlocks(PieceType, Rotation);
+            Blocks = PieceBlockManager.GetBlocks(PieceType, Rotation);
         }
     }
 }

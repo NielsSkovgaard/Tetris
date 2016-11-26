@@ -2,16 +2,16 @@ using System;
 
 namespace Tetris
 {
-    internal class PieceBlockManager
+    internal static class PieceBlockManager
     {
-        public int[][][,] PieceTypeBlockRotations { get; set; }
+        public static int[][][,] PieceTypeBlockRotations { get; set; }
 
-        public PieceBlockManager()
+        static PieceBlockManager()
         {
             BuildPieceTypeBlockRotations();
         }
 
-        public int[,] GetBlocks(PieceType pieceType, int rotation)
+        public static int[,] GetBlocks(PieceType pieceType, int rotation)
         {
             int[][,] blocksForAllRotations = PieceTypeBlockRotations[(int)pieceType - 1];
             int[,] blocks = blocksForAllRotations[rotation % blocksForAllRotations.Length];
@@ -46,7 +46,7 @@ namespace Tetris
             throw new InvalidOperationException();
         }
 
-        private void BuildPieceTypeBlockRotations()
+        private static void BuildPieceTypeBlockRotations()
         {
             PieceTypeBlockRotations = new[]
             {
