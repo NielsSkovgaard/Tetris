@@ -13,14 +13,14 @@ namespace Tetris
         public int Rows { get; } // Usually 20
 
         // Static blocks and the currently moving piece
-        public int[,] StaticBlocks { get; private set; }
-        public Piece Piece { get; set; }
+        public int[,] StaticBlocks { get; }
+        public Piece Piece { get; private set; }
 
-        public PieceBlockManager PieceBlockManager = new PieceBlockManager();
+        private readonly PieceBlockManager _pieceBlockManager = new PieceBlockManager();
         private readonly Random _random = new Random();
 
         // Dropping a piece
-        private readonly DispatcherTimer _dropTimer;
+        private readonly DispatcherTimer _dropPieceTimer;
 
         // TODO: Status
         //public int Score { get; set; }
@@ -36,18 +36,18 @@ namespace Tetris
             ResetPiece();
 
             // Timer
-            _dropTimer = new DispatcherTimer
+            _dropPieceTimer = new DispatcherTimer
             {
                 Interval = new TimeSpan(500000) // 500000 = 50 ms = 20 FPS
             };
-            _dropTimer.Tick += _dropTimer_Tick;
+            _dropPieceTimer.Tick += DropPieceTimerTick;
         }
 
         private void ResetPiece()
         {
             // Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             // The random number is >= 1 and < 8, i.e. in the interval 1..7
-            Piece = new Piece((PieceType)_random.Next(1, 8), PieceBlockManager);
+            Piece = new Piece((PieceType)_random.Next(1, 8), _pieceBlockManager);
             Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2;
         }
 
@@ -60,7 +60,7 @@ namespace Tetris
         // KEY DOWN/UP AND TIMER -- START
         // ----------------------------------------------------------------------------------------
 
-        private void _dropTimer_Tick(object sender, EventArgs e)
+        private void DropPieceTimerTick(object sender, EventArgs e)
         {
             TryMovePieceDown();
         }
@@ -89,7 +89,7 @@ namespace Tetris
                     if (!isRepeat)
                     {
                         TryMovePieceDown();
-                        _dropTimer.Start();
+                        _dropPieceTimer.Start();
                     }
                     break;
                 case Key.Up:
@@ -101,7 +101,7 @@ namespace Tetris
 
         public void KeyUp(Key key)
         {
-            _dropTimer.Stop();
+            _dropPieceTimer.Stop();
         }
 
         // ----------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ namespace Tetris
         // TODO: Detect collision with static blocks
         private void TryRotatePiece()
         {
-            int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
+            int[,] blocksAfterNextRotation = _pieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
             int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation);
             int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation);
 
