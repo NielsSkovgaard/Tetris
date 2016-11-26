@@ -3,8 +3,8 @@
     internal class Piece
     {
         public PieceType PieceType { get; }
-        public int CoordsY { get; set; } = 0;
-        public int CoordsX { get; set; } = 0;
+        public int CoordsX { get; set; }
+        public int CoordsY { get; set; }
         public int Rotation { get; private set; }
         public int[,] Blocks { get; private set; }
 
@@ -15,6 +15,21 @@
             PieceType = pieceType;
             _pieceBlockManager = pieceBlockManager;
             UpdateCurrentBlocks();
+        }
+
+        public void MoveLeft()
+        {
+            CoordsX--;
+        }
+
+        public void MoveRight()
+        {
+            CoordsX++;
+        }
+
+        public void MoveDown()
+        {
+            CoordsY++;
         }
 
         public void Rotate()

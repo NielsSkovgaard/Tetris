@@ -14,18 +14,18 @@ namespace Tetris
         private const int Rows = 20;
         private const int BlockSizeInPixels = 25;
 
-        private readonly GameBoard _gameBoard = new GameBoard(Cols, Rows, BlockSizeInPixels);
+        private readonly GameBoard _gameBoard = new GameBoard(Cols, Rows);
 
         public MainWindow()
         {
             InitializeComponent();
 
             //Dependency injection of GameBoard into GameCanvas
-            GameCanvas gameCanvas = new GameCanvas(_gameBoard)
+            GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
             {
                 Name = "GameCanvas1",
-                Width = 250,
-                Height = 500,
+                Width = Cols * BlockSizeInPixels, // Usually 250px
+                Height = Rows * BlockSizeInPixels, // Usually 500px
                 Margin = new Thickness(10), // TODO: Before: "10,10,234,61"
                 Background = Brushes.Black,
                 HorizontalAlignment = HorizontalAlignment.Left,

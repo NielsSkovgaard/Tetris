@@ -11,7 +11,6 @@ namespace Tetris
         // Input parameters
         public int Cols { get; } // Usually 10
         public int Rows { get; } // Usually 20
-        public int BlockSizeInPixels { get; } // Usually 25
 
         // Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; private set; }
@@ -28,11 +27,10 @@ namespace Tetris
         //public int Level { get; set; }
         //public int Lines { get; set; }
 
-        public GameBoard(int cols, int rows, int blockSizeInPixels)
+        public GameBoard(int cols, int rows)
         {
             Cols = cols;
             Rows = rows;
-            BlockSizeInPixels = blockSizeInPixels;
 
             StaticBlocks = new int[cols, rows];
             ResetPiece();
@@ -50,7 +48,7 @@ namespace Tetris
             // Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             // The random number is >= 1 and < 8, i.e. in the interval 1..7
             Piece = new Piece((PieceType)_random.Next(1, 8), PieceBlockManager);
-            Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2 * BlockSizeInPixels;
+            Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2;
         }
 
         protected virtual void RaiseGameBoardChangedEvent()
@@ -70,7 +68,7 @@ namespace Tetris
         private void TryMovePieceDown()
         {
             // TODO: Collision detection
-            Piece.CoordsY += BlockSizeInPixels;
+            Piece.MoveDown();
             RaiseGameBoardChangedEvent();
         }
 
@@ -78,6 +76,14 @@ namespace Tetris
         {
             switch (key)
             {
+                case Key.Left:
+                case Key.A:
+                    TryMovePieceHorizontally(false);
+                    break;
+                case Key.Right:
+                case Key.D:
+                    TryMovePieceHorizontally(true);
+                    break;
                 case Key.Down:
                 case Key.S:
                     if (!isRepeat)
@@ -89,14 +95,6 @@ namespace Tetris
                 case Key.Up:
                 case Key.W:
                     TryRotatePiece();
-                    break;
-                case Key.Left:
-                case Key.A:
-                    TryMovePieceHorizontally(false);
-                    break;
-                case Key.Right:
-                case Key.D:
-                    TryMovePieceHorizontally(true);
                     break;
             }
         }
@@ -118,8 +116,8 @@ namespace Tetris
             int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation);
 
             // Detects collision with the walls
-            if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 0 &&
-                Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= Cols)
+            if (Piece.CoordsX + leftmostBlockIndex >= 0 &&
+                Piece.CoordsX + rightmostBlockIndex + 1 <= Cols)
             {
                 Piece.Rotate();
                 RaiseGameBoardChangedEvent();
@@ -133,13 +131,12 @@ namespace Tetris
             {
                 int rightmostBlockIndex = PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks);
 
-                if (Piece.CoordsX / BlockSizeInPixels + rightmostBlockIndex + 1 <= Cols - 1)
+                if (Piece.CoordsX + rightmostBlockIndex + 1 <= Cols - 1)
                 {
                     // Example with numbers:
-                    // if (100 / 25 + 2 + 1 <= 10 - 1)
-                    // if (    4    + 2 + 1 <= 9)        (true, i.e. possible to move right)
+                    // if (4 + 2 + 1 <= 10 - 1) // true, i.e. possible to move right
 
-                    Piece.CoordsX += BlockSizeInPixels;
+                    Piece.MoveRight();
                     RaiseGameBoardChangedEvent();
                 }
             }
@@ -147,9 +144,9 @@ namespace Tetris
             {
                 int leftmostBlockIndex = PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks);
 
-                if (Piece.CoordsX / BlockSizeInPixels + leftmostBlockIndex >= 1)
+                if (Piece.CoordsX + leftmostBlockIndex >= 1)
                 {
-                    Piece.CoordsX -= BlockSizeInPixels;
+                    Piece.MoveLeft();
                     RaiseGameBoardChangedEvent();
                 }
             }

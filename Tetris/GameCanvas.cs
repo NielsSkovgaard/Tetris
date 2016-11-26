@@ -8,6 +8,7 @@ namespace Tetris
     internal class GameCanvas : Canvas
     {
         private readonly GameBoard _gameBoard;
+        private readonly int _blockSizeInPixels; // Usually 25px
 
         // Graphics
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.DarkGray };
@@ -22,14 +23,10 @@ namespace Tetris
         };
 
         // Dependency injection of GameBoard into GameCanvas
-        public GameCanvas(GameBoard gameBoard)
+        public GameCanvas(GameBoard gameBoard, int blockSizeInPixels)
         {
             _gameBoard = gameBoard;
-
-            //Set Canvas height and width (in pixels)
-            Width = _gameBoard.Cols * _gameBoard.BlockSizeInPixels;
-            Height = _gameBoard.Rows * _gameBoard.BlockSizeInPixels;
-
+            _blockSizeInPixels = blockSizeInPixels;
             _gameBoard.GameBoardChanged += GameBoard_GameBoardChanged;
         }
 
@@ -44,8 +41,6 @@ namespace Tetris
         {
             base.OnRender(dc);
 
-            int blockSizeInPixels = _gameBoard.BlockSizeInPixels; // 25px
-
             // Render static blocks
             for (int r = 0; r < _gameBoard.Rows; r++)
             {
@@ -58,9 +53,9 @@ namespace Tetris
                     if (blockType > 0)
                     {
                         Rect rect = new Rect(
-                            c * blockSizeInPixels,
-                            r * blockSizeInPixels,
-                            blockSizeInPixels, blockSizeInPixels);
+                            c * _blockSizeInPixels,
+                            r * _blockSizeInPixels,
+                            _blockSizeInPixels, _blockSizeInPixels);
 
                         dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
@@ -81,9 +76,9 @@ namespace Tetris
                     if (blockType > 0)
                     {
                         Rect rect = new Rect(
-                            _gameBoard.Piece.CoordsX + c * blockSizeInPixels,
-                            _gameBoard.Piece.CoordsY + r * blockSizeInPixels,
-                            blockSizeInPixels, blockSizeInPixels);
+                            (_gameBoard.Piece.CoordsX + c) * _blockSizeInPixels,
+                            (_gameBoard.Piece.CoordsY + r) * _blockSizeInPixels,
+                            _blockSizeInPixels, _blockSizeInPixels);
 
                         dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
