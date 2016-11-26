@@ -100,7 +100,8 @@ namespace Tetris
 
         public void KeyUp(Key key)
         {
-            _dropPieceTimer.Stop();
+            if (key == Key.Down || key == Key.S)
+                _dropPieceTimer.Stop();
         }
 
         // ----------------------------------------------------------------------------------------
