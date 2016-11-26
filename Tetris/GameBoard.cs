@@ -14,13 +14,15 @@ namespace Tetris
 
         // Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; }
-        public Piece Piece { get; private set; }
+        public Piece Piece { get; }
 
         private readonly Random _random = new Random();
 
-        // Dropping a piece
-        private readonly DispatcherTimer _movePieceDownTimer;
-        private readonly DispatcherTimer _rotatePieceTimer;
+        //Timers for holding down a key to repeat an action (move left, move right, rotate, or move down)
+        private readonly DispatcherTimer _movePieceLeftTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _movePieceRightTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _rotatePieceTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _movePieceDownTimer = new DispatcherTimer();
 
         // TODO: Status
         //public int Score { get; set; }
@@ -33,23 +35,21 @@ namespace Tetris
             Rows = rows;
 
             StaticBlocks = new int[cols, rows];
-            ResetPiece();
 
-            // Timers. 
-            _rotatePieceTimer = new DispatcherTimer();
-            _rotatePieceTimer.Interval = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
-            _rotatePieceTimer.Tick += (sender, args) => TryRotatePiece();
-            _movePieceDownTimer = new DispatcherTimer();
-            _movePieceDownTimer.Interval = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
-            _movePieceDownTimer.Tick += (sender, args) => TryMovePieceDown();
-        }
-
-        private void ResetPiece()
-        {
-            // Currently moving piece (randomly selected, and positioned in the top middle of the canvas)
+            // Reset the currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             // The random number is >= 1 and < 8, i.e. in the interval 1..7
             Piece = new Piece((PieceType)_random.Next(1, 8));
             Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2;
+
+            //Timers for holding down a key to repeat an action (move left, move right, rotate, or move down)
+            _movePieceLeftTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
+            _movePieceRightTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
+            _rotatePieceTimer.Interval = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
+            _movePieceDownTimer.Interval = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
+            _movePieceLeftTimer.Tick += (sender, args) => TryMovePieceLeft();
+            _movePieceRightTimer.Tick += (sender, args) => TryMovePieceRight();
+            _rotatePieceTimer.Tick += (sender, args) => TryRotatePiece();
+            _movePieceDownTimer.Tick += (sender, args) => TryMovePieceDown();
         }
 
         protected virtual void RaiseGameBoardChangedEvent()
@@ -59,31 +59,32 @@ namespace Tetris
 
         public void KeyDown(Key key, bool isRepeat)
         {
+            if (isRepeat)
+                return;
+
+            // TODO: Should not be possible to move left and right at the same time (gives flicker now)
+
             switch (key)
             {
                 case Key.Left:
                 case Key.A:
-                    TryMovePieceHorizontally(false);
+                    TryMovePieceLeft();
+                    _movePieceLeftTimer.Start();
                     break;
                 case Key.Right:
                 case Key.D:
-                    TryMovePieceHorizontally(true);
+                    TryMovePieceRight();
+                    _movePieceRightTimer.Start();
                     break;
                 case Key.Up:
                 case Key.W:
-                    if (!isRepeat)
-                    {
-                        TryRotatePiece();
-                        _rotatePieceTimer.Start();
-                    }
+                    TryRotatePiece();
+                    _rotatePieceTimer.Start();
                     break;
                 case Key.Down:
                 case Key.S:
-                    if (!isRepeat)
-                    {
-                        TryMovePieceDown();
-                        _movePieceDownTimer.Start();
-                    }
+                    TryMovePieceDown();
+                    _movePieceDownTimer.Start();
                     break;
             }
         }
@@ -92,6 +93,14 @@ namespace Tetris
         {
             switch (key)
             {
+                case Key.Left:
+                case Key.A:
+                    _movePieceLeftTimer.Stop();
+                    break;
+                case Key.Right:
+                case Key.D:
+                    _movePieceRightTimer.Stop();
+                    break;
                 case Key.Up:
                 case Key.W:
                     _rotatePieceTimer.Stop();
@@ -103,27 +112,36 @@ namespace Tetris
             }
         }
 
-        // TODO: Detect collision with static blocks (then stop timer - if using a timer)
-        private void TryMovePieceHorizontally(bool right)
+        // TODO: Detect collision with static blocks (then stop timer)
+        private void TryMovePieceLeft()
         {
-            if (right)
+            if (Piece.CoordsX + PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks) >= 1)
             {
-                if (Piece.CoordsX + PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks) + 1 <= Cols - 1)
-                {
-                    // Example with numbers:
-                    // if (4 + 2 + 1 <= 10 - 1) // true, i.e. possible to move right
-
-                    Piece.MoveRight();
-                    RaiseGameBoardChangedEvent();
-                }
+                Piece.MoveLeft();
+                RaiseGameBoardChangedEvent();
             }
             else
             {
-                if (Piece.CoordsX + PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks) >= 1)
-                {
-                    Piece.MoveLeft();
-                    RaiseGameBoardChangedEvent();
-                }
+                // TODO: But if rotating while moving left, then with next rotation, it might be possible to move left
+                _movePieceLeftTimer.Stop();
+            }
+        }
+
+        // TODO: Detect collision with static blocks (then stop timer)
+        private void TryMovePieceRight()
+        {
+            // Example with numbers:
+            // if (4 + 2 + 1 <= 10 - 1) // true, i.e. possible to move right
+
+            if (Piece.CoordsX + PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks) + 1 <= Cols - 1)
+            {
+                Piece.MoveRight();
+                RaiseGameBoardChangedEvent();
+            }
+            else
+            {
+                // TODO: But if rotating while moving right, then with next rotation, it might be possible to move right
+                _movePieceRightTimer.Stop();
             }
         }
 
@@ -141,13 +159,14 @@ namespace Tetris
             }
             else
             {
+                // TODO: Should only be paused while it's up against the wall. When moved away, and with the UP key entered, continue rotating repeatedly
                 _rotatePieceTimer.Stop();
             }
         }
 
         private void TryMovePieceDown()
         {
-            // TODO: Detect collision (then stop timer)
+            // TODO: Detect collision with bottom or static blocks (then stop timer)
             Piece.MoveDown();
             RaiseGameBoardChangedEvent();
         }
