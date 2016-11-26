@@ -19,10 +19,13 @@ namespace Tetris
         private readonly Random _random = new Random();
 
         //Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
-        private readonly DispatcherTimer _movePieceLeftTimer = new DispatcherTimer();
-        private readonly DispatcherTimer _movePieceRightTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _movePieceLeftRightTimer = new DispatcherTimer();
         private readonly DispatcherTimer _rotatePieceTimer = new DispatcherTimer();
         private readonly DispatcherTimer _movePieceDownTimer = new DispatcherTimer();
+
+        private bool _isLeftKeyDown;
+        private bool _isRightKeyDown;
+        private bool _leftKeyHasPriority;
 
         // TODO: Status
         //public int Score { get; set; }
@@ -41,13 +44,11 @@ namespace Tetris
             Piece = new Piece((PieceType)_random.Next(1, 8));
             Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2;
 
-            //Timers for holding down a key to repeat an action (move left, move right, rotate, or move down)
-            _movePieceLeftTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
-            _movePieceRightTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
+            //Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
+            _movePieceLeftRightTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
             _rotatePieceTimer.Interval = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
             _movePieceDownTimer.Interval = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
-            _movePieceLeftTimer.Tick += (sender, args) => TryMovePieceLeft();
-            _movePieceRightTimer.Tick += (sender, args) => TryMovePieceRight();
+            _movePieceLeftRightTimer.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _rotatePieceTimer.Tick += (sender, args) => TryRotatePiece();
             _movePieceDownTimer.Tick += (sender, args) => TryMovePieceDown();
         }
@@ -68,13 +69,17 @@ namespace Tetris
             {
                 case Key.Left:
                 case Key.A:
+                    _isLeftKeyDown = true;
+                    _leftKeyHasPriority = true;
                     TryMovePieceLeft();
-                    _movePieceLeftTimer.Start();
+                    _movePieceLeftRightTimer.Start();
                     break;
                 case Key.Right:
                 case Key.D:
+                    _isRightKeyDown = true;
+                    _leftKeyHasPriority = false;
                     TryMovePieceRight();
-                    _movePieceRightTimer.Start();
+                    _movePieceLeftRightTimer.Start();
                     break;
                 case Key.Up:
                 case Key.W:
@@ -95,11 +100,19 @@ namespace Tetris
             {
                 case Key.Left:
                 case Key.A:
-                    _movePieceLeftTimer.Stop();
+                    _isLeftKeyDown = false;
+                    _leftKeyHasPriority = false;
+
+                    if (!_isRightKeyDown)
+                        _movePieceLeftRightTimer.Stop();
                     break;
                 case Key.Right:
                 case Key.D:
-                    _movePieceRightTimer.Stop();
+                    _isRightKeyDown = false;
+                    _leftKeyHasPriority = true;
+
+                    if (!_isLeftKeyDown)
+                        _movePieceLeftRightTimer.Stop();
                     break;
                 case Key.Up:
                 case Key.W:
@@ -110,6 +123,14 @@ namespace Tetris
                     _movePieceDownTimer.Stop();
                     break;
             }
+        }
+
+        private void TryMovePieceLeftOrRight()
+        {
+            if (_leftKeyHasPriority)
+                TryMovePieceLeft();
+            else
+                TryMovePieceRight();
         }
 
         // TODO: Detect collision with static blocks (then stop timer)
