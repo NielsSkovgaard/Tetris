@@ -18,7 +18,7 @@ namespace Tetris
 
         private readonly Random _random = new Random();
 
-        //Timers for holding down a key to repeat an action (move left, move right, rotate, or move down)
+        //Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
         private readonly DispatcherTimer _movePieceLeftTimer = new DispatcherTimer();
         private readonly DispatcherTimer _movePieceRightTimer = new DispatcherTimer();
         private readonly DispatcherTimer _rotatePieceTimer = new DispatcherTimer();
@@ -120,11 +120,6 @@ namespace Tetris
                 Piece.MoveLeft();
                 RaiseGameBoardChangedEvent();
             }
-            else
-            {
-                // TODO: But if rotating while moving left, then with next rotation, it might be possible to move left
-                _movePieceLeftTimer.Stop();
-            }
         }
 
         // TODO: Detect collision with static blocks (then stop timer)
@@ -137,11 +132,6 @@ namespace Tetris
             {
                 Piece.MoveRight();
                 RaiseGameBoardChangedEvent();
-            }
-            else
-            {
-                // TODO: But if rotating while moving right, then with next rotation, it might be possible to move right
-                _movePieceRightTimer.Stop();
             }
         }
 
@@ -156,11 +146,6 @@ namespace Tetris
             {
                 Piece.Rotate();
                 RaiseGameBoardChangedEvent();
-            }
-            else
-            {
-                // TODO: Should only be paused while it's up against the wall. When moved away, and with the UP key entered, continue rotating repeatedly
-                _rotatePieceTimer.Stop();
             }
         }
 
