@@ -4,7 +4,7 @@ namespace Tetris
 {
     internal static class PieceBlockManager
     {
-        public static int[][][,] PieceTypeBlockRotations { get; set; }
+        private static int[][][,] _pieceTypeBlockRotations;
 
         static PieceBlockManager()
         {
@@ -13,7 +13,7 @@ namespace Tetris
 
         public static int[,] GetBlocks(PieceType pieceType, int rotation)
         {
-            int[][,] blocksForAllRotations = PieceTypeBlockRotations[(int)pieceType - 1];
+            int[][,] blocksForAllRotations = _pieceTypeBlockRotations[(int)pieceType - 1];
             int[,] blocks = blocksForAllRotations[rotation % blocksForAllRotations.Length];
             return blocks;
         }
@@ -48,7 +48,7 @@ namespace Tetris
 
         private static void BuildPieceTypeBlockRotations()
         {
-            PieceTypeBlockRotations = new[]
+            _pieceTypeBlockRotations = new[]
             {
                 new[] // PieceType.I (array index 0)
                 {
