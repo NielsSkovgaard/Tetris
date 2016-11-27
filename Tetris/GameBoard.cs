@@ -31,7 +31,7 @@ namespace Tetris
         // TODO: Status
         public int Score { get; set; }
         //public int Level { get; set; }
-        //public int Lines { get; set; }
+        public int Lines { get; set; }
 
         public GameBoard(int rows, int cols)
         {
@@ -235,6 +235,8 @@ namespace Tetris
         private void AwardPointsForClearingRows(int numberOfCompleteRows)
         {
             //TODO: Multiply by Level factor. Increment Level when having reached a certain amount of points.
+
+            Lines += numberOfCompleteRows;
 
             switch (numberOfCompleteRows)
             {
