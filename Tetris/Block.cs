@@ -4,18 +4,16 @@
     {
         public int CoordsY { get; }
         public int CoordsX { get; }
-        public int BlockType { get; }
 
-        public Block(int coordsY, int coordsX, int blockType)
+        public Block(int coordsY, int coordsX)
         {
             CoordsY = coordsY;
             CoordsX = coordsX;
-            BlockType = blockType;
         }
 
         protected bool Equals(Block other)
         {
-            return CoordsY == other.CoordsY && CoordsX == other.CoordsX && BlockType == other.BlockType;
+            return CoordsY == other.CoordsY && CoordsX == other.CoordsX;
         }
 
         public override bool Equals(object obj)
@@ -32,7 +30,6 @@
             {
                 var hashCode = CoordsY;
                 hashCode = (hashCode * 397) ^ CoordsX;
-                hashCode = (hashCode * 397) ^ BlockType;
                 return hashCode;
             }
         }

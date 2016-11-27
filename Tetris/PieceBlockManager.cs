@@ -97,7 +97,7 @@ namespace Tetris
 
                             if (blockType > 0)
                             {
-                                _optimizedBlocks[pieceType][rotation][index] = new Block(row, col, blockType);
+                                _optimizedBlocks[pieceType][rotation][index] = new Block(row, col);
                                 index++;
                             }
                         }

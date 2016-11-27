@@ -10,7 +10,7 @@ namespace Tetris.Tests
         {
             // Arrange
             Piece piece = new Piece(PieceType.I);
-            Block[] expected = { new Block(1, 0, 1), new Block(1, 1, 1), new Block(1, 2, 1), new Block(1, 3, 1) };
+            Block[] expected = { new Block(1, 0), new Block(1, 1), new Block(1, 2), new Block(1, 3) };
 
             // Act
             Block[] actual = piece.Blocks;

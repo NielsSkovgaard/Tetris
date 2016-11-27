@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -15,11 +16,11 @@ namespace Tetris
 
         // Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; }
-        public Piece Piece { get; }
+        public Piece Piece { get; private set; }
 
         private readonly Random _random = new Random();
 
-        //Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
+        // Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
         private readonly DispatcherTimer _movePieceLeftRightTimer = new DispatcherTimer();
         private readonly DispatcherTimer _rotatePieceTimer = new DispatcherTimer();
         private readonly DispatcherTimer _movePieceDownTimer = new DispatcherTimer();
@@ -39,19 +40,23 @@ namespace Tetris
             Cols = cols;
 
             StaticBlocks = new int[rows, cols];
+            ResetPiece();
 
-            // Reset the currently moving piece (randomly selected, and positioned in the top middle of the canvas)
-            // The random number is >= 1 and < 8, i.e. in the interval 1..7
-            Piece = new Piece((PieceType)_random.Next(1, 8));
-            Piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(Piece.PieceType)) / 2;
-
-            //Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
+            // Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
             _movePieceLeftRightTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
             _rotatePieceTimer.Interval = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
             _movePieceDownTimer.Interval = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
             _movePieceLeftRightTimer.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _rotatePieceTimer.Tick += (sender, args) => TryRotatePiece();
             _movePieceDownTimer.Tick += (sender, args) => TryMovePieceDown();
+        }
+
+        private void ResetPiece()
+        {
+            // Reset the currently moving piece (randomly selected, and positioned in the top middle of the canvas)
+            // The random number is >= 1 and < 8, i.e. in the interval 1..7
+            Piece = new Piece((PieceType)_random.Next(1, 8));
+            Piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(Piece.PieceType)) / 2;
         }
 
         protected virtual void RaiseGameBoardChangedEvent()
@@ -134,7 +139,9 @@ namespace Tetris
 
         private void TryMovePieceLeft()
         {
-            if (Piece.Blocks.All(block => Piece.CoordsX + block.CoordsX >= 1))
+            if (Piece.Blocks.All(block =>
+                Piece.CoordsX + block.CoordsX >= 1 && // Check that the Piece is not up against the left side
+                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX - 1] == 0)) // Check that the Piece won't collide with the static blocks
             {
                 Piece.MoveLeft();
                 RaiseGameBoardChangedEvent();
@@ -143,7 +150,9 @@ namespace Tetris
 
         private void TryMovePieceRight()
         {
-            if (Piece.Blocks.All(block => Piece.CoordsX + block.CoordsX + 2 <= Cols))
+            if (Piece.Blocks.All(block =>
+                Piece.CoordsX + block.CoordsX + 2 <= Cols && // Check that the Piece is not up against the right side
+                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX + 1] == 0)) // Check that the Piece won't collide with the static blocks
             {
                 Piece.MoveRight();
                 RaiseGameBoardChangedEvent();
@@ -153,10 +162,10 @@ namespace Tetris
         private void TryRotatePiece()
         {
             bool isNextRotationInValidPosition = Piece.BlocksInNextRotation.All(block =>
-                Piece.CoordsX + block.CoordsX >= 0 && // Check for collision with left side
-                Piece.CoordsX + block.CoordsX + 1 <= Cols && // Check for collision with right side
-                Piece.CoordsY + block.CoordsY + 1 <= Rows && // Check for collision with bottom
-                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check for collision with static blocks
+                Piece.CoordsX + block.CoordsX >= 0 && // Check that the rotated Piece is within the bounds in the left side
+                Piece.CoordsX + block.CoordsX + 1 <= Cols && // Check that the rotated Piece is within the bounds in the right side
+                Piece.CoordsY + block.CoordsY + 1 <= Rows && // Check that the rotated Piece is within the bounds in the bottom
+                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the static blocks
 
             if (isNextRotationInValidPosition)
             {
@@ -168,8 +177,8 @@ namespace Tetris
         private void TryMovePieceDown()
         {
             bool canMovePieceDown = Piece.Blocks.All(block =>
-                Piece.CoordsY + block.CoordsY + 1 <= Rows - 1 && // Check for collision with bottom (e.g. 15 + 3 + 1 <= 20 - 1 = true)
-                StaticBlocks[Piece.CoordsY + block.CoordsY + 1, Piece.CoordsX + block.CoordsX] == 0); // Check for collision with static blocks
+                Piece.CoordsY + block.CoordsY + 2 <= Rows && // Check that the Piece is not on the bottom row (e.g. 15 + 3 + 2 <= 20 = true)
+                StaticBlocks[Piece.CoordsY + block.CoordsY + 1, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the static blocks
 
             if (canMovePieceDown)
             {
@@ -178,7 +187,35 @@ namespace Tetris
             }
             else
             {
-                // TODO: Make current piece part of static blocks, and build a new piece in the top of the canvas
+                foreach (Block block in Piece.Blocks)
+                    StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] = (int)Piece.PieceType;
+
+                List<int> completeRowIndices = Piece.Blocks.Select(block => Piece.CoordsY + block.CoordsY).Distinct().ToList();
+
+                // Remove indices for rows that are incomplete
+                for (int row = completeRowIndices.Count - 1; row >= 0; row--)
+                {
+                    for (int col = 0; col < StaticBlocks.GetLength(1); col++)
+                    {
+                        if (StaticBlocks[completeRowIndices[row], col] == 0)
+                        {
+                            completeRowIndices.RemoveAt(row);
+                            break;
+                        }
+                    }
+                }
+
+                foreach (int row in completeRowIndices)
+                {
+                    for (int col = 0; col < StaticBlocks.GetLength(1); col++)
+                        StaticBlocks[row, col] = 6;
+                }
+
+                RaiseGameBoardChangedEvent();
+
+                // TODO: Stop drop timer until down button is pressed again?
+
+                ResetPiece();
             }
         }
     }

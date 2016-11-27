@@ -42,20 +42,20 @@ namespace Tetris
             base.OnRender(dc);
 
             // Render static blocks
-            for (int r = 0; r < _gameBoard.Rows; r++)
+            for (int row = 0; row < _gameBoard.Rows; row++)
             {
-                for (int c = 0; c < _gameBoard.Cols; c++)
+                for (int col = 0; col < _gameBoard.Cols; col++)
                 {
                     // TODO: Consider having a predefined grid with 10x20 rectangles to color
                     // TODO: Here, are many rectangles created and destroyed all the time?
                     // TODO: The GameBoardChanged EventArgs could then include how the Shape looked before (reset these rectangles) and after for repainting
-                    int blockType = _gameBoard.StaticBlocks[r, c];
+                    int blockType = _gameBoard.StaticBlocks[row, col];
 
                     if (blockType > 0)
                     {
                         Rect rect = new Rect(
-                            c * _blockSizeInPixels,
-                            r * _blockSizeInPixels,
+                            col * _blockSizeInPixels,
+                            row * _blockSizeInPixels,
                             _blockSizeInPixels, _blockSizeInPixels);
 
                         dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
@@ -71,7 +71,7 @@ namespace Tetris
                     (_gameBoard.Piece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(_blockBrushes[block.BlockType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(_blockBrushes[(int)_gameBoard.Piece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

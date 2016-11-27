@@ -33,16 +33,6 @@ namespace Tetris
             };
 
             Grid1.Children.Add(gameCanvas);
-
-            // TODO: This is just test code
-            int[,] staticBlocks = _gameBoard.StaticBlocks;
-            staticBlocks[19, 0] = 1;
-            staticBlocks[19, 1] = 2;
-            staticBlocks[19, 2] = 3;
-            staticBlocks[19, 3] = 4;
-            staticBlocks[19, 4] = 5;
-            staticBlocks[19, 5] = 6;
-            staticBlocks[19, 6] = 7;
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
