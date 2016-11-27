@@ -3,8 +3,8 @@
     internal class Piece
     {
         public PieceType PieceType { get; }
-        public int CoordsX { get; set; }
         public int CoordsY { get; set; }
+        public int CoordsX { get; set; }
         public int Rotation { get; private set; }
         public Block[] Blocks { get; private set; }
 
