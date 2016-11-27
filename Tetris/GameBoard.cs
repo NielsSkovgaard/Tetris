@@ -29,7 +29,7 @@ namespace Tetris
         private bool _leftKeyHasPriority;
 
         // TODO: Status
-        //public int Score { get; set; }
+        public int Score { get; set; }
         //public int Level { get; set; }
         //public int Lines { get; set; }
 
@@ -181,6 +181,8 @@ namespace Tetris
 
             if (canMovePieceDown)
             {
+                // TODO: Award point for moving Piece down fast
+
                 Piece.MoveDown();
                 RaiseGameBoardChangedEvent();
             }
@@ -192,32 +194,62 @@ namespace Tetris
 
                 // Build array of unique row numbers for the Piece. Any of these rows might be complete
                 // Complete rows should be removed from StaticBlocks, then points should be awarded
-                int[] uniqueRowNumbersForPiece = Piece.Blocks.Select(block => Piece.CoordsY + block.CoordsY).Distinct().ToArray();
+                int[] uniqueRowNumbersForPiece = Piece.Blocks
+                    .Select(block => Piece.CoordsY + block.CoordsY)
+                    .Distinct()
+                    .OrderByDescending(rowNumber => rowNumber)
+                    .ToArray();
 
-                for (int listIndex = uniqueRowNumbersForPiece.Length - 1; listIndex >= 0; listIndex--)
+                int numberOfCompleteRows = 0;
+
+                for (int arrayIndex = 0; arrayIndex < uniqueRowNumbersForPiece.Length; arrayIndex++)
                 {
-                    int row = uniqueRowNumbersForPiece[listIndex];
+                    int row = uniqueRowNumbersForPiece[arrayIndex];
 
                     // Only consider complete rows for removal
-                    bool rowIsComplete = Enumerable
+                    bool isRowComplete = Enumerable
                         .Range(0, StaticBlocks.GetLength(1))
                         .All(col => StaticBlocks[row, col] > 0);
 
-                    if (rowIsComplete)
+                    if (isRowComplete)
                     {
+                        numberOfCompleteRows++;
+
                         for (int col = 0; col < StaticBlocks.GetLength(1); col++)
                         {
-                            // TODO: Clear rows, award points etc.
+                            // TODO: Clear rows
                             StaticBlocks[row, col] = 6;
                         }
                     }
                 }
 
+                AwardPointsForClearingRows(numberOfCompleteRows);
                 RaiseGameBoardChangedEvent();
 
                 // TODO: Stop drop timer until down button is pressed again?
 
                 ResetPiece();
+            }
+        }
+
+        private void AwardPointsForClearingRows(int numberOfCompleteRows)
+        {
+            //TODO: Multiply by Level factor. Increment Level when having reached a certain amount of points.
+
+            switch (numberOfCompleteRows)
+            {
+                case 1:
+                    Score += 100;
+                    return;
+                case 2:
+                    Score += 100 + 200;
+                    return;
+                case 3:
+                    Score += 100 + 200 + 300;
+                    return;
+                case 4:
+                    Score += 100 + 200 + 300 + 400;
+                    return;
             }
         }
     }
