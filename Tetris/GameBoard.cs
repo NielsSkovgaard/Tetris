@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -9,8 +10,8 @@ namespace Tetris
         public event GameBoardChangedEventHandler GameBoardChanged;
 
         // Input parameters
-        public int Cols { get; } // Usually 10
         public int Rows { get; } // Usually 20
+        public int Cols { get; } // Usually 10
 
         // Static blocks and the currently moving piece
         public int[,] StaticBlocks { get; }
@@ -32,17 +33,17 @@ namespace Tetris
         //public int Level { get; set; }
         //public int Lines { get; set; }
 
-        public GameBoard(int cols, int rows)
+        public GameBoard(int rows, int cols)
         {
-            Cols = cols;
             Rows = rows;
+            Cols = cols;
 
-            StaticBlocks = new int[cols, rows];
+            StaticBlocks = new int[rows, cols];
 
             // Reset the currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             // The random number is >= 1 and < 8, i.e. in the interval 1..7
             Piece = new Piece((PieceType)_random.Next(1, 8));
-            Piece.CoordsX = (Cols - Piece.Blocks.GetLength(1)) / 2;
+            Piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(Piece.PieceType)) / 2;
 
             //Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
             _movePieceLeftRightTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
@@ -62,8 +63,6 @@ namespace Tetris
         {
             if (isRepeat)
                 return;
-
-            // TODO: Should not be possible to move left and right at the same time (gives flicker now)
 
             switch (key)
             {
@@ -133,48 +132,58 @@ namespace Tetris
                 TryMovePieceRight();
         }
 
-        // TODO: Detect collision with static blocks (then stop timer)
         private void TryMovePieceLeft()
         {
-            if (Piece.CoordsX + PieceBlockManager.GetLeftmostBlockIndex(Piece.Blocks) >= 1)
-            {
-                Piece.MoveLeft();
+            Piece.MoveLeft();
+
+            if (IsPieceInValidPosition())
                 RaiseGameBoardChangedEvent();
-            }
+            else
+                Piece.MoveRight();
         }
 
-        // TODO: Detect collision with static blocks (then stop timer)
         private void TryMovePieceRight()
         {
-            // Example with numbers:
-            // if (4 + 2 + 1 <= 10 - 1) // true, i.e. possible to move right
+            Piece.MoveRight();
 
-            if (Piece.CoordsX + PieceBlockManager.GetRightmostBlockIndex(Piece.Blocks) + 1 <= Cols - 1)
-            {
-                Piece.MoveRight();
+            if (IsPieceInValidPosition())
                 RaiseGameBoardChangedEvent();
-            }
+            else
+                Piece.MoveLeft();
         }
 
-        // TODO: Detect collision with static blocks (then stop timer)
         private void TryRotatePiece()
         {
-            int[,] blocksAfterNextRotation = PieceBlockManager.GetBlocks(Piece.PieceType, Piece.Rotation + 1);
+            Piece.Rotate();
 
-            // Check if next rotation would make the Piece collide with the walls
-            if (Piece.CoordsX + PieceBlockManager.GetLeftmostBlockIndex(blocksAfterNextRotation) >= 0 &&
-                Piece.CoordsX + PieceBlockManager.GetRightmostBlockIndex(blocksAfterNextRotation) + 1 <= Cols)
-            {
-                Piece.Rotate();
+            if (IsPieceInValidPosition())
                 RaiseGameBoardChangedEvent();
-            }
+            else
+                Piece.RotateBack();
         }
 
         private void TryMovePieceDown()
         {
-            // TODO: Detect collision with bottom or static blocks (then stop timer)
             Piece.MoveDown();
-            RaiseGameBoardChangedEvent();
+
+            if (IsPieceInValidPosition())
+            {
+                RaiseGameBoardChangedEvent();
+                // TODO: Make current piece part of static blocks, and build a new piece in the top of the canvas
+            }
+            else
+            {
+                Piece.MoveUp();
+            }
+        }
+
+        private bool IsPieceInValidPosition()
+        {
+            return Piece.Blocks.All(block =>
+                Piece.CoordsX + block.CoordsX >= 0 && // Check for collision with left side
+                Piece.CoordsX + block.CoordsX + 1 <= Cols && // Check for collision with right side
+                Piece.CoordsY + block.CoordsY + 1 <= Rows && // Check for collision with bottom
+                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check for collision with static blocks
         }
     }
 }

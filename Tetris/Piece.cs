@@ -6,7 +6,7 @@
         public int CoordsX { get; set; }
         public int CoordsY { get; set; }
         public int Rotation { get; private set; }
-        public int[,] Blocks { get; private set; }
+        public Block[] Blocks { get; private set; }
 
         public Piece(PieceType pieceType)
         {
@@ -30,9 +30,20 @@
             UpdateCurrentBlocks();
         }
 
+        public void RotateBack()
+        {
+            Rotation--;
+            UpdateCurrentBlocks();
+        }
+
         public void MoveDown()
         {
             CoordsY++;
+        }
+
+        public void MoveUp()
+        {
+            CoordsY--;
         }
 
         private void UpdateCurrentBlocks()

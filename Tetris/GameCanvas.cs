@@ -48,7 +48,8 @@ namespace Tetris
                 {
                     // TODO: Consider having a predefined grid with 10x20 rectangles to color
                     // TODO: Here, are many rectangles created and destroyed all the time?
-                    int blockType = _gameBoard.StaticBlocks[c, r];
+                    // TODO: The GameBoardChanged EventArgs could then include how the Shape looked before (reset these rectangles) and after for repainting
+                    int blockType = _gameBoard.StaticBlocks[r, c];
 
                     if (blockType > 0)
                     {
@@ -63,26 +64,14 @@ namespace Tetris
             }
 
             // Render currently moving piece
-            int[,] currentPieceBlocks = _gameBoard.Piece.Blocks;
-            int rows = currentPieceBlocks.GetLength(0); // 3 or 4
-            int cols = currentPieceBlocks.GetLength(1); // 3 or 4
-
-            for (int r = 0; r < rows; r++)
+            foreach (Block block in _gameBoard.Piece.Blocks)
             {
-                for (int c = 0; c < cols; c++)
-                {
-                    int blockType = currentPieceBlocks[r, c];
+                Rect rect = new Rect(
+                    (_gameBoard.Piece.CoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (_gameBoard.Piece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    _blockSizeInPixels, _blockSizeInPixels);
 
-                    if (blockType > 0)
-                    {
-                        Rect rect = new Rect(
-                            (_gameBoard.Piece.CoordsX + c) * _blockSizeInPixels,
-                            (_gameBoard.Piece.CoordsY + r) * _blockSizeInPixels,
-                            _blockSizeInPixels, _blockSizeInPixels);
-
-                        dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
-                    }
-                }
+                dc.DrawRectangle(_blockBrushes[block.BlockType - 1], _blockBorderPen, rect);
             }
         }
     }

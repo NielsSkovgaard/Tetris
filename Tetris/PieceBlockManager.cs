@@ -1,54 +1,31 @@
-using System;
-
 namespace Tetris
 {
     internal static class PieceBlockManager
     {
-        private static int[][][,] _pieceTypeBlockRotations;
+        private static int[][][,] _blocksBeforeOptimization;
+        private static Block[][][] _optimizedBlocks;
+        private const int NumberOfBlocksPerPiece = 4;
 
         static PieceBlockManager()
         {
-            BuildPieceTypeBlockRotations();
+            BuildBlocksBeforeOptimization();
+            BuildOptimizedBlocks();
         }
 
-        public static int[,] GetBlocks(PieceType pieceType, int rotation)
+        public static Block[] GetBlocks(PieceType pieceType, int rotation)
         {
-            int[][,] blocksForAllRotations = _pieceTypeBlockRotations[(int)pieceType - 1];
-            int[,] blocks = blocksForAllRotations[rotation % blocksForAllRotations.Length];
-            return blocks;
+            Block[][] blocksForAllRotations = _optimizedBlocks[(int)pieceType - 1];
+            return blocksForAllRotations[rotation % blocksForAllRotations.Length];
         }
 
-        public static int GetLeftmostBlockIndex(int[,] blocks)
+        public static int GetWidthOfBlockArray(PieceType pieceType)
         {
-            // The rows and cols of the blocks of a piece
-            int rows = blocks.GetLength(0); // 3 or 4
-            int cols = blocks.GetLength(1); // 3 or 4
-
-            for (int c = 0; c < cols; c++)
-                for (int r = 0; r < rows; r++)
-                    if (blocks[r, c] > 0)
-                        return c;
-
-            throw new InvalidOperationException();
+            return _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(1);
         }
 
-        public static int GetRightmostBlockIndex(int[,] blocks)
+        private static void BuildBlocksBeforeOptimization()
         {
-            // The rows and cols of the blocks of a piece
-            int rows = blocks.GetLength(0); // 3 or 4
-            int cols = blocks.GetLength(1); // 3 or 4
-
-            for (int c = cols - 1; c >= 0; c--)
-                for (int r = 0; r < rows; r++)
-                    if (blocks[r, c] > 0)
-                        return c;
-
-            throw new InvalidOperationException();
-        }
-
-        private static void BuildPieceTypeBlockRotations()
-        {
-            _pieceTypeBlockRotations = new[]
+            _blocksBeforeOptimization = new[]
             {
                 new[] // PieceType.I (array index 0)
                 {
@@ -97,6 +74,36 @@ namespace Tetris
                     new[,] {{0,7,0}, {7,7,0}, {7,0,0}}
                 }
             };
+        }
+
+        private static void BuildOptimizedBlocks()
+        {
+            _optimizedBlocks = new Block[_blocksBeforeOptimization.Length][][];
+
+            for (int pieceType = 0; pieceType < _blocksBeforeOptimization.Length; pieceType++)
+            {
+                _optimizedBlocks[pieceType] = new Block[_blocksBeforeOptimization[pieceType].Length][];
+
+                for (int rotation = 0; rotation < _blocksBeforeOptimization[pieceType].Length; rotation++)
+                {
+                    _optimizedBlocks[pieceType][rotation] = new Block[NumberOfBlocksPerPiece];
+                    int index = 0;
+
+                    for (int row = 0; row < _blocksBeforeOptimization[pieceType][rotation].GetLength(0); row++)
+                    {
+                        for (int col = 0; col < _blocksBeforeOptimization[pieceType][rotation].GetLength(1); col++)
+                        {
+                            int blockType = _blocksBeforeOptimization[pieceType][rotation][row, col];
+
+                            if (blockType > 0)
+                            {
+                                _optimizedBlocks[pieceType][rotation][index] = new Block(row, col, blockType);
+                                index++;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

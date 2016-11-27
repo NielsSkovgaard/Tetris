@@ -10,10 +10,10 @@ namespace Tetris.Tests
         {
             // Arrange
             Piece piece = new Piece(PieceType.I);
-            int[,] expected = {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}};
+            Block[] expected = { new Block(1, 0, 1), new Block(1, 1, 1), new Block(1, 2, 1), new Block(1, 3, 1) };
 
             // Act
-            int[,] actual = piece.Blocks;
+            Block[] actual = piece.Blocks;
 
             // Assert
             CollectionAssert.AreEqual(expected, actual);
