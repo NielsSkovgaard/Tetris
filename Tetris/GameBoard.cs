@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -187,28 +186,31 @@ namespace Tetris
             }
             else
             {
+                // Add all Piece blocks to the StaticBlocks array
                 foreach (Block block in Piece.Blocks)
                     StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] = (int)Piece.PieceType;
 
-                List<int> completeRowIndices = Piece.Blocks.Select(block => Piece.CoordsY + block.CoordsY).Distinct().ToList();
+                // Build array of unique row numbers for the Piece. Any of these rows might be complete
+                // Complete rows should be removed from StaticBlocks, then points should be awarded
+                int[] uniqueRowNumbersForPiece = Piece.Blocks.Select(block => Piece.CoordsY + block.CoordsY).Distinct().ToArray();
 
-                // Remove indices for rows that are incomplete
-                for (int row = completeRowIndices.Count - 1; row >= 0; row--)
+                for (int listIndex = uniqueRowNumbersForPiece.Length - 1; listIndex >= 0; listIndex--)
                 {
-                    for (int col = 0; col < StaticBlocks.GetLength(1); col++)
+                    int row = uniqueRowNumbersForPiece[listIndex];
+
+                    // Only consider complete rows for removal
+                    bool rowIsComplete = Enumerable
+                        .Range(0, StaticBlocks.GetLength(1))
+                        .All(col => StaticBlocks[row, col] > 0);
+
+                    if (rowIsComplete)
                     {
-                        if (StaticBlocks[completeRowIndices[row], col] == 0)
+                        for (int col = 0; col < StaticBlocks.GetLength(1); col++)
                         {
-                            completeRowIndices.RemoveAt(row);
-                            break;
+                            // TODO: Clear rows, award points etc.
+                            StaticBlocks[row, col] = 6;
                         }
                     }
-                }
-
-                foreach (int row in completeRowIndices)
-                {
-                    for (int col = 0; col < StaticBlocks.GetLength(1); col++)
-                        StaticBlocks[row, col] = 6;
                 }
 
                 RaiseGameBoardChangedEvent();
