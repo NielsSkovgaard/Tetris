@@ -134,56 +134,52 @@ namespace Tetris
 
         private void TryMovePieceLeft()
         {
-            Piece.MoveLeft();
-
-            if (IsPieceInValidPosition())
+            if (Piece.Blocks.All(block => Piece.CoordsX + block.CoordsX >= 1))
+            {
+                Piece.MoveLeft();
                 RaiseGameBoardChangedEvent();
-            else
-                Piece.MoveRight();
+            }
         }
 
         private void TryMovePieceRight()
         {
-            Piece.MoveRight();
-
-            if (IsPieceInValidPosition())
+            if (Piece.Blocks.All(block => Piece.CoordsX + block.CoordsX + 2 <= Cols))
+            {
+                Piece.MoveRight();
                 RaiseGameBoardChangedEvent();
-            else
-                Piece.MoveLeft();
+            }
         }
 
         private void TryRotatePiece()
         {
-            Piece.Rotate();
-
-            if (IsPieceInValidPosition())
-                RaiseGameBoardChangedEvent();
-            else
-                Piece.RotateBack();
-        }
-
-        private void TryMovePieceDown()
-        {
-            Piece.MoveDown();
-
-            if (IsPieceInValidPosition())
-            {
-                RaiseGameBoardChangedEvent();
-                // TODO: Make current piece part of static blocks, and build a new piece in the top of the canvas
-            }
-            else
-            {
-                Piece.MoveUp();
-            }
-        }
-
-        private bool IsPieceInValidPosition()
-        {
-            return Piece.Blocks.All(block =>
+            bool isNextRotationInValidPosition = Piece.BlocksInNextRotation.All(block =>
                 Piece.CoordsX + block.CoordsX >= 0 && // Check for collision with left side
                 Piece.CoordsX + block.CoordsX + 1 <= Cols && // Check for collision with right side
                 Piece.CoordsY + block.CoordsY + 1 <= Rows && // Check for collision with bottom
                 StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check for collision with static blocks
+
+            if (isNextRotationInValidPosition)
+            {
+                Piece.Rotate();
+                RaiseGameBoardChangedEvent();
+            }
+        }
+
+        private void TryMovePieceDown()
+        {
+            bool canMovePieceDown = Piece.Blocks.All(block =>
+                Piece.CoordsY + block.CoordsY + 1 <= Rows - 1 && // Check for collision with bottom (e.g. 15 + 3 + 1 <= 20 - 1 = true)
+                StaticBlocks[Piece.CoordsY + block.CoordsY + 1, Piece.CoordsX + block.CoordsX] == 0); // Check for collision with static blocks
+
+            if (canMovePieceDown)
+            {
+                Piece.MoveDown();
+                RaiseGameBoardChangedEvent();
+            }
+            else
+            {
+                // TODO: Make current piece part of static blocks, and build a new piece in the top of the canvas
+            }
         }
     }
 }

@@ -14,15 +14,9 @@
             UpdateCurrentBlocks();
         }
 
-        public void MoveLeft()
-        {
-            CoordsX--;
-        }
-
-        public void MoveRight()
-        {
-            CoordsX++;
-        }
+        public void MoveLeft() => CoordsX--;
+        public void MoveRight() => CoordsX++;
+        public void MoveDown() => CoordsY++;
 
         public void Rotate()
         {
@@ -30,25 +24,7 @@
             UpdateCurrentBlocks();
         }
 
-        public void RotateBack()
-        {
-            Rotation--;
-            UpdateCurrentBlocks();
-        }
-
-        public void MoveDown()
-        {
-            CoordsY++;
-        }
-
-        public void MoveUp()
-        {
-            CoordsY--;
-        }
-
-        private void UpdateCurrentBlocks()
-        {
-            Blocks = PieceBlockManager.GetBlocks(PieceType, Rotation);
-        }
+        private void UpdateCurrentBlocks() => Blocks = PieceBlockManager.GetBlocks(PieceType, Rotation);
+        public Block[] BlocksInNextRotation => PieceBlockManager.GetBlocks(PieceType, Rotation + 1);
     }
 }
