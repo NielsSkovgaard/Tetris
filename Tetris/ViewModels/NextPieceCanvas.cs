@@ -9,17 +9,17 @@ namespace Tetris.ViewModels
     internal class NextPieceCanvas : Canvas
     {
         private readonly GameBoard _gameBoard;
-        private readonly int _blockSizeInPixels; // Usually 25px
-        private readonly int _nextPieceRows;
-        private readonly int _nextPieceCols;
+        private readonly int _blockSizeInPixels; // Usually 20px
+        private readonly int _rows; // Usually 6
+        private readonly int _cols; // Usually 6
 
         // Dependency injection of GameBoard into NextPieceCanvas
-        public NextPieceCanvas(GameBoard gameBoard, int blockSizeInPixels, int nextPieceRows, int nextPieceCols)
+        public NextPieceCanvas(GameBoard gameBoard, int blockSizeInPixels, int rows, int cols)
         {
             _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
-            _nextPieceRows = nextPieceRows;
-            _nextPieceCols = nextPieceCols;
+            _rows = rows;
+            _cols = cols;
 
             _gameBoard.GameBoardNextPieceChanged += GameBoard_GameBoardNextPieceChanged;
         }
@@ -35,10 +35,11 @@ namespace Tetris.ViewModels
         {
             base.OnRender(dc);
 
-            double nextPieceCoordsY = (_nextPieceRows - PieceBlockManager.GetHeightOfBlockArray(_gameBoard.NextPiece.PieceType)) / 2d;
-            double nextPieceCoordsX = (_nextPieceCols - PieceBlockManager.GetWidthOfBlockArray(_gameBoard.NextPiece.PieceType)) / 2d;
+            // Calculate NextPiece coordinates on the NextPieceCanvas
+            // Because the _gameBoard.NextPiece.CoordsY and CoordsX coordinates are only used on the GameCanvas
+            double nextPieceCoordsY = (_rows - PieceBlockManager.GetHeightOfBlockArray(_gameBoard.NextPiece.PieceType)) / 2d;
+            double nextPieceCoordsX = (_cols - PieceBlockManager.GetWidthOfBlockArray(_gameBoard.NextPiece.PieceType)) / 2d;
 
-            // Render the currently moving Piece
             foreach (Block block in _gameBoard.NextPiece.Blocks)
             {
                 Rect rect = new Rect(
