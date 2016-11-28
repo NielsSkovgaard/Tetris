@@ -1,4 +1,4 @@
-﻿namespace Tetris.Model
+﻿namespace Tetris.Models
 {
     internal class HighScoreEntry
     {

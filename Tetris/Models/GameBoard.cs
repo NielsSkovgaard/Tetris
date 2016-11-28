@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Tetris.Model
+namespace Tetris.Models
 {
     internal class GameBoard
     {
@@ -278,7 +278,7 @@ namespace Tetris.Model
 
         private void AwardPointsForClearingRows(int numberOfCompleteRows)
         {
-            //TODO: Multiply by Level factor. Increment Level when having reached a certain amount of points.
+            //TODO: Multiply by Level factor. Increment Level when reacheding a certain amount of points
 
             if (numberOfCompleteRows > 0)
             {

@@ -1,10 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Tetris.Model;
-using Tetris.View;
+using Tetris.Models;
+using Tetris.ViewModels;
 
-namespace Tetris
+namespace Tetris.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

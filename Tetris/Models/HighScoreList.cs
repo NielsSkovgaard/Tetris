@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Tetris.Model
+namespace Tetris.Models
 {
     internal class HighScoreList
     {

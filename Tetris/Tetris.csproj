@@ -55,20 +55,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\Block.cs" />
-    <Compile Include="Model\GameBoard.cs" />
-    <Compile Include="Model\HighScoreListChangedEventHandler.cs" />
-    <Compile Include="Model\GameBoardStatusChangedEventHandler.cs" />
-    <Compile Include="Model\GameBoardNextPieceChangedEventHandler.cs" />
-    <Compile Include="View\GameCanvas.cs" />
-    <Compile Include="Model\GameBoardChangedEventHandler.cs" />
-    <Compile Include="View\GraphicsConstants.cs" />
-    <Compile Include="Model\HighScoreEntry.cs" />
-    <Compile Include="Model\HighScoreList.cs" />
-    <Compile Include="View\StatusCanvas.cs" />
-    <Compile Include="View\NextPieceCanvas.cs" />
-    <Compile Include="Model\Piece.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Models\Block.cs" />
+    <Compile Include="Models\GameBoard.cs" />
+    <Compile Include="Models\HighScoreListChangedEventHandler.cs" />
+    <Compile Include="Models\GameBoardStatusChangedEventHandler.cs" />
+    <Compile Include="Models\GameBoardNextPieceChangedEventHandler.cs" />
+    <Compile Include="ViewModels\GameCanvas.cs" />
+    <Compile Include="Models\GameBoardChangedEventHandler.cs" />
+    <Compile Include="ViewModels\GraphicsConstants.cs" />
+    <Compile Include="Models\HighScoreEntry.cs" />
+    <Compile Include="Models\HighScoreList.cs" />
+    <Compile Include="ViewModels\StatusCanvas.cs" />
+    <Compile Include="ViewModels\NextPieceCanvas.cs" />
+    <Compile Include="Models\Piece.cs" />
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -76,14 +76,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\PieceBlockManager.cs" />
-    <Compile Include="Model\PieceType.cs" />
+    <Compile Include="Models\PieceBlockManager.cs" />
+    <Compile Include="Models\PieceType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Tetris.Model;
+using Tetris.Models;
 
-namespace Tetris.Tests
+namespace Tetris.Tests.Models
 {
     [TestClass]
     public class PieceTests

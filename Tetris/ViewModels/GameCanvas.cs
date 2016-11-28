@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Tetris.Model;
+using Tetris.Models;
 
-namespace Tetris.View
+namespace Tetris.ViewModels
 {
     internal class GameCanvas : Canvas
     {

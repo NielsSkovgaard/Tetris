@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tetris.Model
+namespace Tetris.Models
 {
     internal delegate void HighScoreListChangedEventHandler(object sender, EventArgs e);
 }

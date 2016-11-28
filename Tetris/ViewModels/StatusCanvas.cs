@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Tetris.Model;
+using Tetris.Models;
 
-namespace Tetris.View
+namespace Tetris.ViewModels
 {
     internal class StatusCanvas : Canvas
     {
