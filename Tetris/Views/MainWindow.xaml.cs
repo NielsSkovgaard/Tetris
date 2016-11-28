@@ -98,3 +98,13 @@ namespace Tetris.Views
 // TODO: Consider having extra space in top of rows for new piece, and a line showing the border above which the Piece will give Game Over
 // TODO: Correct y positioning of Piece in the top of the game board
 // TODO: Stop all timers on game over
+
+// Standard rules: https://www.reddit.com/r/Tetris/comments/3jnsjy/best_versions_for_marathon_mode/
+// 15 levels of increasing difficulty
+// Each level requires to clear 10 lines to progress
+// Scoring system:
+// - Single = 100 points, Double = 300 points, Triple = 500 points, Tetris = 800 points
+// - T-Single = 800 points, T-Double = 1200 points, T-Triple = 1600 points // TODO: Not implemented
+// 50% Back-to-Back bonus & line clear points are multiplied by the current level
+// 1 point per soft dropped row
+// 2 points per hard dropped row // TODO: Not implemented

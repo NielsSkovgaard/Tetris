@@ -31,7 +31,7 @@ namespace Tetris.ViewModels
         {
             base.OnRender(dc);
 
-            // Render the static blocks
+            // Render the LockedBlocks array
             for (int row = 0; row < _gameBoard.Rows; row++)
             {
                 for (int col = 0; col < _gameBoard.Cols; col++)
@@ -39,7 +39,7 @@ namespace Tetris.ViewModels
                     // TODO: Consider having a predefined grid with 10x20 rectangles to color
                     // TODO: Here, are many rectangles created and destroyed all the time?
                     // TODO: The GameBoardChanged EventArgs could then include how the Shape looked before (reset these rectangles) and after for repainting
-                    int blockType = _gameBoard.StaticBlocks[row, col];
+                    int blockType = _gameBoard.LockedBlocks[row, col];
 
                     if (blockType != 0)
                     {

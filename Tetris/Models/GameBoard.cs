@@ -16,15 +16,15 @@ namespace Tetris.Models
         public int Rows { get; } // Usually 20
         public int Cols { get; } // Usually 10
 
-        // Static blocks, the currently moving Piece, and the next Piece
-        public int[,] StaticBlocks { get; }
+        // LockedBlocks, the currently moving Piece, and the next Piece
+        public int[,] LockedBlocks { get; }
         public Piece Piece { get; private set; }
         public Piece NextPiece { get; private set; }
 
         private readonly Random _random = new Random();
 
         // TimeSpans and Timers:
-        // - for holding down a key to repeat a command (move left/right or rotate) every x ticks
+        // - for holding down a key to repeat a command (move left/right or rotate) every x milliseconds
         private readonly TimeSpan _timeSpanMovePieceLeftOrRight = TimeSpan.FromMilliseconds(100); // 100 ms = 10 FPS
         private readonly TimeSpan _timeSpanRotatePiece = TimeSpan.FromMilliseconds(250); // 250 ms = 4 FPS
         private readonly DispatcherTimer _timerMovePieceLeftOrRight = new DispatcherTimer();
@@ -39,21 +39,30 @@ namespace Tetris.Models
         private readonly TimeSpan _timeSpanSecondsGameHasBeenRunning = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
         private readonly DispatcherTimer _timerSecondsGameHasBeenRunning = new DispatcherTimer();
 
+        // Handle that _timerMovePieceLeftOrRight runs when moving left or right; otherwise, it should be stopped
         private bool _isLeftKeyDown;
         private bool _isRightKeyDown;
+
+        // Priority horizontal direction when moving left and right at the same time
         private bool _leftKeyHasPriority;
 
-        public int Level { get; set; } = 1;
-        public int Score { get; set; }
-        public int Lines { get; set; }
-        public int Time { get; set; }
+        // Level, Score, Lines, Time
+        public int Level { get; private set; } // Between 0 and 15
+        public int Score { get; private set; }
+        public int Lines { get; private set; }
+        public int Time { get; private set; }
+        private const int MaximumLevel = 15;
+        private const int NumberOfRowsToIncreaseLevel = 10;
+        private readonly int[] _scoresToAddForCompletingRows = { 100, 300, 500, 800 };
+        private readonly int[] _levelSpeedsInFramesPerRow = { 48, 24, 18, 15, 12, 10, 8, 6, 4, 2, 10, 8, 6, 4, 2, 1 }; // See http://harddrop.com/wiki/Tetris_(Sega)
+        private bool _isSoftDropping;
 
         public GameBoard(int rows, int cols)
         {
             Rows = rows;
             Cols = cols;
 
-            StaticBlocks = new int[rows, cols];
+            LockedBlocks = new int[rows, cols];
             Piece = BuildRandomPiece();
             NextPiece = BuildRandomPiece();
 
@@ -124,6 +133,7 @@ namespace Tetris.Models
                     break;
                 case Key.Down:
                 case Key.S:
+                    _isSoftDropping = true;
                     TryMovePieceDown();
                     _timerMovePieceDown.Interval = _timeSpanMovePieceDownSoftDrop;
                     break;
@@ -156,6 +166,7 @@ namespace Tetris.Models
                     break;
                 case Key.Down:
                 case Key.S:
+                    _isSoftDropping = false;
                     _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
                     break;
             }
@@ -173,7 +184,7 @@ namespace Tetris.Models
         {
             if (Piece.Blocks.All(block =>
                 Piece.CoordsX + block.CoordsX >= 1 && // Check that the Piece is not up against the left side
-                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX - 1] == 0)) // Check that the Piece won't collide with the static blocks
+                LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX - 1] == 0)) // Check that the Piece won't collide with the locked blocks
             {
                 Piece.MoveLeft();
                 RaiseGameBoardChangedEvent();
@@ -184,7 +195,7 @@ namespace Tetris.Models
         {
             if (Piece.Blocks.All(block =>
                 Piece.CoordsX + block.CoordsX + 2 <= Cols && // Check that the Piece is not up against the right side
-                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX + 1] == 0)) // Check that the Piece won't collide with the static blocks
+                LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX + 1] == 0)) // Check that the Piece won't collide with the locked blocks
             {
                 Piece.MoveRight();
                 RaiseGameBoardChangedEvent();
@@ -197,7 +208,7 @@ namespace Tetris.Models
                 Piece.CoordsX + block.CoordsX >= 0 && // Check that the rotated Piece is within the bounds in the left side
                 Piece.CoordsX + block.CoordsX + 1 <= Cols && // Check that the rotated Piece is within the bounds in the right side
                 Piece.CoordsY + block.CoordsY + 1 <= Rows && // Check that the rotated Piece is within the bounds in the bottom
-                StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the static blocks
+                LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the locked blocks
 
             if (isNextRotationInValidPosition)
             {
@@ -210,36 +221,36 @@ namespace Tetris.Models
         {
             bool canMovePieceDown = Piece.Blocks.All(block =>
                 Piece.CoordsY + block.CoordsY + 2 <= Rows && // Check that the Piece is not on the bottom row (e.g. 15 + 3 + 2 <= 20 = true)
-                StaticBlocks[Piece.CoordsY + block.CoordsY + 1, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the static blocks
+                LockedBlocks[Piece.CoordsY + block.CoordsY + 1, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the locked blocks
 
             if (canMovePieceDown)
             {
-                // TODO: Award points for moving Piece down fast
+                if (_isSoftDropping)
+                {
+                    // Award points for soft dropping the Piece
+                    Score++;
+                    RaiseGameBoardStatusChangedEvent();
+                }
 
                 Piece.MoveDown();
                 RaiseGameBoardChangedEvent();
             }
             else
             {
-                // Add all Piece blocks to the StaticBlocks array
+                // Add all Piece blocks to the LockedBlocks array
                 foreach (Block block in Piece.Blocks)
-                    StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] = (int)Piece.PieceType;
+                    LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] = (int)Piece.PieceType;
 
                 // Build HashSet of row numbers occupied by the Piece and that are complete
-                // Complete rows should be removed from the StaticBlocks array, and then points should be awarded
+                // Complete rows should be removed from the LockedBlocks array, and then points should be awarded
                 HashSet<int> rowsOccupiedByPieceAndAreComplete = new HashSet<int>(
                     Piece.Blocks
                     .Select(block => Piece.CoordsY + block.CoordsY)
                     .Where(row => Enumerable
                         .Range(0, Cols)
-                        .All(col => StaticBlocks[row, col] != 0)));
+                        .All(col => LockedBlocks[row, col] != 0)));
 
-                // TODO: Raise event for explosion animation (not must-have, only nice-to-have)
-                //foreach (int row in rowsOccupiedByPieceAndAreComplete)
-                //{
-                //}
-
-                // When a row is complete, rows above it should be moved down (in the StaticBlocks array)
+                // When a row is complete, rows above it should be moved down (in the LockedBlocks array)
                 int completeRowsBelowAndIncludingCurrentRow = 0;
 
                 for (int row = Rows - 1; row >= 0; row--)
@@ -253,7 +264,7 @@ namespace Tetris.Models
                     if (row != Rows - 1 && !isRowComplete)
                     {
                         for (int col = 0; col < Cols; col++)
-                            StaticBlocks[row + completeRowsBelowAndIncludingCurrentRow, col] = StaticBlocks[row, col];
+                            LockedBlocks[row + completeRowsBelowAndIncludingCurrentRow, col] = LockedBlocks[row, col];
                     }
                 }
 
@@ -261,43 +272,35 @@ namespace Tetris.Models
                 for (int row = 0; row < rowsOccupiedByPieceAndAreComplete.Count; row++)
                 {
                     for (int col = 0; col < Cols; col++)
-                        StaticBlocks[row, col] = 0;
+                        LockedBlocks[row, col] = 0;
                 }
 
-                AwardPointsForClearingRows(rowsOccupiedByPieceAndAreComplete.Count);
-                RaiseGameBoardChangedEvent();
+                UpdateLevelScoreAndLines(rowsOccupiedByPieceAndAreComplete.Count);
 
-                // TODO: Stop soft dropping until down button is pressed again? In order to not repeatedly take pieces down fast (and maybe calculate a weird drop distance and score)
-
-                // Update the Piece to refer to NextPiece, and then build a new NextPiece
+                // Update the Piece to refer to NextPiece. Then build a new NextPiece
                 Piece = NextPiece;
                 NextPiece = BuildRandomPiece();
+
+                RaiseGameBoardChangedEvent();
                 RaiseGameBoardNextPieceChangedEvent();
             }
         }
 
-        private void AwardPointsForClearingRows(int numberOfCompleteRows)
+        private void UpdateLevelScoreAndLines(int numberOfCompleteRows)
         {
-            //TODO: Multiply by Level factor. Increment Level when reacheding a certain amount of points
-
             if (numberOfCompleteRows > 0)
             {
                 Lines += numberOfCompleteRows;
+                Score += _scoresToAddForCompletingRows[numberOfCompleteRows - 1];
 
-                switch (numberOfCompleteRows)
+                if (Level < MaximumLevel)
                 {
-                    case 1:
-                        Score += 100;
-                        break;
-                    case 2:
-                        Score += 100 + 200;
-                        break;
-                    case 3:
-                        Score += 100 + 200 + 300;
-                        break;
-                    case 4:
-                        Score += 100 + 200 + 300 + 400;
-                        break;
+                    int newLevel = Lines / NumberOfRowsToIncreaseLevel;
+                    if (newLevel > Level)
+                    {
+                        Level = newLevel;
+                        // TODO: Make the gravity Timer tick faster
+                    }
                 }
 
                 RaiseGameBoardStatusChangedEvent();
