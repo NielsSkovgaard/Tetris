@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tetris"
         mc:Ignorable="d"
-        Title="Tetris" Height="560" Width="417" ResizeMode="NoResize" KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp">
+        Title="Tetris" ResizeMode="NoResize" MinWidth="300" SizeToContent="WidthAndHeight" KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp">
     <Grid Background="LightGray" x:Name="Grid1">
     </Grid>
 </Window>
