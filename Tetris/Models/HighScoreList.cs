@@ -7,7 +7,7 @@ namespace Tetris.Models
 {
     internal class HighScoreList
     {
-        public event HighScoreListChangedEventHandler HighScoreListChanged;
+        public event EventHandler HighScoreListChanged;
 
         private const int NumberOfHighScores = 5;
 

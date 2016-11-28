@@ -8,9 +8,9 @@ namespace Tetris.Models
 {
     internal class GameBoard
     {
-        public event GameBoardChangedEventHandler GameBoardChanged;
-        public event GameBoardNextPieceChangedEventHandler GameBoardNextPieceChanged;
-        public event GameBoardStatusChangedEventHandler GameBoardStatusChanged;
+        public event EventHandler GameBoardChanged;
+        public event EventHandler GameBoardNextPieceChanged;
+        public event EventHandler GameBoardStatusChanged;
 
         // Input parameters
         public int Rows { get; } // Usually 20

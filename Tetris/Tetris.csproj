@@ -57,11 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Block.cs" />
     <Compile Include="Models\GameBoard.cs" />
-    <Compile Include="Models\HighScoreListChangedEventHandler.cs" />
-    <Compile Include="Models\GameBoardStatusChangedEventHandler.cs" />
-    <Compile Include="Models\GameBoardNextPieceChangedEventHandler.cs" />
     <Compile Include="ViewModels\GameCanvas.cs" />
-    <Compile Include="Models\GameBoardChangedEventHandler.cs" />
     <Compile Include="ViewModels\GraphicsConstants.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
