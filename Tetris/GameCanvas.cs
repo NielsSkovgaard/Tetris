@@ -10,23 +10,12 @@ namespace Tetris
         private readonly GameBoard _gameBoard;
         private readonly int _blockSizeInPixels; // Usually 25px
 
-        // Graphics
-        private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.DarkGray };
-        private readonly SolidColorBrush[] _blockBrushes = {
-            Brushes.Cyan,
-            Brushes.Yellow,
-            Brushes.Purple,
-            Brushes.Blue,
-            Brushes.Orange,
-            Brushes.Green,
-            Brushes.Red
-        };
-
         // Dependency injection of GameBoard into GameCanvas
         public GameCanvas(GameBoard gameBoard, int blockSizeInPixels)
         {
             _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
+
             _gameBoard.GameBoardChanged += GameBoard_GameBoardChanged;
         }
 
@@ -41,7 +30,7 @@ namespace Tetris
         {
             base.OnRender(dc);
 
-            // Render static blocks
+            // Render the static blocks
             for (int row = 0; row < _gameBoard.Rows; row++)
             {
                 for (int col = 0; col < _gameBoard.Cols; col++)
@@ -58,12 +47,12 @@ namespace Tetris
                             row * _blockSizeInPixels,
                             _blockSizeInPixels, _blockSizeInPixels);
 
-                        dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(GraphicsConstants.BlockBrushes[blockType - 1], GraphicsConstants.BlockBorderPen, rect);
                     }
                 }
             }
 
-            // Render currently moving piece
+            // Render the currently moving Piece
             foreach (Block block in _gameBoard.Piece.Blocks)
             {
                 Rect rect = new Rect(
@@ -71,7 +60,7 @@ namespace Tetris
                     (_gameBoard.Piece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(_blockBrushes[(int)_gameBoard.Piece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.Piece.PieceType - 1], GraphicsConstants.BlockBorderPen, rect);
             }
         }
     }

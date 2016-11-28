@@ -9,10 +9,14 @@ namespace Tetris
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Input parameters
+        // Input parameters
         private const int Rows = 20;
         private const int Cols = 10;
         private const int BlockSizeInPixels = 25;
+
+        private const int NextPieceRows = 6;
+        private const int NextPieceCols = 6;
+        private const int NextPieceBlockSizeInPixels = 20;
 
         private readonly GameBoard _gameBoard = new GameBoard(Rows, Cols);
 
@@ -20,18 +24,30 @@ namespace Tetris
         {
             InitializeComponent();
 
-            //Dependency injection of GameBoard into GameCanvas
+            // Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
             {
                 Height = Rows * BlockSizeInPixels, // Usually 500px
                 Width = Cols * BlockSizeInPixels, // Usually 250px
-                Margin = new Thickness(10), // TODO: Before: "10,10,234,61"
+                Margin = new Thickness(10),
+                Background = Brushes.Black,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            // Dependency injection of GameBoard into NextPieceCanvas
+            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(_gameBoard, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols)
+            {
+                Height = NextPieceRows * NextPieceBlockSizeInPixels, // Usually 120px
+                Width = NextPieceCols * NextPieceBlockSizeInPixels, // Usually 120px
+                Margin = new Thickness(gameCanvas.Width + 20, 10, 10, 10),
                 Background = Brushes.Black,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
 
             Grid1.Children.Add(gameCanvas);
+            Grid1.Children.Add(nextPieceCanvas);
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)

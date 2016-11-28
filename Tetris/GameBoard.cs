@@ -9,14 +9,16 @@ namespace Tetris
     internal class GameBoard
     {
         public event GameBoardChangedEventHandler GameBoardChanged;
+        public event GameBoardNextPieceChangedEventHandler GameBoardNextPieceChanged;
 
         // Input parameters
         public int Rows { get; } // Usually 20
         public int Cols { get; } // Usually 10
 
-        // Static blocks and the currently moving piece
+        // Static blocks, the currently moving Piece, and the next Piece
         public int[,] StaticBlocks { get; }
         public Piece Piece { get; private set; }
+        public Piece NextPiece { get; private set; }
 
         private readonly Random _random = new Random();
 
@@ -46,7 +48,8 @@ namespace Tetris
             Cols = cols;
 
             StaticBlocks = new int[rows, cols];
-            ResetPiece();
+            Piece = BuildRandomPiece();
+            NextPiece = BuildRandomPiece();
 
             // Timers
             _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
@@ -59,17 +62,24 @@ namespace Tetris
             _timerMovePieceDown.Start();
         }
 
-        private void ResetPiece()
+        private Piece BuildRandomPiece()
         {
-            // Reset the currently moving piece (randomly selected, and positioned in the top middle of the canvas)
             // The random number is >= 1 and < 8, i.e. in the interval 1..7
-            Piece = new Piece((PieceType)_random.Next(1, 8));
-            Piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(Piece.PieceType)) / 2;
+            Piece piece = new Piece((PieceType)_random.Next(1, 8));
+
+            // Position the Piece in the top middle of the canvas
+            piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(piece.PieceType)) / 2;
+            return piece;
         }
 
         protected virtual void RaiseGameBoardChangedEvent()
         {
             GameBoardChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void RaiseGameBoardNextPieceChangedEvent()
+        {
+            GameBoardNextPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -243,9 +253,12 @@ namespace Tetris
                 AwardPointsForClearingRows(rowsOccupiedByPieceAndAreComplete.Count);
                 RaiseGameBoardChangedEvent();
 
-                // TODO: Stop drop timer until down button is pressed again?
+                // TODO: Stop fast droppig until down button is pressed again? In order to not repeatedly take pieces down fast (and maybe calculate a weird drop distance and score)
 
-                ResetPiece();
+                // Update the Piece to refer to NextPiece, and then build a new NextPiece
+                Piece = NextPiece;
+                NextPiece = BuildRandomPiece();
+                RaiseGameBoardNextPieceChangedEvent();
             }
         }
 

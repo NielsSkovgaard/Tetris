@@ -18,6 +18,11 @@ namespace Tetris
             return blocksForAllRotations[rotation % blocksForAllRotations.Length];
         }
 
+        public static int GetHeightOfBlockArray(PieceType pieceType)
+        {
+            return _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(0);
+        }
+
         public static int GetWidthOfBlockArray(PieceType pieceType)
         {
             return _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(1);
