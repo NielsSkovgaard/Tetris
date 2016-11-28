@@ -20,10 +20,17 @@ namespace Tetris
 
         private readonly Random _random = new Random();
 
-        // Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
-        private readonly DispatcherTimer _movePieceLeftRightTimer = new DispatcherTimer();
-        private readonly DispatcherTimer _rotatePieceTimer = new DispatcherTimer();
-        private readonly DispatcherTimer _movePieceDownTimer = new DispatcherTimer();
+        // Timers (and TimeSpans):
+        // - for holding down a key to repeat a command (move left/right or rotate)
+        // - to move the Piece down continously. It will tick faster when holding down a key to move the Piece down fast
+
+        private readonly TimeSpan _timeSpanMovePieceLeftOrRight = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
+        private readonly TimeSpan _timeSpanRotatePiece = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
+        private readonly TimeSpan _timeSpanMovePieceDownNormal = new TimeSpan(10000000); //10000000 ticks = 1000 ms = 1 FPS;
+        private readonly TimeSpan _timeSpanMovePieceDownFast = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
+        private readonly DispatcherTimer _timerMovePieceLeftOrRight = new DispatcherTimer();
+        private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
+        private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
 
         private bool _isLeftKeyDown;
         private bool _isRightKeyDown;
@@ -42,13 +49,15 @@ namespace Tetris
             StaticBlocks = new int[rows, cols];
             ResetPiece();
 
-            // Timers for holding down a key to repeat an action (move left/right, rotate, or move down)
-            _movePieceLeftRightTimer.Interval = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
-            _rotatePieceTimer.Interval = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
-            _movePieceDownTimer.Interval = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
-            _movePieceLeftRightTimer.Tick += (sender, args) => TryMovePieceLeftOrRight();
-            _rotatePieceTimer.Tick += (sender, args) => TryRotatePiece();
-            _movePieceDownTimer.Tick += (sender, args) => TryMovePieceDown();
+            // Timers
+            _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
+            _timerRotatePiece.Interval = _timeSpanRotatePiece;
+            _timerMovePieceDown.Interval = _timeSpanMovePieceDownNormal;
+            _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
+            _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
+            _timerMovePieceDown.Tick += (sender, args) => TryMovePieceDown();
+
+            _timerMovePieceDown.Start();
         }
 
         private void ResetPiece()
@@ -76,24 +85,24 @@ namespace Tetris
                     _isLeftKeyDown = true;
                     _leftKeyHasPriority = true;
                     TryMovePieceLeft();
-                    _movePieceLeftRightTimer.Start();
+                    _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Right:
                 case Key.D:
                     _isRightKeyDown = true;
                     _leftKeyHasPriority = false;
                     TryMovePieceRight();
-                    _movePieceLeftRightTimer.Start();
+                    _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Up:
                 case Key.W:
                     TryRotatePiece();
-                    _rotatePieceTimer.Start();
+                    _timerRotatePiece.Start();
                     break;
                 case Key.Down:
                 case Key.S:
                     TryMovePieceDown();
-                    _movePieceDownTimer.Start();
+                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownFast;
                     break;
             }
         }
@@ -108,7 +117,7 @@ namespace Tetris
                     _leftKeyHasPriority = false;
 
                     if (!_isRightKeyDown)
-                        _movePieceLeftRightTimer.Stop();
+                        _timerMovePieceLeftOrRight.Stop();
                     break;
                 case Key.Right:
                 case Key.D:
@@ -116,15 +125,15 @@ namespace Tetris
                     _leftKeyHasPriority = true;
 
                     if (!_isLeftKeyDown)
-                        _movePieceLeftRightTimer.Stop();
+                        _timerMovePieceLeftOrRight.Stop();
                     break;
                 case Key.Up:
                 case Key.W:
-                    _rotatePieceTimer.Stop();
+                    _timerRotatePiece.Stop();
                     break;
                 case Key.Down:
                 case Key.S:
-                    _movePieceDownTimer.Stop();
+                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownNormal;
                     break;
             }
         }
