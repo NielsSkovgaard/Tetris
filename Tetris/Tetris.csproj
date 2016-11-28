@@ -57,11 +57,14 @@
     </ApplicationDefinition>
     <Compile Include="Block.cs" />
     <Compile Include="GameBoard.cs" />
+    <Compile Include="HighScoreListChangedEventHandler.cs" />
     <Compile Include="GameBoardStatusChangedEventHandler.cs" />
     <Compile Include="GameBoardNextPieceChangedEventHandler.cs" />
     <Compile Include="GameCanvas.cs" />
     <Compile Include="GameBoardChangedEventHandler.cs" />
     <Compile Include="GraphicsConstants.cs" />
+    <Compile Include="HighScoreEntry.cs" />
+    <Compile Include="HighScoreList.cs" />
     <Compile Include="StatusCanvas.cs" />
     <Compile Include="NextPieceCanvas.cs" />
     <Compile Include="Piece.cs" />

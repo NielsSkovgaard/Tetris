@@ -18,7 +18,10 @@ namespace Tetris
         private const int NextPieceCols = 6;
         private const int NextPieceBlockSizeInPixels = 20;
 
+        private const string HighScoreListFilePath = "tetris_highscores.txt";
+
         private readonly GameBoard _gameBoard = new GameBoard(Rows, Cols);
+        private readonly HighScoreList _highScoreList = new HighScoreList(HighScoreListFilePath);
 
         public MainWindow()
         {
@@ -47,7 +50,7 @@ namespace Tetris
             };
 
             // Dependency injection of GameBoard into StatusCanvas
-            StatusCanvas statusCanvas = new StatusCanvas(_gameBoard)
+            StatusCanvas statusCanvas = new StatusCanvas(_gameBoard, _highScoreList)
             {
                 Height = gameCanvas.Height - nextPieceCanvas.Height - 10, // Usually 370px
                 Width = nextPieceCanvas.Width, // Usually 120px

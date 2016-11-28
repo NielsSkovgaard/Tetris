@@ -7,32 +7,46 @@ namespace Tetris
     internal class StatusCanvas : Canvas
     {
         private readonly GameBoard _gameBoard;
+        private readonly HighScoreList _highScoreList;
 
-        private readonly TextBlock _textBlockScore = new TextBlock { Text = "Score: 0", Foreground = GraphicsConstants.TextBrush };
-        private readonly TextBlock _textBlockLevel = new TextBlock { Text = "Level: 0", Foreground = GraphicsConstants.TextBrush };
-        private readonly TextBlock _textBlockLines = new TextBlock { Text = "Lines: 0", Foreground = GraphicsConstants.TextBrush };
+        private readonly TextBlock _textBlockScore;
+        private readonly TextBlock _textBlockLevel;
+        private readonly TextBlock _textBlockLines;
 
-        // Dependency injection of GameBoard into StatusCanvas
-        public StatusCanvas(GameBoard gameBoard)
+        private readonly TextBlock[] _textBlockArrayHighScores = new TextBlock[5];
+
+        // Dependency injection of GameBoard and HighScoreList into StatusCanvas
+        public StatusCanvas(GameBoard gameBoard, HighScoreList highScoreList)
         {
             _gameBoard = gameBoard;
+            _highScoreList = highScoreList;
 
-            // Score
-            SetLeft(_textBlockScore, 10);
-            SetTop(_textBlockScore, 10);
+            // Score, Level, Lines
+            _textBlockScore = BuildTextBlock(10, 10);
+            _textBlockLevel = BuildTextBlock(10, 30);
+            _textBlockLines = BuildTextBlock(10, 50);
+
             Children.Add(_textBlockScore);
-
-            // Level
-            SetLeft(_textBlockLevel, 10);
-            SetTop(_textBlockLevel, 30);
             Children.Add(_textBlockLevel);
-
-            // Lines
-            SetLeft(_textBlockLines, 10);
-            SetTop(_textBlockLines, 50);
             Children.Add(_textBlockLines);
 
+            // HighScoreList
+            for (int i = 0; i < _highScoreList.List.Count; i++)
+            {
+                _textBlockArrayHighScores[i] = BuildTextBlock(10, 100 + i * 20);
+                Children.Add(_textBlockArrayHighScores[i]);
+            }
+
             _gameBoard.GameBoardStatusChanged += GameBoard_GameBoardStatusChanged;
+            _highScoreList.HighScoreListChanged += HighScoreList_HighScoreListChanged;
+        }
+
+        private TextBlock BuildTextBlock(double left, double top)
+        {
+            TextBlock textBlock = new TextBlock { Foreground = GraphicsConstants.TextBrush };
+            SetLeft(textBlock, left);
+            SetTop(textBlock, top);
+            return textBlock;
         }
 
         // Update the UI (StatusCanvas) every time the model (GameBoard.Score, GameBoard.Level, GameBoard.Lines) changes
@@ -42,21 +56,28 @@ namespace Tetris
             InvalidateVisual();
         }
 
+        // Update the UI (StatusCanvas) every time the model (HighScoreList) changes
+        // Soon after, the OnRender method is called
+        private void HighScoreList_HighScoreListChanged(object sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
+
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
 
+            // Score, Level, Lines
             _textBlockScore.Text = "Score: " + _gameBoard.Score;
             _textBlockLevel.Text = "Level: " + _gameBoard.Level;
             _textBlockLines.Text = "Lines: " + _gameBoard.Lines;
-        }
 
-        private void AddTextBlocktoChildren(string text, double x, double y)
-        {
-            TextBlock textBlock = new TextBlock { Text = text, Foreground = GraphicsConstants.TextBrush };
-            SetLeft(textBlock, x);
-            SetTop(textBlock, y);
-            Children.Add(textBlock);
+            // HighScoreList
+            for (int i = 0; i < _textBlockArrayHighScores.Length; i++)
+            {
+                HighScoreEntry highScoreEntry = _highScoreList.List[i];
+                _textBlockArrayHighScores[i].Text = $"{highScoreEntry.Name} - {highScoreEntry.Score}";
+            }
         }
     }
 }
