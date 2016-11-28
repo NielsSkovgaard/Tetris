@@ -57,12 +57,12 @@
     </ApplicationDefinition>
     <Compile Include="Models\Block.cs" />
     <Compile Include="Models\GameBoard.cs" />
-    <Compile Include="ViewModels\GameCanvas.cs" />
-    <Compile Include="ViewModels\GraphicsConstants.cs" />
+    <Compile Include="Views\GameCanvas.cs" />
+    <Compile Include="Views\GraphicsConstants.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
-    <Compile Include="ViewModels\StatusCanvas.cs" />
-    <Compile Include="ViewModels\NextPieceCanvas.cs" />
+    <Compile Include="Views\StatusCanvas.cs" />
+    <Compile Include="Views\NextPieceCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -106,7 +106,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

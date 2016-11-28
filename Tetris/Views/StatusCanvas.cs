@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
 
-namespace Tetris.ViewModels
+namespace Tetris.Views
 {
     internal class StatusCanvas : Canvas
     {

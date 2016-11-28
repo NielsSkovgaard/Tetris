@@ -2,7 +2,6 @@
 using System.Windows.Input;
 using System.Windows.Media;
 using Tetris.Models;
-using Tetris.ViewModels;
 
 namespace Tetris.Views
 {
