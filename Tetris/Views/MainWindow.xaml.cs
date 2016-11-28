@@ -108,3 +108,5 @@ namespace Tetris.Views
 // 50% Back-to-Back bonus & line clear points are multiplied by the current level
 // 1 point per soft dropped row
 // 2 points per hard dropped row // TODO: Not implemented
+
+// TODO: Have a lock delay?: http://harddrop.com/wiki/Lock_delay

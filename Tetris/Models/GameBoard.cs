@@ -21,6 +21,9 @@ namespace Tetris.Models
         public Piece Piece { get; private set; }
         public Piece NextPiece { get; private set; }
 
+        //Game Over
+        private bool _isGameOver;
+
         private readonly Random _random = new Random();
 
         // TimeSpans and Timers:
@@ -107,7 +110,7 @@ namespace Tetris.Models
 
         public void KeyDown(Key key, bool isRepeat)
         {
-            if (isRepeat)
+            if (_isGameOver || isRepeat)
                 return;
 
             switch (key)
@@ -142,6 +145,9 @@ namespace Tetris.Models
 
         public void KeyUp(Key key)
         {
+            if (_isGameOver)
+                return;
+
             switch (key)
             {
                 case Key.Left:
@@ -277,12 +283,43 @@ namespace Tetris.Models
 
                 UpdateLevelScoreAndLines(rowsOccupiedByPieceAndAreComplete.Count);
 
-                // Update the Piece to refer to NextPiece. Then build a new NextPiece
-                Piece = NextPiece;
-                NextPiece = BuildRandomPiece();
+                // Game Over if NextPiece collides with LockedBlocks array
+                bool nextPieceCollidesWithLockedBlocks = NextPiece.Blocks.Any(block =>
+                    LockedBlocks[NextPiece.CoordsY + block.CoordsY, NextPiece.CoordsX + block.CoordsX] != 0);
 
-                RaiseGameBoardChangedEvent();
-                RaiseGameBoardNextPieceChangedEvent();
+                if (nextPieceCollidesWithLockedBlocks)
+                {
+                    // Game Over
+                    _isGameOver = true;
+
+                    // Stop all Timers and reset state
+                    _timerMovePieceLeftOrRight.Stop();
+                    _timerRotatePiece.Stop();
+                    _timerMovePieceDown.Stop();
+                    _timerSecondsGameHasBeenRunning.Stop();
+
+                    // Reset state
+                    // TODO: This should instead be done when restarting game
+                    // TODO: Also reset Level, Score, Lines, Time
+                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
+                    _isLeftKeyDown = false;
+                    _isRightKeyDown = false;
+                    _leftKeyHasPriority = false;
+                    _isSoftDropping = false;
+
+                    // TODO: If record, then ask for name, and save in HighScoreList
+                }
+                else
+                {
+                    // Update the currently moving Piece to refer to NextPiece. Then build a new NextPiece
+                    Piece = NextPiece;
+                    NextPiece = BuildRandomPiece();
+                    RaiseGameBoardNextPieceChangedEvent();
+                }
+
+                // Raise the changed event if any rows have been completed or the Piece has been updated
+                if (rowsOccupiedByPieceAndAreComplete.Any() || !nextPieceCollidesWithLockedBlocks)
+                    RaiseGameBoardChangedEvent();
             }
         }
 
