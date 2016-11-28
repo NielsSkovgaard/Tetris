@@ -5,6 +5,7 @@ namespace Tetris
     internal static class GraphicsConstants
     {
         public static Pen BlockBorderPen = new Pen { Brush = Brushes.DarkGray };
+        public static SolidColorBrush TextBrush = Brushes.White;
 
         public static readonly SolidColorBrush[] BlockBrushes =
         {

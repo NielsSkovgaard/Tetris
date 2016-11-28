@@ -10,6 +10,7 @@ namespace Tetris
     {
         public event GameBoardChangedEventHandler GameBoardChanged;
         public event GameBoardNextPieceChangedEventHandler GameBoardNextPieceChanged;
+        public event GameBoardStatusChangedEventHandler GameBoardStatusChanged;
 
         // Input parameters
         public int Rows { get; } // Usually 20
@@ -37,9 +38,8 @@ namespace Tetris
         private bool _isRightKeyDown;
         private bool _leftKeyHasPriority;
 
-        // TODO: Status
         public int Score { get; set; }
-        //public int Level { get; set; }
+        public int Level { get; set; }
         public int Lines { get; set; }
 
         public GameBoard(int rows, int cols)
@@ -80,6 +80,11 @@ namespace Tetris
         protected virtual void RaiseGameBoardNextPieceChangedEvent()
         {
             GameBoardNextPieceChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void RaiseGameBoardStatusChangedEvent()
+        {
+            GameBoardStatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -266,22 +271,27 @@ namespace Tetris
         {
             //TODO: Multiply by Level factor. Increment Level when having reached a certain amount of points.
 
-            Lines += numberOfCompleteRows;
-
-            switch (numberOfCompleteRows)
+            if (numberOfCompleteRows > 0)
             {
-                case 1:
-                    Score += 100;
-                    return;
-                case 2:
-                    Score += 100 + 200;
-                    return;
-                case 3:
-                    Score += 100 + 200 + 300;
-                    return;
-                case 4:
-                    Score += 100 + 200 + 300 + 400;
-                    return;
+                Lines += numberOfCompleteRows;
+
+                switch (numberOfCompleteRows)
+                {
+                    case 1:
+                        Score += 100;
+                        break;
+                    case 2:
+                        Score += 100 + 200;
+                        break;
+                    case 3:
+                        Score += 100 + 200 + 300;
+                        break;
+                    case 4:
+                        Score += 100 + 200 + 300 + 400;
+                        break;
+                }
+
+                RaiseGameBoardStatusChangedEvent();
             }
         }
     }

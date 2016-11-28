@@ -46,8 +46,20 @@ namespace Tetris
                 VerticalAlignment = VerticalAlignment.Top
             };
 
+            // Dependency injection of GameBoard into StatusCanvas
+            StatusCanvas statusCanvas = new StatusCanvas(_gameBoard)
+            {
+                Height = gameCanvas.Height - nextPieceCanvas.Height - 10, // Usually 370px
+                Width = nextPieceCanvas.Width, // Usually 120px
+                Margin = new Thickness(gameCanvas.Width + 20, nextPieceCanvas.Height + 20, 10, 10),
+                Background = Brushes.Black,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
             Grid1.Children.Add(gameCanvas);
             Grid1.Children.Add(nextPieceCanvas);
+            Grid1.Children.Add(statusCanvas);
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
