@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -181,7 +182,7 @@ namespace Tetris
 
             if (canMovePieceDown)
             {
-                // TODO: Award point for moving Piece down fast
+                // TODO: Award points for moving Piece down fast
 
                 Piece.MoveDown();
                 RaiseGameBoardChangedEvent();
@@ -192,38 +193,52 @@ namespace Tetris
                 foreach (Block block in Piece.Blocks)
                     StaticBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] = (int)Piece.PieceType;
 
-                // Build array of unique row numbers for the Piece. Any of these rows might be complete
-                // Complete rows should be removed from StaticBlocks, then points should be awarded
-                int[] uniqueRowNumbersForPiece = Piece.Blocks
+                // Build HashSet of row numbers occupied by the Piece and that are complete
+                // Complete rows should be removed from the StaticBlocks array, and then points should be awarded
+                HashSet<int> rowsOccupiedByPieceAndAreComplete = new HashSet<int>(
+                    Piece.Blocks
                     .Select(block => Piece.CoordsY + block.CoordsY)
-                    .Distinct()
-                    .OrderByDescending(rowNumber => rowNumber)
-                    .ToArray();
+                    .Where(row => Enumerable
+                        .Range(0, Cols)
+                        .All(col => StaticBlocks[row, col] > 0)));
 
-                int numberOfCompleteRows = 0;
+                // TODO: Raise event for explosion animation (not must-have, only nice-to-have)
+                //foreach (int row in rowsOccupiedByPieceAndAreComplete)
+                //{
+                //}
 
-                for (int arrayIndex = 0; arrayIndex < uniqueRowNumbersForPiece.Length; arrayIndex++)
+                // When a row is complete, rows above it should be moved down
+                int completeRowsBelowAndIncludingCurrentRow = 0;
+
+                for (int row = Rows - 1; row >= 0; row--)
                 {
-                    int row = uniqueRowNumbersForPiece[arrayIndex];
-
-                    // Only consider complete rows for removal
-                    bool isRowComplete = Enumerable
-                        .Range(0, StaticBlocks.GetLength(1))
-                        .All(col => StaticBlocks[row, col] > 0);
-
-                    if (isRowComplete)
+                    if (row == Rows - 1)
                     {
-                        numberOfCompleteRows++;
-
-                        for (int col = 0; col < StaticBlocks.GetLength(1); col++)
+                        // The bottom row can't be moved, only kept in place or removed
+                        if (rowsOccupiedByPieceAndAreComplete.Contains(row))
+                            completeRowsBelowAndIncludingCurrentRow++;
+                    }
+                    else
+                    {
+                        if (rowsOccupiedByPieceAndAreComplete.Contains(row))
+                            completeRowsBelowAndIncludingCurrentRow++;
+                        else
                         {
-                            // TODO: Clear rows
-                            StaticBlocks[row, col] = 6;
+                            // Move rows down in StaticBlocks array
+                            for (int col = 0; col < Cols; col++)
+                                StaticBlocks[row + completeRowsBelowAndIncludingCurrentRow, col] = StaticBlocks[row, col];
                         }
                     }
                 }
 
-                AwardPointsForClearingRows(numberOfCompleteRows);
+                // Clear top x rows where x is the number of rows completed by the Piece
+                for (int row = 0; row < rowsOccupiedByPieceAndAreComplete.Count; row++)
+                {
+                    for (int col = 0; col < Cols; col++)
+                        StaticBlocks[row, col] = 0;
+                }
+
+                AwardPointsForClearingRows(rowsOccupiedByPieceAndAreComplete.Count);
                 RaiseGameBoardChangedEvent();
 
                 // TODO: Stop drop timer until down button is pressed again?
