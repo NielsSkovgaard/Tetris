@@ -84,8 +84,6 @@ namespace Tetris
 // TODO ITEMS:
 // -----------
 // TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
-// TODO: Play MIDI with game theme and sounds when putting pieces etc.
-// TODO: Sometimes the program is still in task manager after closing the program? Maybe because of global exception handling in App class
 
 // TODO: Have a separate Thread to do UI stuff:
 // - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
@@ -93,11 +91,8 @@ namespace Tetris
 // From StackOverflow: canvas.Dispatcher.Invoke(emptyDelegate, DispatcherPriority.Render); where emptyDelegate is Action emptyDelegate = delegate { };
 
 // TODO: Is InvalidateVisual(); the right way to update the UI?
-
 // TODO: Increasing Piece speed
-// TODO: Points, high-score system
-
-// TODO: Score, Level, Lines
 // TODO: Start/Pause buttons -- see http://www.colinfahey.com/tetris/tetris.html
-
 // TODO: Consider having extra space in top of rows for new piece, and a line showing the border above which the Piece will give Game Over
+// TODO: Correct y positioning of Piece in the top of the game board
+// TODO: Stop all timers on game over

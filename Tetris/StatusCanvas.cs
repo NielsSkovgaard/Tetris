@@ -9,9 +9,10 @@ namespace Tetris
         private readonly GameBoard _gameBoard;
         private readonly HighScoreList _highScoreList;
 
-        private readonly TextBlock _textBlockScore;
         private readonly TextBlock _textBlockLevel;
+        private readonly TextBlock _textBlockScore;
         private readonly TextBlock _textBlockLines;
+        private readonly TextBlock _textBlockTime;
 
         private readonly TextBlock[] _textBlockArrayHighScores = new TextBlock[5];
 
@@ -21,14 +22,15 @@ namespace Tetris
             _gameBoard = gameBoard;
             _highScoreList = highScoreList;
 
-            // Score, Level, Lines
-            _textBlockScore = BuildTextBlock(10, 10);
-            _textBlockLevel = BuildTextBlock(10, 30);
+            // Level, Score, Lines, Time
+            _textBlockLevel = BuildTextBlock(10, 10);
+            _textBlockScore = BuildTextBlock(10, 30);
             _textBlockLines = BuildTextBlock(10, 50);
-
-            Children.Add(_textBlockScore);
+            _textBlockTime = BuildTextBlock(10, 70);
             Children.Add(_textBlockLevel);
+            Children.Add(_textBlockScore);
             Children.Add(_textBlockLines);
+            Children.Add(_textBlockTime);
 
             // HighScoreList
             for (int i = 0; i < _highScoreList.List.Count; i++)
@@ -49,7 +51,7 @@ namespace Tetris
             return textBlock;
         }
 
-        // Update the UI (StatusCanvas) every time the model (GameBoard.Score, GameBoard.Level, GameBoard.Lines) changes
+        // Update the UI (StatusCanvas) every time the model (GameBoard properties Level, Score, Lines, and Time) changes
         // Soon after, the OnRender method is called
         private void GameBoard_GameBoardStatusChanged(object sender, EventArgs e)
         {
@@ -67,10 +69,11 @@ namespace Tetris
         {
             base.OnRender(dc);
 
-            // Score, Level, Lines
-            _textBlockScore.Text = "Score: " + _gameBoard.Score;
+            // Level, Score, Lines, Time
             _textBlockLevel.Text = "Level: " + _gameBoard.Level;
+            _textBlockScore.Text = "Score: " + _gameBoard.Score;
             _textBlockLines.Text = "Lines: " + _gameBoard.Lines;
+            _textBlockTime.Text = "Time: " + _gameBoard.Time;
 
             // HighScoreList
             for (int i = 0; i < _textBlockArrayHighScores.Length; i++)

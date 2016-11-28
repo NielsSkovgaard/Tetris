@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -23,24 +24,30 @@ namespace Tetris
 
         private readonly Random _random = new Random();
 
-        // Timers (and TimeSpans):
-        // - for holding down a key to repeat a command (move left/right or rotate)
-        // - to move the Piece down continously. It will tick faster when holding down a key to move the Piece down fast
-        private readonly TimeSpan _timeSpanMovePieceLeftOrRight = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
-        private readonly TimeSpan _timeSpanRotatePiece = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
-        private readonly TimeSpan _timeSpanMovePieceDownNormal = new TimeSpan(10000000); //10000000 ticks = 1000 ms = 1 FPS;
-        private readonly TimeSpan _timeSpanMovePieceDownFast = new TimeSpan(500000); //500000 ticks = 50 ms = 20 FPS
+        // TimeSpans and Timers:
+        // - for holding down a key to repeat a command (move left/right or rotate) every x ticks
+        private readonly TimeSpan _timeSpanMovePieceLeftOrRight = TimeSpan.FromMilliseconds(100); // 100 ms = 10 FPS
+        private readonly TimeSpan _timeSpanRotatePiece = TimeSpan.FromMilliseconds(250); // 250 ms = 4 FPS
         private readonly DispatcherTimer _timerMovePieceLeftOrRight = new DispatcherTimer();
         private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
+
+        // - to add gravity to the Piece. It will move down faster when soft dropping (by holding down the down key)
+        private readonly TimeSpan _timeSpanMovePieceDownGravity = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
+        private readonly TimeSpan _timeSpanMovePieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
         private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
+
+        // - to count the number of seconds the game has been running
+        private readonly TimeSpan _timeSpanSecondsGameHasBeenRunning = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
+        private readonly DispatcherTimer _timerSecondsGameHasBeenRunning = new DispatcherTimer();
 
         private bool _isLeftKeyDown;
         private bool _isRightKeyDown;
         private bool _leftKeyHasPriority;
 
-        public int Score { get; set; }
         public int Level { get; set; }
+        public int Score { get; set; }
         public int Lines { get; set; }
+        public int Time { get; set; }
 
         public GameBoard(int rows, int cols)
         {
@@ -54,12 +61,15 @@ namespace Tetris
             // Timers
             _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
             _timerRotatePiece.Interval = _timeSpanRotatePiece;
-            _timerMovePieceDown.Interval = _timeSpanMovePieceDownNormal;
+            _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
+            _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
             _timerMovePieceDown.Tick += (sender, args) => TryMovePieceDown();
+            _timerSecondsGameHasBeenRunning.Tick += (sender, args) => IncrementGameTime();
 
             _timerMovePieceDown.Start();
+            _timerSecondsGameHasBeenRunning.Start();
         }
 
         private Piece BuildRandomPiece()
@@ -116,7 +126,7 @@ namespace Tetris
                 case Key.Down:
                 case Key.S:
                     TryMovePieceDown();
-                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownFast;
+                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownSoftDrop;
                     break;
             }
         }
@@ -147,7 +157,7 @@ namespace Tetris
                     break;
                 case Key.Down:
                 case Key.S:
-                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownNormal;
+                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
                     break;
             }
         }
@@ -258,7 +268,7 @@ namespace Tetris
                 AwardPointsForClearingRows(rowsOccupiedByPieceAndAreComplete.Count);
                 RaiseGameBoardChangedEvent();
 
-                // TODO: Stop fast droppig until down button is pressed again? In order to not repeatedly take pieces down fast (and maybe calculate a weird drop distance and score)
+                // TODO: Stop soft dropping until down button is pressed again? In order to not repeatedly take pieces down fast (and maybe calculate a weird drop distance and score)
 
                 // Update the Piece to refer to NextPiece, and then build a new NextPiece
                 Piece = NextPiece;
@@ -293,6 +303,12 @@ namespace Tetris
 
                 RaiseGameBoardStatusChangedEvent();
             }
+        }
+
+        private void IncrementGameTime()
+        {
+            Time++;
+            RaiseGameBoardStatusChangedEvent();
         }
     }
 }

@@ -34,11 +34,11 @@ namespace Tetris
             {
                 List = new List<HighScoreEntry>
                 {
-                    new HighScoreEntry("CPU 1", 5000),
-                    new HighScoreEntry("CPU 2", 4000),
-                    new HighScoreEntry("CPU 3", 3000),
-                    new HighScoreEntry("CPU 4", 2000),
-                    new HighScoreEntry("CPU 5", 1000)
+                    new HighScoreEntry("CPU", 10000),
+                    new HighScoreEntry("CPU", 8000),
+                    new HighScoreEntry("CPU", 6000),
+                    new HighScoreEntry("CPU", 4000),
+                    new HighScoreEntry("CPU", 2000)
                 };
             }
             else
