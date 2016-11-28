@@ -2,8 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Tetris.Model;
 
-namespace Tetris
+namespace Tetris.View
 {
     internal class NextPieceCanvas : Canvas
     {

@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Tetris
+namespace Tetris.Model
 {
-    // TODO: Show in the UI
-
     internal class HighScoreList
     {
         public event HighScoreListChangedEventHandler HighScoreListChanged;

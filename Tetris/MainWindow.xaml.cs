@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Tetris.Model;
+using Tetris.View;
 
 namespace Tetris
 {

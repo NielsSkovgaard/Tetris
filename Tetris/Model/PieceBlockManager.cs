@@ -1,4 +1,4 @@
-namespace Tetris
+namespace Tetris.Model
 {
     internal static class PieceBlockManager
     {

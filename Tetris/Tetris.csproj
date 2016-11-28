@@ -55,19 +55,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Block.cs" />
-    <Compile Include="GameBoard.cs" />
-    <Compile Include="HighScoreListChangedEventHandler.cs" />
-    <Compile Include="GameBoardStatusChangedEventHandler.cs" />
-    <Compile Include="GameBoardNextPieceChangedEventHandler.cs" />
-    <Compile Include="GameCanvas.cs" />
-    <Compile Include="GameBoardChangedEventHandler.cs" />
-    <Compile Include="GraphicsConstants.cs" />
-    <Compile Include="HighScoreEntry.cs" />
-    <Compile Include="HighScoreList.cs" />
-    <Compile Include="StatusCanvas.cs" />
-    <Compile Include="NextPieceCanvas.cs" />
-    <Compile Include="Piece.cs" />
+    <Compile Include="Model\Block.cs" />
+    <Compile Include="Model\GameBoard.cs" />
+    <Compile Include="Model\HighScoreListChangedEventHandler.cs" />
+    <Compile Include="Model\GameBoardStatusChangedEventHandler.cs" />
+    <Compile Include="Model\GameBoardNextPieceChangedEventHandler.cs" />
+    <Compile Include="View\GameCanvas.cs" />
+    <Compile Include="Model\GameBoardChangedEventHandler.cs" />
+    <Compile Include="View\GraphicsConstants.cs" />
+    <Compile Include="Model\HighScoreEntry.cs" />
+    <Compile Include="Model\HighScoreList.cs" />
+    <Compile Include="View\StatusCanvas.cs" />
+    <Compile Include="View\NextPieceCanvas.cs" />
+    <Compile Include="Model\Piece.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -82,8 +82,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PieceBlockManager.cs" />
-    <Compile Include="PieceType.cs" />
+    <Compile Include="Model\PieceBlockManager.cs" />
+    <Compile Include="Model\PieceType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -110,6 +110,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,4 +1,4 @@
-﻿namespace Tetris
+﻿namespace Tetris.Model
 {
     internal class Piece
     {
@@ -25,6 +25,7 @@
         }
 
         private void UpdateCurrentBlocks() => Blocks = PieceBlockManager.GetBlocks(PieceType, Rotation);
+
         public Block[] BlocksInNextRotation => PieceBlockManager.GetBlocks(PieceType, Rotation + 1);
     }
 }

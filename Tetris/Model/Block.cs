@@ -1,4 +1,4 @@
-﻿namespace Tetris
+﻿namespace Tetris.Model
 {
     internal class Block
     {

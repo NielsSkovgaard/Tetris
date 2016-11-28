@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Tetris
+namespace Tetris.Model
 {
     internal class GameBoard
     {
@@ -44,7 +43,7 @@ namespace Tetris
         private bool _isRightKeyDown;
         private bool _leftKeyHasPriority;
 
-        public int Level { get; set; }
+        public int Level { get; set; } = 1;
         public int Score { get; set; }
         public int Lines { get; set; }
         public int Time { get; set; }
