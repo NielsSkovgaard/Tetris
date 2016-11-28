@@ -87,7 +87,7 @@ namespace Tetris
                 for (int rotation = 0; rotation < _blocksBeforeOptimization[pieceType].Length; rotation++)
                 {
                     _optimizedBlocks[pieceType][rotation] = new Block[NumberOfBlocksPerPiece];
-                    int index = 0;
+                    int blockIndex = 0;
 
                     for (int row = 0; row < _blocksBeforeOptimization[pieceType][rotation].GetLength(0); row++)
                     {
@@ -95,10 +95,10 @@ namespace Tetris
                         {
                             int blockType = _blocksBeforeOptimization[pieceType][rotation][row, col];
 
-                            if (blockType > 0)
+                            if (blockType != 0)
                             {
-                                _optimizedBlocks[pieceType][rotation][index] = new Block(row, col);
-                                index++;
+                                _optimizedBlocks[pieceType][rotation][blockIndex] = new Block(row, col);
+                                blockIndex++;
                             }
                         }
                     }

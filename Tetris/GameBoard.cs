@@ -23,7 +23,6 @@ namespace Tetris
         // Timers (and TimeSpans):
         // - for holding down a key to repeat a command (move left/right or rotate)
         // - to move the Piece down continously. It will tick faster when holding down a key to move the Piece down fast
-
         private readonly TimeSpan _timeSpanMovePieceLeftOrRight = new TimeSpan(1000000); //1000000 ticks = 100 ms = 10 FPS
         private readonly TimeSpan _timeSpanRotatePiece = new TimeSpan(2500000); //2500000 ticks = 250 ms = 4 FPS
         private readonly TimeSpan _timeSpanMovePieceDownNormal = new TimeSpan(10000000); //10000000 ticks = 1000 ms = 1 FPS;

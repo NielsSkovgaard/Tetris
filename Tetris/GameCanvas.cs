@@ -51,7 +51,7 @@ namespace Tetris
                     // TODO: The GameBoardChanged EventArgs could then include how the Shape looked before (reset these rectangles) and after for repainting
                     int blockType = _gameBoard.StaticBlocks[row, col];
 
-                    if (blockType > 0)
+                    if (blockType != 0)
                     {
                         Rect rect = new Rect(
                             col * _blockSizeInPixels,
