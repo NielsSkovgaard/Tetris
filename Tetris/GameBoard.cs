@@ -200,34 +200,28 @@ namespace Tetris
                     .Select(block => Piece.CoordsY + block.CoordsY)
                     .Where(row => Enumerable
                         .Range(0, Cols)
-                        .All(col => StaticBlocks[row, col] > 0)));
+                        .All(col => StaticBlocks[row, col] != 0)));
 
                 // TODO: Raise event for explosion animation (not must-have, only nice-to-have)
                 //foreach (int row in rowsOccupiedByPieceAndAreComplete)
                 //{
                 //}
 
-                // When a row is complete, rows above it should be moved down
+                // When a row is complete, rows above it should be moved down (in the StaticBlocks array)
                 int completeRowsBelowAndIncludingCurrentRow = 0;
 
                 for (int row = Rows - 1; row >= 0; row--)
                 {
-                    if (row == Rows - 1)
+                    bool isRowComplete = rowsOccupiedByPieceAndAreComplete.Contains(row);
+
+                    if (isRowComplete)
+                        completeRowsBelowAndIncludingCurrentRow++;
+
+                    // Don't move the bottom row or rows that are complete
+                    if (row != Rows - 1 && !isRowComplete)
                     {
-                        // The bottom row can't be moved, only kept in place or removed
-                        if (rowsOccupiedByPieceAndAreComplete.Contains(row))
-                            completeRowsBelowAndIncludingCurrentRow++;
-                    }
-                    else
-                    {
-                        if (rowsOccupiedByPieceAndAreComplete.Contains(row))
-                            completeRowsBelowAndIncludingCurrentRow++;
-                        else
-                        {
-                            // Move rows down in StaticBlocks array
-                            for (int col = 0; col < Cols; col++)
-                                StaticBlocks[row + completeRowsBelowAndIncludingCurrentRow, col] = StaticBlocks[row, col];
-                        }
+                        for (int col = 0; col < Cols; col++)
+                            StaticBlocks[row + completeRowsBelowAndIncludingCurrentRow, col] = StaticBlocks[row, col];
                     }
                 }
 

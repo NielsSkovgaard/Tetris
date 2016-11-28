@@ -23,7 +23,6 @@ namespace Tetris
             //Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
             {
-                Name = "GameCanvas1",
                 Height = Rows * BlockSizeInPixels, // Usually 500px
                 Width = Cols * BlockSizeInPixels, // Usually 250px
                 Margin = new Thickness(10), // TODO: Before: "10,10,234,61"
@@ -69,3 +68,5 @@ namespace Tetris
 
 // TODO: Score, Level, Lines
 // TODO: Start/Pause buttons -- see http://www.colinfahey.com/tetris/tetris.html
+
+// TODO: Consider having extra space in top of rows for new piece, and a line showing the border above which the Piece will give Game Over
