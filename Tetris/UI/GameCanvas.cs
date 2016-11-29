@@ -17,12 +17,12 @@ namespace Tetris.UI
             _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
 
-            _gameBoard.GameBoardChanged += GameBoard_GameBoardChanged;
+            _gameBoard.Changed += GameBoard_Changed;
         }
 
         // Update the UI (GameCanvas) every time the model (GameBoard) changes
         // Soon after, the OnRender method is called
-        private void GameBoard_GameBoardChanged(object sender, EventArgs e)
+        private void GameBoard_Changed(object sender, EventArgs e)
         {
             InvalidateVisual();
         }

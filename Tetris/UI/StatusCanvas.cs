@@ -43,7 +43,7 @@ namespace Tetris.UI
                 Children.Add(_textBlockArrayHighScores[i]);
             }
 
-            _gameBoard.GameBoardStatusChanged += GameBoard_GameBoardStatusChanged;
+            _gameBoard.StatusChanged += GameBoard_StatusChanged;
             _highScoreList.Changed += HighScoreList_Changed;
         }
 
@@ -57,7 +57,7 @@ namespace Tetris.UI
 
         // Update the UI (StatusCanvas) every time the model (GameBoard properties Level, Score, Lines, and Time) changes
         // Soon after, the OnRender method is called
-        private void GameBoard_GameBoardStatusChanged(object sender, EventArgs e)
+        private void GameBoard_StatusChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
         }

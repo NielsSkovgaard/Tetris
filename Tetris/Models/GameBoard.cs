@@ -8,9 +8,9 @@ namespace Tetris.Models
 {
     internal class GameBoard
     {
-        public event EventHandler GameBoardChanged;
-        public event EventHandler GameBoardNextPieceChanged;
-        public event EventHandler GameBoardStatusChanged;
+        public event EventHandler Changed;
+        public event EventHandler NextPieceChanged;
+        public event EventHandler StatusChanged;
         public event EventHandler<int> GameOver;
 
         // Input parameters
@@ -114,19 +114,19 @@ namespace Tetris.Models
             return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[Level]);
         }
 
-        protected virtual void RaiseGameBoardChangedEvent()
+        protected virtual void RaiseChangedEvent()
         {
-            GameBoardChanged?.Invoke(this, EventArgs.Empty);
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void RaiseGameBoardNextPieceChangedEvent()
+        protected virtual void RaiseNextPieceChangedEvent()
         {
-            GameBoardNextPieceChanged?.Invoke(this, EventArgs.Empty);
+            NextPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void RaiseGameBoardStatusChangedEvent()
+        protected virtual void RaiseStatusChangedEvent()
         {
-            GameBoardStatusChanged?.Invoke(this, EventArgs.Empty);
+            StatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void RaiseGameOverEvent()
@@ -219,7 +219,7 @@ namespace Tetris.Models
                 LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX - 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
                 CurrentPiece.MoveLeft();
-                RaiseGameBoardChangedEvent();
+                RaiseChangedEvent();
             }
         }
 
@@ -230,7 +230,7 @@ namespace Tetris.Models
                 LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX + 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
                 CurrentPiece.MoveRight();
-                RaiseGameBoardChangedEvent();
+                RaiseChangedEvent();
             }
         }
 
@@ -245,7 +245,7 @@ namespace Tetris.Models
             if (isNextRotationInValidPosition)
             {
                 CurrentPiece.Rotate();
-                RaiseGameBoardChangedEvent();
+                RaiseChangedEvent();
             }
         }
 
@@ -261,11 +261,11 @@ namespace Tetris.Models
                 {
                     // Award points for soft dropping CurrentPiece
                     Score++;
-                    RaiseGameBoardStatusChangedEvent();
+                    RaiseStatusChangedEvent();
                 }
 
                 CurrentPiece.MoveDown();
-                RaiseGameBoardChangedEvent();
+                RaiseChangedEvent();
             }
             else
             {
@@ -329,12 +329,12 @@ namespace Tetris.Models
                     // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
                     CurrentPiece = NextPiece;
                     NextPiece = BuildRandomPiece();
-                    RaiseGameBoardNextPieceChangedEvent();
+                    RaiseNextPieceChangedEvent();
                 }
 
                 // Raise the changed event if any rows have been completed or CurrentPiece has been updated
                 if (rowsOccupiedByPieceAndAreComplete.Any() || !nextPieceCollidesWithLockedBlocks)
-                    RaiseGameBoardChangedEvent();
+                    RaiseChangedEvent();
             }
         }
 
@@ -359,14 +359,14 @@ namespace Tetris.Models
                     }
                 }
 
-                RaiseGameBoardStatusChangedEvent();
+                RaiseStatusChangedEvent();
             }
         }
 
         private void IncrementGameTime()
         {
             Time++;
-            RaiseGameBoardStatusChangedEvent();
+            RaiseStatusChangedEvent();
         }
     }
 }

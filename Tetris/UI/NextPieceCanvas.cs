@@ -21,12 +21,12 @@ namespace Tetris.UI
             _rows = rows;
             _cols = cols;
 
-            _gameBoard.GameBoardNextPieceChanged += GameBoard_GameBoardNextPieceChanged;
+            _gameBoard.NextPieceChanged += GameBoard_NextPieceChanged;
         }
 
         // Update the UI (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
         // Soon after, the OnRender method is called
-        private void GameBoard_GameBoardNextPieceChanged(object sender, EventArgs e)
+        private void GameBoard_NextPieceChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
         }
