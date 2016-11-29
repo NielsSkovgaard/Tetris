@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
 
-namespace Tetris.Views
+namespace Tetris.UI
 {
     internal class StatusCanvas : Canvas
     {
@@ -34,9 +34,11 @@ namespace Tetris.Views
             Children.Add(_textBlockTime);
 
             // HighScoreList
+            Children.Add(BuildTextBlock(10, 200, "HIGH SCORES:"));
+
             for (int i = 0; i < _highScoreList.List.Count; i++)
             {
-                _textBlockArrayHighScores[i] = BuildTextBlock(10, 100 + i * 20);
+                _textBlockArrayHighScores[i] = BuildTextBlock(10, 220 + i * 20);
                 Children.Add(_textBlockArrayHighScores[i]);
             }
 
@@ -44,9 +46,13 @@ namespace Tetris.Views
             _highScoreList.HighScoreListChanged += HighScoreList_HighScoreListChanged;
         }
 
-        private TextBlock BuildTextBlock(double left, double top)
+        private TextBlock BuildTextBlock(double left, double top, string text = null)
         {
-            TextBlock textBlock = new TextBlock { Foreground = GraphicsConstants.TextBrush };
+            TextBlock textBlock = new TextBlock { Foreground = GraphicsConstants.TextBrush, FontFamily = new FontFamily("Consolas, Courier New") };
+
+            if (text != null)
+                textBlock.Text = text;
+
             SetLeft(textBlock, left);
             SetTop(textBlock, top);
             return textBlock;

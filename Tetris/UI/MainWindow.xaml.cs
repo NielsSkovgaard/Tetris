@@ -3,7 +3,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Tetris.Models;
 
-namespace Tetris.Views
+namespace Tetris.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

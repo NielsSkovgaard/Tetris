@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
 
-namespace Tetris.Views
+namespace Tetris.UI
 {
     internal class GameCanvas : Canvas
     {
