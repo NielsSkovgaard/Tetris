@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
@@ -48,11 +49,7 @@ namespace Tetris.UI
 
         private TextBlock BuildTextBlock(double left, double top, string text = null)
         {
-            TextBlock textBlock = new TextBlock { Foreground = GraphicsConstants.TextBrush, FontFamily = new FontFamily("Consolas, Courier New") };
-
-            if (text != null)
-                textBlock.Text = text;
-
+            TextBlock textBlock = new TextBlock { Text = text ?? string.Empty, Foreground = GraphicsConstants.TextBrush, FontFamily = new FontFamily("Consolas, Courier New") };
             SetLeft(textBlock, left);
             SetTop(textBlock, top);
             return textBlock;
@@ -76,18 +73,26 @@ namespace Tetris.UI
         {
             base.OnRender(dc);
 
+            CultureInfo culture = CultureInfo.InvariantCulture;
+
             // Level, Score, Lines, Time
-            _textBlockLevel.Text = "Level: " + _gameBoard.Level;
-            _textBlockScore.Text = "Score: " + _gameBoard.Score;
-            _textBlockLines.Text = "Lines: " + _gameBoard.Lines;
-            _textBlockTime.Text = "Time: " + _gameBoard.Time;
+            _textBlockLevel.Text = GetText("Level:", _gameBoard.Level.ToString(culture));
+            _textBlockScore.Text = GetText("Score:", _gameBoard.Score.ToString(culture));
+            _textBlockLines.Text = GetText("Lines:", _gameBoard.Lines.ToString(culture));
+            _textBlockTime.Text = GetText("Time:", TimeSpan.FromSeconds(_gameBoard.Time).ToString("mm\\:ss"));
 
             // HighScoreList
             for (int i = 0; i < _textBlockArrayHighScores.Length; i++)
             {
                 HighScoreEntry highScoreEntry = _highScoreList.List[i];
-                _textBlockArrayHighScores[i].Text = $"{highScoreEntry.Name} - {highScoreEntry.Score}";
+                _textBlockArrayHighScores[i].Text = GetText(highScoreEntry.Initials, highScoreEntry.Score.ToString(culture));
             }
+        }
+
+        private string GetText(string labelText, string value)
+        {
+            const int totalTextLength = 15;
+            return $"{labelText.PadRight(totalTextLength - value.Length, ' ')}{value}";
         }
     }
 }

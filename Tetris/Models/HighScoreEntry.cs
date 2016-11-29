@@ -2,12 +2,12 @@
 {
     internal class HighScoreEntry
     {
-        public string Name { get; set; }
+        public string Initials { get; set; }
         public int Score { get; set; }
 
-        public HighScoreEntry(string name, int score)
+        public HighScoreEntry(string initials, int score)
         {
-            Name = name;
+            Initials = initials;
             Score = score;
         }
     }

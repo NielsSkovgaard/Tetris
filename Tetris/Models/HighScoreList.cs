@@ -9,8 +9,6 @@ namespace Tetris.Models
     {
         public event EventHandler Changed;
 
-        private const int NumberOfHighScores = 5;
-
         private readonly string _fileName;
         public List<HighScoreEntry> List { get; private set; } // Always sorted from highest to lowest score
 
@@ -36,7 +34,7 @@ namespace Tetris.Models
                     new HighScoreEntry("CPU", 8000),
                     new HighScoreEntry("CPU", 6000),
                     new HighScoreEntry("CPU", 4000),
-                    new HighScoreEntry("CPU", 100)
+                    new HighScoreEntry("CPU", 2000)
                 };
             }
             else
@@ -53,28 +51,31 @@ namespace Tetris.Models
 
         private void SaveToFile()
         {
-            string[] lines = List.Select(entry => $"{entry.Name}\t{entry.Score}").ToArray();
+            string[] lines = List.Select(entry => $"{entry.Initials}\t{entry.Score}").ToArray();
             File.WriteAllLines(_fileName, lines);
         }
 
         public bool IsRecord(int score) => score > List.Last().Score;
 
-        public void Add(string name, int score)
+        public void Add(string initials, int score)
         {
             for (int i = 0; i < List.Count; i++)
             {
                 if (score > List[i].Score)
                 {
-                    // Format input name
-                    name = name.Trim();
-                    name = name.Length == 0 ? "???" : name.ToUpper();
+                    // Format input initials
+                    initials = initials.Trim();
+                    if (initials.Length == 0)
+                        initials = "?";
 
-                    List.Insert(i, new HighScoreEntry(name, score));
+                    List.Insert(i, new HighScoreEntry(initials, score));
                     break;
                 }
             }
 
+            // Limit to 5 high scores, so when one is added, then delete the lowest one
             List.RemoveAt(List.Count - 1);
+
             SaveToFile();
             RaiseChangedEvent();
         }

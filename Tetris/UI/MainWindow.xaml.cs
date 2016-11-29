@@ -64,7 +64,7 @@ namespace Tetris.UI
 
             Border statusCanvasBorder = BuildBorderForFrameworkElement(statusCanvas, borderThickness);
             statusCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
-            
+
             Grid2.Children.Add(gameCanvasBorder);
             Grid2.Children.Add(nextPieceCanvasBorder);
             Grid2.Children.Add(statusCanvasBorder);
@@ -102,17 +102,17 @@ namespace Tetris.UI
             if (_highScoreList.IsRecord(score))
             {
                 HighScoreInputUserControl1.Score = score;
-                HighScoreInputUserControl1.TextBoxName.Text = string.Empty;
+                HighScoreInputUserControl1.TextBoxInitials.Text = string.Empty;
 
                 RectangleOverlay.Visibility = Visibility.Visible;
                 HighScoreInputUserControl1.Visibility = Visibility.Visible;
-                HighScoreInputUserControl1.TextBoxName.Focus();
+                HighScoreInputUserControl1.TextBoxInitials.Focus();
             }
         }
 
         private void HighScoreInputUserControl1_ButtonOk_Click(object sender, RoutedEventArgs e)
         {
-            _highScoreList.Add(HighScoreInputUserControl1.TextBoxName.Text, HighScoreInputUserControl1.Score);
+            _highScoreList.Add(HighScoreInputUserControl1.TextBoxInitials.Text, HighScoreInputUserControl1.Score);
 
             RectangleOverlay.Visibility = Visibility.Collapsed;
             HighScoreInputUserControl1.Visibility = Visibility.Collapsed;
@@ -142,14 +142,16 @@ namespace Tetris.UI
 // TODO LIST:
 // ------------------------------------------------------------------------------------------------
 
-// TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
+// TODO: Organize project with MVVM pattern
+// - http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
+// - https://msdn.microsoft.com/en-us/library/ff798384.aspx
 
-// TODO: Have a separate Thread to do UI stuff:
+// TODO: Have a separate Thread to do UI stuff
 // - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
 // - http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
 
-// TODO: Increasing CurrentPiece speed
 // TODO: Start/Pause buttons. See: http://www.colinfahey.com/tetris/tetris.html
 // TODO: Have a lock delay? See: http://harddrop.com/wiki/Lock_delay
 // TODO: Define WPF controls with XAML
 // TODO: Have a grid with 10x20 predefined rectangles to color in the GameCanvas.OnRender method, instead of generating them on every rendering
+// TODO: Focus TextBox in popup to enter high score initials

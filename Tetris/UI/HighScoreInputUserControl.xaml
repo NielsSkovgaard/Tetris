@@ -5,16 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Tetris.UI"
              mc:Ignorable="d">
-    <Grid Background="Black" HorizontalAlignment="Left" Height="112" Width="221">
+    <Grid Background="Black" HorizontalAlignment="Left" Height="112" Width="240">
         <Border BorderBrush="White" BorderThickness="1"/>
         <TextBlock x:Name="TextBlockMessage" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
             <Run Foreground="White" FontSize="15" FontFamily="Consolas, Courier New" Text="New High Score!"/>
             <LineBreak/>
             <Run Foreground="White" FontSize="11" FontFamily="Consolas, Courier New"/>
             <LineBreak/>
-            <Run Foreground="White" FontSize="11" FontFamily="Consolas, Courier New" Text="Enter your name (max 3 letters)"/>
+            <Run Foreground="White" FontSize="11" FontFamily="Consolas, Courier New" Text="Enter your initials (max 5 letters)"/>
         </TextBlock>
-        <TextBox x:Name="TextBoxName" HorizontalAlignment="Left" Height="20" Margin="10,70,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="124" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" MaxLength="3"/>
+        <TextBox x:Name="TextBoxInitials" HorizontalAlignment="Left" Height="20" Margin="10,70,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="124" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" MaxLength="5" Focusable="True" CharacterCasing="Upper"/>
         <Button x:Name="ButtonOk" Content="OK" HorizontalAlignment="Left" Margin="147,70,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="-0.11,0.117" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" Height="20" IsDefault="True"/>
     </Grid>
 </UserControl>
