@@ -31,7 +31,7 @@ namespace Tetris.Models
         private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
 
         // - to add gravity to CurrentPiece. It will move down faster when soft dropping (by holding down the down key)
-        private readonly TimeSpan _timeSpanMovePieceDownGravity = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
+        private readonly int[] _movePieceDownIntervalsInMilisecondsPerLevel = { 887, 820, 753, 686, 619, 552, 469, 368, 285, 184, 167, 151, 134, 117, 100, 100 }; // See http://tetrisconcept.net/wiki/index.php?title=Tetris_(Game_Boy)
         private readonly TimeSpan _timeSpanMovePieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
         private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
 
@@ -54,7 +54,6 @@ namespace Tetris.Models
         private const int MaximumLevel = 15;
         private const int NumberOfRowsToIncreaseLevel = 10;
         private readonly int[] _scoresToAddForCompletingRows = { 100, 300, 500, 800 };
-        private readonly int[] _levelSpeedsInFramesPerRow = { 48, 24, 18, 15, 12, 10, 8, 6, 4, 2, 10, 8, 6, 4, 2, 1 }; // See http://harddrop.com/wiki/Tetris_(Sega)
         private bool _isSoftDropping;
 
         public GameBoard(int rows, int cols)
@@ -69,7 +68,7 @@ namespace Tetris.Models
             // Timers
             _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
             _timerRotatePiece.Interval = _timeSpanRotatePiece;
-            _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
+            _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
@@ -88,6 +87,10 @@ namespace Tetris.Models
             // Position the Piece in the top middle of the canvas
             piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(piece.PieceType)) / 2;
             return piece;
+        }
+        private TimeSpan GetMovePieceDownTimerIntervalBasedOnLevel()
+        {
+            return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[Level]);
         }
 
         protected virtual void RaiseGameBoardChangedEvent()
@@ -170,7 +173,7 @@ namespace Tetris.Models
                 case Key.Down:
                 case Key.S:
                     _isSoftDropping = false;
-                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
+                    _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
                     break;
             }
         }
@@ -298,7 +301,7 @@ namespace Tetris.Models
                     // Reset state
                     // TODO: This should instead be done when restarting game
                     // TODO: Also reset Level, Score, Lines, Time
-                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownGravity;
+                    _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
                     _isLeftKeyDown = false;
                     _isRightKeyDown = false;
                     _leftKeyHasPriority = false;
@@ -333,7 +336,10 @@ namespace Tetris.Models
                     if (newLevel > Level)
                     {
                         Level = newLevel;
-                        // TODO: Make the gravity Timer tick faster
+
+                        // Make the _timerMovePieceDown faster (unless we are soft dropping, which is using the same timer)
+                        if (!_isSoftDropping)
+                            _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
                     }
                 }
 
