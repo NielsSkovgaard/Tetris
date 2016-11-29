@@ -75,7 +75,7 @@ namespace Tetris.Models
                 }
             }
 
-            List.RemoveAt(NumberOfHighScores - 1);
+            List.RemoveAt(List.Count - 1);
             SaveToFile();
             RaiseChangedEvent();
         }
