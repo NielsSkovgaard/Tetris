@@ -61,9 +61,12 @@ namespace Tetris.UI
                 VerticalAlignment = VerticalAlignment.Top
             };
 
-            Grid1.Children.Add(gameCanvas);
-            Grid1.Children.Add(nextPieceCanvas);
-            Grid1.Children.Add(statusCanvas);
+            Grid2.Children.Add(gameCanvas);
+            Grid2.Children.Add(nextPieceCanvas);
+            Grid2.Children.Add(statusCanvas);
+
+            _gameBoard.GameOver += GameBoard_GameOver;
+            HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
@@ -74,6 +77,27 @@ namespace Tetris.UI
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
             _gameBoard.KeyUp(e.Key);
+        }
+
+        private void GameBoard_GameOver(object sender, int score)
+        {
+            if (_highScoreList.IsRecord(score))
+            {
+                HighScoreInputUserControl1.Score = score;
+                HighScoreInputUserControl1.TextBoxName.Text = string.Empty;
+
+                RectangleOverlay.Visibility = Visibility.Visible;
+                HighScoreInputUserControl1.Visibility = Visibility.Visible;
+                HighScoreInputUserControl1.TextBoxName.Focus();
+            }
+        }
+
+        private void HighScoreInputUserControl1_ButtonOk_Click(object sender, RoutedEventArgs e)
+        {
+            _highScoreList.Add(HighScoreInputUserControl1.TextBoxName.Text.Trim(), HighScoreInputUserControl1.Score);
+
+            RectangleOverlay.Visibility = Visibility.Collapsed;
+            HighScoreInputUserControl1.Visibility = Visibility.Collapsed;
         }
     }
 }

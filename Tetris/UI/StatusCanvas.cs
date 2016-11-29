@@ -43,7 +43,7 @@ namespace Tetris.UI
             }
 
             _gameBoard.GameBoardStatusChanged += GameBoard_GameBoardStatusChanged;
-            _highScoreList.HighScoreListChanged += HighScoreList_HighScoreListChanged;
+            _highScoreList.Changed += HighScoreList_Changed;
         }
 
         private TextBlock BuildTextBlock(double left, double top, string text = null)
@@ -67,7 +67,7 @@ namespace Tetris.UI
 
         // Update the UI (StatusCanvas) every time the model (HighScoreList) changes
         // Soon after, the OnRender method is called
-        private void HighScoreList_HighScoreListChanged(object sender, EventArgs e)
+        private void HighScoreList_Changed(object sender, EventArgs e)
         {
             InvalidateVisual();
         }

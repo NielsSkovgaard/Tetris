@@ -11,12 +11,13 @@ namespace Tetris.Models
         public event EventHandler GameBoardChanged;
         public event EventHandler GameBoardNextPieceChanged;
         public event EventHandler GameBoardStatusChanged;
+        public event EventHandler<int> GameOver;
 
         // Input parameters
         public int Rows { get; } // Usually 20
         public int Cols { get; } // Usually 10
 
-        public int[,] LockedBlocks { get; }
+        public int[,] LockedBlocks { get; private set; }
         public Piece CurrentPiece { get; private set; }
         public Piece NextPiece { get; private set; }
 
@@ -61,22 +62,41 @@ namespace Tetris.Models
             Rows = rows;
             Cols = cols;
 
-            LockedBlocks = new int[rows, cols];
-            CurrentPiece = BuildRandomPiece();
-            NextPiece = BuildRandomPiece();
+            ResetState();
 
             // Timers
             _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
             _timerRotatePiece.Interval = _timeSpanRotatePiece;
-            _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
+
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
             _timerMovePieceDown.Tick += (sender, args) => TryMovePieceDown();
             _timerSecondsGameHasBeenRunning.Tick += (sender, args) => IncrementGameTime();
 
+            // TODO: Also do this when restarting game
             _timerMovePieceDown.Start();
             _timerSecondsGameHasBeenRunning.Start();
+        }
+
+        private void ResetState()
+        {
+            LockedBlocks = new int[Rows, Cols];
+            CurrentPiece = BuildRandomPiece();
+            NextPiece = BuildRandomPiece();
+
+            _isLeftKeyDown = false;
+            _isRightKeyDown = false;
+            _leftKeyHasPriority = false;
+            _isSoftDropping = false;
+
+            Level = 0;
+            Score = 0;
+            Lines = 0;
+            Time = 0;
+
+            // Timers
+            _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
         }
 
         private Piece BuildRandomPiece()
@@ -88,6 +108,7 @@ namespace Tetris.Models
             piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(piece.PieceType)) / 2;
             return piece;
         }
+
         private TimeSpan GetMovePieceDownTimerIntervalBasedOnLevel()
         {
             return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[Level]);
@@ -106,6 +127,11 @@ namespace Tetris.Models
         protected virtual void RaiseGameBoardStatusChangedEvent()
         {
             GameBoardStatusChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void RaiseGameOverEvent()
+        {
+            GameOver?.Invoke(this, Score);
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -266,7 +292,7 @@ namespace Tetris.Models
                     if (isRowComplete)
                         completeRowsBelowAndIncludingCurrentRow++;
 
-                    // Don't move the bottom row or rows that are complete
+                    // Don't move down the bottom row or rows that are complete
                     if (row != Rows - 1 && !isRowComplete)
                     {
                         for (int col = 0; col < Cols; col++)
@@ -281,6 +307,7 @@ namespace Tetris.Models
                         LockedBlocks[row, col] = 0;
                 }
 
+                // Update Level, Score, and Lines
                 UpdateLevelScoreAndLines(rowsOccupiedByPieceAndAreComplete.Count);
 
                 // Game Over if NextPiece collides with LockedBlocks array
@@ -289,25 +316,13 @@ namespace Tetris.Models
 
                 if (nextPieceCollidesWithLockedBlocks)
                 {
-                    // Game Over
+                    // Game Over: Stop all timers, and raise GameOver event (in order to eventually add high score)
                     _isGameOver = true;
-
-                    // Stop all Timers and reset state
                     _timerMovePieceLeftOrRight.Stop();
                     _timerRotatePiece.Stop();
                     _timerMovePieceDown.Stop();
                     _timerSecondsGameHasBeenRunning.Stop();
-
-                    // Reset state
-                    // TODO: This should instead be done when restarting game
-                    // TODO: Also reset Level, Score, Lines, Time
-                    _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
-                    _isLeftKeyDown = false;
-                    _isRightKeyDown = false;
-                    _leftKeyHasPriority = false;
-                    _isSoftDropping = false;
-
-                    // TODO: If record, then ask for name, and save in HighScoreList
+                    RaiseGameOverEvent();
                 }
                 else
                 {
@@ -333,6 +348,7 @@ namespace Tetris.Models
                 if (Level < MaximumLevel)
                 {
                     int newLevel = Lines / NumberOfRowsToIncreaseLevel;
+
                     if (newLevel > Level)
                     {
                         Level = newLevel;

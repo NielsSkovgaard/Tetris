@@ -61,9 +61,16 @@
     <Compile Include="UI\GraphicsConstants.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
+    <Compile Include="UI\HighScoreInputUserControl.xaml.cs">
+      <DependentUpon>HighScoreInputUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\StatusCanvas.cs" />
     <Compile Include="UI\NextPieceCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
+    <Page Include="UI\HighScoreInputUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -96,6 +103,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

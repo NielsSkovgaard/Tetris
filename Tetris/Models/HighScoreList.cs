@@ -7,7 +7,7 @@ namespace Tetris.Models
 {
     internal class HighScoreList
     {
-        public event EventHandler HighScoreListChanged;
+        public event EventHandler Changed;
 
         private const int NumberOfHighScores = 5;
 
@@ -21,9 +21,9 @@ namespace Tetris.Models
             BuildListFromFileOrDefault();
         }
 
-        protected virtual void RaiseHighScoreListChanged()
+        protected virtual void RaiseChangedEvent()
         {
-            HighScoreListChanged?.Invoke(this, EventArgs.Empty);
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         private void BuildListFromFileOrDefault()
@@ -36,7 +36,7 @@ namespace Tetris.Models
                     new HighScoreEntry("CPU", 8000),
                     new HighScoreEntry("CPU", 6000),
                     new HighScoreEntry("CPU", 4000),
-                    new HighScoreEntry("CPU", 2000)
+                    new HighScoreEntry("CPU", 100)
                 };
             }
             else
@@ -59,18 +59,25 @@ namespace Tetris.Models
 
         public bool IsRecord(int score) => score > List.Last().Score;
 
-        // TODO: Call this method when the game is over
         public void Add(string name, int score)
         {
             for (int i = 0; i < List.Count; i++)
             {
                 if (score > List[i].Score)
+                {
+                    // Clean up input name
+                    name = name.Trim();
+                    if (name.Length == 0)
+                        name = "???";
+
                     List.Insert(i, new HighScoreEntry(name, score));
+                    break;
+                }
             }
 
             List.RemoveAt(NumberOfHighScores - 1);
             SaveToFile();
-            RaiseHighScoreListChanged();
+            RaiseChangedEvent();
         }
     }
 }
