@@ -36,9 +36,6 @@ namespace Tetris.UI
             {
                 for (int col = 0; col < _gameBoard.Cols; col++)
                 {
-                    // TODO: Consider having a predefined grid with 10x20 rectangles to color
-                    // TODO: Here, are many rectangles created and destroyed all the time?
-                    // TODO: The GameBoardChanged EventArgs could then include how the Shape looked before (reset these rectangles) and after for repainting
                     int blockType = _gameBoard.LockedBlocks[row, col];
 
                     if (blockType != 0)
@@ -53,15 +50,15 @@ namespace Tetris.UI
                 }
             }
 
-            // Render the currently moving Piece
-            foreach (Block block in _gameBoard.Piece.Blocks)
+            // Render CurrentPiece
+            foreach (Block block in _gameBoard.CurrentPiece.Blocks)
             {
                 Rect rect = new Rect(
-                    (_gameBoard.Piece.CoordsX + block.CoordsX) * _blockSizeInPixels,
-                    (_gameBoard.Piece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    (_gameBoard.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (_gameBoard.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.Piece.PieceType - 1], GraphicsConstants.BlockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.CurrentPiece.PieceType - 1], GraphicsConstants.BlockBorderPen, rect);
             }
         }
     }

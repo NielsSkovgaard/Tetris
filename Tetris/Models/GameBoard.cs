@@ -16,14 +16,11 @@ namespace Tetris.Models
         public int Rows { get; } // Usually 20
         public int Cols { get; } // Usually 10
 
-        // LockedBlocks, the currently moving Piece, and the next Piece
         public int[,] LockedBlocks { get; }
-        public Piece Piece { get; private set; }
+        public Piece CurrentPiece { get; private set; }
         public Piece NextPiece { get; private set; }
 
-        //Game Over
         private bool _isGameOver;
-
         private readonly Random _random = new Random();
 
         // TimeSpans and Timers:
@@ -33,7 +30,7 @@ namespace Tetris.Models
         private readonly DispatcherTimer _timerMovePieceLeftOrRight = new DispatcherTimer();
         private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
 
-        // - to add gravity to the Piece. It will move down faster when soft dropping (by holding down the down key)
+        // - to add gravity to CurrentPiece. It will move down faster when soft dropping (by holding down the down key)
         private readonly TimeSpan _timeSpanMovePieceDownGravity = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
         private readonly TimeSpan _timeSpanMovePieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
         private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
@@ -66,7 +63,7 @@ namespace Tetris.Models
             Cols = cols;
 
             LockedBlocks = new int[rows, cols];
-            Piece = BuildRandomPiece();
+            CurrentPiece = BuildRandomPiece();
             NextPiece = BuildRandomPiece();
 
             // Timers
@@ -188,70 +185,70 @@ namespace Tetris.Models
 
         private void TryMovePieceLeft()
         {
-            if (Piece.Blocks.All(block =>
-                Piece.CoordsX + block.CoordsX >= 1 && // Check that the Piece is not up against the left side
-                LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX - 1] == 0)) // Check that the Piece won't collide with the locked blocks
+            if (CurrentPiece.Blocks.All(block =>
+                CurrentPiece.CoordsX + block.CoordsX >= 1 && // Check that CurrentPiece is not up against the left side
+                LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX - 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
-                Piece.MoveLeft();
+                CurrentPiece.MoveLeft();
                 RaiseGameBoardChangedEvent();
             }
         }
 
         private void TryMovePieceRight()
         {
-            if (Piece.Blocks.All(block =>
-                Piece.CoordsX + block.CoordsX + 2 <= Cols && // Check that the Piece is not up against the right side
-                LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX + 1] == 0)) // Check that the Piece won't collide with the locked blocks
+            if (CurrentPiece.Blocks.All(block =>
+                CurrentPiece.CoordsX + block.CoordsX + 2 <= Cols && // Check that CurrentPiece is not up against the right side
+                LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX + 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
-                Piece.MoveRight();
+                CurrentPiece.MoveRight();
                 RaiseGameBoardChangedEvent();
             }
         }
 
         private void TryRotatePiece()
         {
-            bool isNextRotationInValidPosition = Piece.BlocksInNextRotation.All(block =>
-                Piece.CoordsX + block.CoordsX >= 0 && // Check that the rotated Piece is within the bounds in the left side
-                Piece.CoordsX + block.CoordsX + 1 <= Cols && // Check that the rotated Piece is within the bounds in the right side
-                Piece.CoordsY + block.CoordsY + 1 <= Rows && // Check that the rotated Piece is within the bounds in the bottom
-                LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the locked blocks
+            bool isNextRotationInValidPosition = CurrentPiece.BlocksInNextRotation.All(block =>
+                CurrentPiece.CoordsX + block.CoordsX >= 0 && // Check that the rotated CurrentPiece is within the bounds in the left side
+                CurrentPiece.CoordsX + block.CoordsX + 1 <= Cols && // Check that the rotated CurrentPiece is within the bounds in the right side
+                CurrentPiece.CoordsY + block.CoordsY + 1 <= Rows && // Check that the rotated CurrentPiece is within the bounds in the bottom
+                LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX] == 0); // Check that CurrentPiece won't collide with the locked blocks
 
             if (isNextRotationInValidPosition)
             {
-                Piece.Rotate();
+                CurrentPiece.Rotate();
                 RaiseGameBoardChangedEvent();
             }
         }
 
         private void TryMovePieceDown()
         {
-            bool canMovePieceDown = Piece.Blocks.All(block =>
-                Piece.CoordsY + block.CoordsY + 2 <= Rows && // Check that the Piece is not on the bottom row (e.g. 15 + 3 + 2 <= 20 = true)
-                LockedBlocks[Piece.CoordsY + block.CoordsY + 1, Piece.CoordsX + block.CoordsX] == 0); // Check that the Piece won't collide with the locked blocks
+            bool canMovePieceDown = CurrentPiece.Blocks.All(block =>
+                CurrentPiece.CoordsY + block.CoordsY + 2 <= Rows && // Check that CurrentPiece is not on the bottom row (e.g. 15 + 3 + 2 <= 20 = true)
+                LockedBlocks[CurrentPiece.CoordsY + block.CoordsY + 1, CurrentPiece.CoordsX + block.CoordsX] == 0); // Check that CurrentPiece won't collide with the locked blocks
 
             if (canMovePieceDown)
             {
                 if (_isSoftDropping)
                 {
-                    // Award points for soft dropping the Piece
+                    // Award points for soft dropping CurrentPiece
                     Score++;
                     RaiseGameBoardStatusChangedEvent();
                 }
 
-                Piece.MoveDown();
+                CurrentPiece.MoveDown();
                 RaiseGameBoardChangedEvent();
             }
             else
             {
-                // Add all Piece blocks to the LockedBlocks array
-                foreach (Block block in Piece.Blocks)
-                    LockedBlocks[Piece.CoordsY + block.CoordsY, Piece.CoordsX + block.CoordsX] = (int)Piece.PieceType;
+                // Add all CurrentPiece blocks to the LockedBlocks array
+                foreach (Block block in CurrentPiece.Blocks)
+                    LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX] = (int)CurrentPiece.PieceType;
 
-                // Build HashSet of row numbers occupied by the Piece and that are complete
+                // Build HashSet of row numbers occupied by CurrentPiece and that are complete
                 // Complete rows should be removed from the LockedBlocks array, and then points should be awarded
                 HashSet<int> rowsOccupiedByPieceAndAreComplete = new HashSet<int>(
-                    Piece.Blocks
-                    .Select(block => Piece.CoordsY + block.CoordsY)
+                    CurrentPiece.Blocks
+                    .Select(block => CurrentPiece.CoordsY + block.CoordsY)
                     .Where(row => Enumerable
                         .Range(0, Cols)
                         .All(col => LockedBlocks[row, col] != 0)));
@@ -274,7 +271,7 @@ namespace Tetris.Models
                     }
                 }
 
-                // Clear top x rows where x is the number of rows completed by the Piece
+                // Clear top x rows where x is the number of rows completed by CurrentPiece
                 for (int row = 0; row < rowsOccupiedByPieceAndAreComplete.Count; row++)
                 {
                     for (int col = 0; col < Cols; col++)
@@ -311,13 +308,13 @@ namespace Tetris.Models
                 }
                 else
                 {
-                    // Update the currently moving Piece to refer to NextPiece. Then build a new NextPiece
-                    Piece = NextPiece;
+                    // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
+                    CurrentPiece = NextPiece;
                     NextPiece = BuildRandomPiece();
                     RaiseGameBoardNextPieceChangedEvent();
                 }
 
-                // Raise the changed event if any rows have been completed or the Piece has been updated
+                // Raise the changed event if any rows have been completed or CurrentPiece has been updated
                 if (rowsOccupiedByPieceAndAreComplete.Any() || !nextPieceCollidesWithLockedBlocks)
                     RaiseGameBoardChangedEvent();
             }

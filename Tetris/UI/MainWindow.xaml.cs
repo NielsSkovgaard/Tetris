@@ -78,25 +78,9 @@ namespace Tetris.UI
     }
 }
 
-// Official guidelines for building Tetris:
-// http://tetris.wikia.com/wiki/Tetris_Guideline
-// https://en.wikipedia.org/wiki/Tetromino
-
-// TODO ITEMS:
-// -----------
-// TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
-
-// TODO: Have a separate Thread to do UI stuff:
-// - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
-// - http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
-// From StackOverflow: canvas.Dispatcher.Invoke(emptyDelegate, DispatcherPriority.Render); where emptyDelegate is Action emptyDelegate = delegate { };
-
-// TODO: Is InvalidateVisual(); the right way to update the UI?
-// TODO: Increasing Piece speed
-// TODO: Start/Pause buttons -- see http://www.colinfahey.com/tetris/tetris.html
-// TODO: Consider having extra space in top of rows for new piece, and a line showing the border above which the Piece will give Game Over
-// TODO: Correct y positioning of Piece in the top of the game board
-// TODO: Stop all timers on game over
+// ------------------------------------------------------------------------------------------------
+// NOTES:
+// ------------------------------------------------------------------------------------------------
 
 // Standard rules: https://www.reddit.com/r/Tetris/comments/3jnsjy/best_versions_for_marathon_mode/
 // 15 levels of increasing difficulty
@@ -108,4 +92,22 @@ namespace Tetris.UI
 // 1 point per soft dropped row
 // 2 points per hard dropped row // TODO: Not implemented
 
-// TODO: Have a lock delay?: http://harddrop.com/wiki/Lock_delay
+// Official guidelines for building Tetris:
+// http://tetris.wikia.com/wiki/Tetris_Guideline
+// https://en.wikipedia.org/wiki/Tetromino
+
+// ------------------------------------------------------------------------------------------------
+// TODO LIST:
+// ------------------------------------------------------------------------------------------------
+
+// TODO: Organize project as MVVM: http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
+
+// TODO: Have a separate Thread to do UI stuff:
+// - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
+// - http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
+
+// TODO: Increasing CurrentPiece speed
+// TODO: Start/Pause buttons. See: http://www.colinfahey.com/tetris/tetris.html
+// TODO: Have a lock delay? See: http://harddrop.com/wiki/Lock_delay
+// TODO: Define WPF controls with XAML
+// TODO: Have a grid with 10x20 predefined rectangles to color in the GameCanvas.OnRender method, instead of generating them on every rendering
