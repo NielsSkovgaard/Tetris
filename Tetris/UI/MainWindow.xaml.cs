@@ -134,9 +134,12 @@ namespace Tetris.UI
 // 1 point per soft dropped row
 // 2 points per hard dropped row // TODO: Not implemented
 
-// Official guidelines for building Tetris:
+// Guidelines for building Tetris:
 // http://tetris.wikia.com/wiki/Tetris_Guideline
 // https://en.wikipedia.org/wiki/Tetromino
+// http://www.colinfahey.com/tetris/tetris.html
+
+// Js Tetris: http://web.itu.edu.tr/~msilgu/tetris/tetris.html
 
 // ------------------------------------------------------------------------------------------------
 // TODO LIST:

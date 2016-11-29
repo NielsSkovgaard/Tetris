@@ -32,7 +32,7 @@ namespace Tetris.Models
         private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
 
         // - to add gravity to CurrentPiece. It will move down faster when soft dropping (by holding down the down key)
-        private readonly int[] _movePieceDownIntervalsInMilisecondsPerLevel = { 887, 820, 753, 686, 619, 552, 469, 368, 285, 184, 167, 151, 134, 117, 100, 100 }; // See http://tetrisconcept.net/wiki/index.php?title=Tetris_(Game_Boy)
+        private readonly int[] _movePieceDownIntervalsInMilisecondsPerLevel = { 887, 820, 753, 686, 619, 552, 469, 368, 285, 184, 167, 151, 134, 117, 100 }; // See http://tetrisconcept.net/wiki/index.php?title=Tetris_(Game_Boy)
         private readonly TimeSpan _timeSpanMovePieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
         private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
 
@@ -48,7 +48,7 @@ namespace Tetris.Models
         private bool _leftKeyHasPriority;
 
         // Level, Score, Lines, Time
-        public int Level { get; private set; } // Between 0 and 15
+        public int Level { get; private set; } // Between 1 and 15
         public int Score { get; private set; }
         public int Lines { get; private set; }
         public int Time { get; private set; }
@@ -90,7 +90,7 @@ namespace Tetris.Models
             _leftKeyHasPriority = false;
             _isSoftDropping = false;
 
-            Level = 0;
+            Level = 1;
             Score = 0;
             Lines = 0;
             Time = 0;
@@ -111,7 +111,7 @@ namespace Tetris.Models
 
         private TimeSpan GetMovePieceDownTimerIntervalBasedOnLevel()
         {
-            return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[Level]);
+            return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[Level - 1]);
         }
 
         protected virtual void RaiseChangedEvent()
@@ -347,13 +347,13 @@ namespace Tetris.Models
 
                 if (Level < MaximumLevel)
                 {
-                    int newLevel = Lines / NumberOfRowsToIncreaseLevel;
+                    int newLevel = Lines / NumberOfRowsToIncreaseLevel + 1;
 
                     if (newLevel > Level)
                     {
                         Level = newLevel;
 
-                        // Make the _timerMovePieceDown faster (unless we are soft dropping, which is using the same timer)
+                        // Make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
                         if (!_isSoftDropping)
                             _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
                     }
