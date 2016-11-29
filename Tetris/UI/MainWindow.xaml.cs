@@ -13,7 +13,7 @@ namespace Tetris.UI
     {
         // Input parameters
         private const int Rows = 20;
-        private const int Cols = 10;
+        private const int Cols = 10; // Has to be >= 4
         private const int BlockSizeInPixels = 25;
 
         private const int NextPieceRows = 6;
