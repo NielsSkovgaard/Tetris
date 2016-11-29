@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Tetris.Models;
@@ -28,45 +29,62 @@ namespace Tetris.UI
         {
             InitializeComponent();
 
+            const int borderThickness = 5;
+            const int spacingBetweenElements = 20;
+
             // Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
             {
                 Height = Rows * BlockSizeInPixels, // Usually 500px
                 Width = Cols * BlockSizeInPixels, // Usually 250px
-                Margin = new Thickness(10),
-                Background = Brushes.Black,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
+                Background = Brushes.Black
             };
+
+            Border gameCanvasBorder = BuildBorderForFrameworkElement(gameCanvas, borderThickness);
+            gameCanvasBorder.Margin = new Thickness(spacingBetweenElements);
 
             // Dependency injection of GameBoard into NextPieceCanvas
             NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(_gameBoard, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols)
             {
                 Height = NextPieceRows * NextPieceBlockSizeInPixels, // Usually 120px
                 Width = NextPieceCols * NextPieceBlockSizeInPixels, // Usually 120px
-                Margin = new Thickness(gameCanvas.Width + 20, 10, 10, 10),
-                Background = Brushes.Black,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
+                Background = Brushes.Black
             };
+
+            Border nextPieceCanvasBorder = BuildBorderForFrameworkElement(nextPieceCanvas, borderThickness);
+            nextPieceCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
 
             // Dependency injection of GameBoard into StatusCanvas
             StatusCanvas statusCanvas = new StatusCanvas(_gameBoard, _highScoreList)
             {
-                Height = gameCanvas.Height - nextPieceCanvas.Height - 10, // Usually 370px
+                Height = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - spacingBetweenElements - 2 * borderThickness,
                 Width = nextPieceCanvas.Width, // Usually 120px
-                Margin = new Thickness(gameCanvas.Width + 20, nextPieceCanvas.Height + 20, 10, 10),
-                Background = Brushes.Black,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
+                Background = Brushes.Black
             };
 
-            Grid2.Children.Add(gameCanvas);
-            Grid2.Children.Add(nextPieceCanvas);
-            Grid2.Children.Add(statusCanvas);
+            Border statusCanvasBorder = BuildBorderForFrameworkElement(statusCanvas, borderThickness);
+            statusCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+            
+            Grid2.Children.Add(gameCanvasBorder);
+            Grid2.Children.Add(nextPieceCanvasBorder);
+            Grid2.Children.Add(statusCanvasBorder);
 
             _gameBoard.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
+        }
+
+        private Border BuildBorderForFrameworkElement(FrameworkElement element, int borderWidth)
+        {
+            return new Border
+            {
+                Height = element.Height + 2 * borderWidth,
+                Width = element.Width + 2 * borderWidth,
+                BorderThickness = new Thickness(borderWidth),
+                BorderBrush = Brushes.White,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Child = element
+            };
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
@@ -94,7 +112,7 @@ namespace Tetris.UI
 
         private void HighScoreInputUserControl1_ButtonOk_Click(object sender, RoutedEventArgs e)
         {
-            _highScoreList.Add(HighScoreInputUserControl1.TextBoxName.Text.Trim(), HighScoreInputUserControl1.Score);
+            _highScoreList.Add(HighScoreInputUserControl1.TextBoxName.Text, HighScoreInputUserControl1.Score);
 
             RectangleOverlay.Visibility = Visibility.Collapsed;
             HighScoreInputUserControl1.Visibility = Visibility.Collapsed;

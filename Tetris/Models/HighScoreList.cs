@@ -65,10 +65,9 @@ namespace Tetris.Models
             {
                 if (score > List[i].Score)
                 {
-                    // Clean up input name
+                    // Format input name
                     name = name.Trim();
-                    if (name.Length == 0)
-                        name = "???";
+                    name = name.Length == 0 ? "???" : name.ToUpper();
 
                     List.Insert(i, new HighScoreEntry(name, score));
                     break;

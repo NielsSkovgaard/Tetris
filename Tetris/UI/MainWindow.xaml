@@ -6,7 +6,14 @@
         xmlns:local="clr-namespace:Tetris"
         xmlns:ui="clr-namespace:Tetris.UI"
         mc:Ignorable="d"
-        Title="Tetris" ResizeMode="NoResize" MinWidth="300" SizeToContent="WidthAndHeight" KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp" d:DesignHeight="560" d:DesignWidth="417" WindowStartupLocation="CenterScreen">
+        Title="Tetris"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        KeyDown="MainWindow_OnKeyDown"
+        KeyUp="MainWindow_OnKeyUp"
+        WindowStartupLocation="CenterScreen"
+        d:DesignHeight="560"
+        d:DesignWidth="417">
     <Grid x:Name="Grid1">
         <Grid x:Name="Grid2" Background="LightGray"/>
         <Rectangle x:Name="RectangleOverlay" Fill="Black" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed"/>
