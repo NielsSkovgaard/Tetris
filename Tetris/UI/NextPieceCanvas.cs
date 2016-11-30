@@ -13,6 +13,8 @@ namespace Tetris.UI
         private readonly int _rows; // Usually 6
         private readonly int _cols; // Usually 6
 
+        private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
+
         // Dependency injection of GameBoard into NextPieceCanvas
         public NextPieceCanvas(GameBoard gameBoard, int blockSizeInPixels, int rows, int cols)
         {
@@ -47,8 +49,7 @@ namespace Tetris.UI
                     (nextPieceCoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.NextPiece.PieceType - 1],
-                    GraphicsConstants.BlockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.NextPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

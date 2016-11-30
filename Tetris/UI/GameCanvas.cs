@@ -11,6 +11,8 @@ namespace Tetris.UI
         private readonly GameBoard _gameBoard;
         private readonly int _blockSizeInPixels; // Usually 25px
 
+        private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
+
         // Dependency injection of GameBoard into GameCanvas
         public GameCanvas(GameBoard gameBoard, int blockSizeInPixels)
         {
@@ -45,8 +47,7 @@ namespace Tetris.UI
                             row * _blockSizeInPixels,
                             _blockSizeInPixels, _blockSizeInPixels);
 
-                        dc.DrawRectangle(GraphicsConstants.BlockBrushes[blockType - 1],
-                            GraphicsConstants.BlockBorderPen, rect);
+                        dc.DrawRectangle(GraphicsConstants.BlockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
                 }
             }
@@ -59,8 +60,7 @@ namespace Tetris.UI
                     (_gameBoard.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.CurrentPiece.PieceType - 1],
-                    GraphicsConstants.BlockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

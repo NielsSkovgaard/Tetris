@@ -194,7 +194,6 @@ namespace Tetris.UI
 // - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
 // - http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
 
-// TODO: Start/Pause buttons. See: http://www.colinfahey.com/tetris/tetris.html
 // TODO: Have a lock delay? See: http://harddrop.com/wiki/Lock_delay
 // TODO: Define WPF controls with XAML
 // TODO: Have a grid with 10x20 predefined rectangles to color in the GameCanvas.OnRender method, instead of generating them on every rendering

@@ -48,7 +48,7 @@ namespace Tetris.UI
 
         private TextBlock BuildTextBlockAndAddToChildren(double top, string text = null)
         {
-            TextBlock textBlock = new TextBlock { Text = text ?? string.Empty, Foreground = GraphicsConstants.TextBrush, FontFamily = new FontFamily("Consolas, Courier New") };
+            TextBlock textBlock = new TextBlock { Text = text ?? string.Empty, Foreground = Brushes.White, FontFamily = new FontFamily("Consolas, Courier New") };
             SetTop(textBlock, top);
             SetLeft(textBlock, 10);
             Children.Add(textBlock);
