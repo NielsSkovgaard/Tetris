@@ -93,7 +93,7 @@ namespace Tetris.Models
             RaiseNextPieceChangedEvent();
             RaiseStatisticsChangedEvent();
 
-            // Calling PauseResumeGame will "resume" the game, in other words start it
+            // Calling PauseResumeGame when IsGamePaused is true will "resume" the game, or in other words start it
             IsGameOver = false;
             IsGamePaused = true;
             PauseResumeGame();

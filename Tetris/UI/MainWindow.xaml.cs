@@ -79,7 +79,7 @@ namespace Tetris.UI
             highScoresCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // ButtonsUserControl
-            _buttonsUserControl = new ButtonsUserControl()
+            _buttonsUserControl = new ButtonsUserControl
             {
                 Height = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - statisticsCanvasBorder.Height - highScoresCanvasBorder.Height - 3 * ElementsSpacing - 2 * ElementsBorderThickness,
                 Width = nextPieceCanvas.Width, // Usually 120px
