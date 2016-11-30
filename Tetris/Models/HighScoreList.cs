@@ -30,11 +30,11 @@ namespace Tetris.Models
             {
                 List = new List<HighScoreEntry>
                 {
-                    new HighScoreEntry("CPU", 10000),
-                    new HighScoreEntry("CPU", 8000),
-                    new HighScoreEntry("CPU", 6000),
-                    new HighScoreEntry("CPU", 4000),
-                    new HighScoreEntry("CPU", 2000)
+                    new HighScoreEntry("-", 0),
+                    new HighScoreEntry("-", 0),
+                    new HighScoreEntry("-", 0),
+                    new HighScoreEntry("-", 0),
+                    new HighScoreEntry("-", 0)
                 };
             }
             else

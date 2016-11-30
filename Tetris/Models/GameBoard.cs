@@ -10,7 +10,7 @@ namespace Tetris.Models
     {
         public event EventHandler Changed;
         public event EventHandler NextPieceChanged;
-        public event EventHandler StatusChanged;
+        public event EventHandler StatisticsChanged;
         public event EventHandler<int> GameOver;
 
         // Input parameters
@@ -124,9 +124,9 @@ namespace Tetris.Models
             NextPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void RaiseStatusChangedEvent()
+        protected virtual void RaiseStatisticsChangedEvent()
         {
-            StatusChanged?.Invoke(this, EventArgs.Empty);
+            StatisticsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void RaiseGameOverEvent()
@@ -261,7 +261,7 @@ namespace Tetris.Models
                 {
                     // Award points for soft dropping CurrentPiece
                     Score++;
-                    RaiseStatusChangedEvent();
+                    RaiseStatisticsChangedEvent();
                 }
 
                 CurrentPiece.MoveDown();
@@ -359,14 +359,14 @@ namespace Tetris.Models
                     }
                 }
 
-                RaiseStatusChangedEvent();
+                RaiseStatisticsChangedEvent();
             }
         }
 
         private void IncrementGameTime()
         {
             Time++;
-            RaiseStatusChangedEvent();
+            RaiseStatisticsChangedEvent();
         }
     }
 }

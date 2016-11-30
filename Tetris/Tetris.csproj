@@ -67,7 +67,8 @@
     <Compile Include="UI\HighScoreInputUserControl.xaml.cs">
       <DependentUpon>HighScoreInputUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\StatusCanvas.cs" />
+    <Compile Include="UI\HighScoresCanvas.cs" />
+    <Compile Include="UI\StatisticsCanvas.cs" />
     <Compile Include="UI\NextPieceCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
     <Page Include="UI\HighScoreInputUserControl.xaml">

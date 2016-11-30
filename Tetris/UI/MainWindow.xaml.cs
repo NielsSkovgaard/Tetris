@@ -54,20 +54,32 @@ namespace Tetris.UI
             Border nextPieceCanvasBorder = BuildBorderForFrameworkElement(nextPieceCanvas, borderThickness);
             nextPieceCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
 
-            // Dependency injection of GameBoard into StatusCanvas
-            StatusCanvas statusCanvas = new StatusCanvas(_gameBoard, _highScoreList)
+            // Dependency injection of GameBoard into StatisticsCanvas
+            StatisticsCanvas statisticsCanvas = new StatisticsCanvas(_gameBoard)
             {
-                Height = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - spacingBetweenElements - 2 * borderThickness,
+                Height = 95, // TODO! Before: = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - spacingBetweenElements - 2 * borderThickness,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
-            Border statusCanvasBorder = BuildBorderForFrameworkElement(statusCanvas, borderThickness);
-            statusCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+            Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsCanvas, borderThickness);
+            statisticsCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+
+            // Dependency injection of HighScoreList into HighScoresCanvas
+            HighScoresCanvas highScoresCanvas = new HighScoresCanvas(_highScoreList)
+            {
+                Height = 136, // TODO
+                Width = nextPieceCanvas.Width, // Usually 120px
+                Background = Brushes.Black
+            };
+
+            Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresCanvas, borderThickness);
+            highScoresCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
 
             Grid2.Children.Add(gameCanvasBorder);
             Grid2.Children.Add(nextPieceCanvasBorder);
-            Grid2.Children.Add(statusCanvasBorder);
+            Grid2.Children.Add(statisticsCanvasBorder);
+            Grid2.Children.Add(highScoresCanvasBorder);
 
             _gameBoard.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
