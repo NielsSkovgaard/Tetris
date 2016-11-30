@@ -14,7 +14,7 @@
             <LineBreak/>
             <Run Foreground="White" FontSize="11" FontFamily="Consolas, Courier New" Text="Enter your initials (max 5 letters)"/>
         </TextBlock>
-        <TextBox x:Name="TextBoxInitials" HorizontalAlignment="Left" Height="20" Margin="10,70,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="143" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" MaxLength="5" Focusable="True" CharacterCasing="Upper"/>
+        <TextBox x:Name="TextBoxInitials" HorizontalAlignment="Left" Height="20" Margin="10,70,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="143" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" MaxLength="5" CharacterCasing="Upper"/>
         <Button x:Name="ButtonOk" Content="OK" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="172,70,0,0" Width="50" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" Height="20" IsDefault="True"/>
     </Grid>
 </UserControl>

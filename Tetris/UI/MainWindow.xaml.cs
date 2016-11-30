@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Tetris.Models;
 
 namespace Tetris.UI
@@ -151,7 +153,13 @@ namespace Tetris.UI
 
                 RectangleOverlay.Visibility = Visibility.Visible;
                 HighScoreInputUserControl1.Visibility = Visibility.Visible;
-                HighScoreInputUserControl1.TextBoxInitials.Focus(); // TODO: Doesn't set focus to the TextBox
+
+                // See: http://stackoverflow.com/questions/13955340/keyboard-focus-does-not-work-on-text-box-in-wpf
+                Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                {
+                    HighScoreInputUserControl1.TextBoxInitials.Focus();
+                    Keyboard.Focus(HighScoreInputUserControl1.TextBoxInitials);
+                }));
             }
             else
             {
@@ -203,15 +211,15 @@ namespace Tetris.UI
 // TODO LIST:
 // ------------------------------------------------------------------------------------------------
 
-// TODO: Organize project with MVVM pattern
+// TODO: Organize project using MVVM or MVVMC pattern
 // - http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
 // - https://msdn.microsoft.com/en-us/library/ff798384.aspx
+// - http://skimp-blog.blogspot.dk/2012/02/mvvm-is-dead-long-live-mvvmc.html
 
 // TODO: Have a separate Thread to do UI stuff
 // - https://chainding.wordpress.com/2011/07/07/build-more-responsive-apps-with-the-dispatcher/
 // - http://stackoverflow.com/questions/5959217/wpf-forcing-redraw-of-canvas
 
-// TODO: Have a lock delay? See: http://harddrop.com/wiki/Lock_delay
+// TODO: Have a Tetris lock delay? See: http://harddrop.com/wiki/Lock_delay
 // TODO: Define WPF controls with XAML
-// TODO: Have a grid with 10x20 predefined rectangles to color in the GameCanvas.OnRender method, instead of generating them on every rendering
-// TODO: Focus TextBox in popup to enter high score initials
+// TODO: Consider having a grid with 10x20 predefined rectangles to color in the GameCanvas.OnRender method, instead of generating them on every rendering

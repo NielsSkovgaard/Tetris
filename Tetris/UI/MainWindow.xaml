@@ -17,7 +17,7 @@
     <Grid x:Name="Grid1">
         <Grid x:Name="Grid2" Background="LightGray"/>
         <Rectangle x:Name="RectangleOverlay" Fill="Black" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed"/>
-        <ui:HighScoreInputUserControl x:Name="HighScoreInputUserControl1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
-        <ui:GameOverUserControl x:Name="GameOverUserControl1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+        <ui:HighScoreInputUserControl x:Name="HighScoreInputUserControl1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+        <ui:GameOverUserControl x:Name="GameOverUserControl1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
     </Grid>
 </Window>
