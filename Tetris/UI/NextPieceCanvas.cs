@@ -35,25 +35,20 @@ namespace Tetris.UI
         {
             base.OnRender(dc);
 
-            if (_gameBoard.HasGameBeenStartedAtLeastOnce)
+            // Calculate NextPiece coordinates on the NextPieceCanvas
+            // Because the _gameBoard.NextPiece.CoordsY and CoordsX coordinates are only used on the GameCanvas
+            double nextPieceCoordsY = (_rows - PieceBlockManager.GetHeightOfBlockArray(_gameBoard.NextPiece.PieceType)) / 2d;
+            double nextPieceCoordsX = (_cols - PieceBlockManager.GetWidthOfBlockArray(_gameBoard.NextPiece.PieceType)) / 2d;
+
+            foreach (Block block in _gameBoard.NextPiece.Blocks)
             {
-                // Calculate NextPiece coordinates on the NextPieceCanvas
-                // Because the _gameBoard.NextPiece.CoordsY and CoordsX coordinates are only used on the GameCanvas
-                double nextPieceCoordsY = (_rows -
-                                           PieceBlockManager.GetHeightOfBlockArray(_gameBoard.NextPiece.PieceType))/2d;
-                double nextPieceCoordsX = (_cols -
-                                           PieceBlockManager.GetWidthOfBlockArray(_gameBoard.NextPiece.PieceType))/2d;
+                Rect rect = new Rect(
+                    (nextPieceCoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (nextPieceCoordsY + block.CoordsY) * _blockSizeInPixels,
+                    _blockSizeInPixels, _blockSizeInPixels);
 
-                foreach (Block block in _gameBoard.NextPiece.Blocks)
-                {
-                    Rect rect = new Rect(
-                        (nextPieceCoordsX + block.CoordsX)*_blockSizeInPixels,
-                        (nextPieceCoordsY + block.CoordsY)*_blockSizeInPixels,
-                        _blockSizeInPixels, _blockSizeInPixels);
-
-                    dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int) _gameBoard.NextPiece.PieceType - 1],
-                        GraphicsConstants.BlockBorderPen, rect);
-                }
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.NextPiece.PieceType - 1],
+                    GraphicsConstants.BlockBorderPen, rect);
             }
         }
     }

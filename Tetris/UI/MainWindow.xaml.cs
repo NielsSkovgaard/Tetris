@@ -25,12 +25,14 @@ namespace Tetris.UI
         private readonly GameBoard _gameBoard = new GameBoard(Rows, Cols);
         private readonly HighScoreList _highScoreList = new HighScoreList(HighScoreListFilePath);
 
+        private const int ElementsBorderThickness = 6;
+        private const int ElementsSpacing = 16;
+
+        private readonly ButtonsUserControl _buttonsUserControl;
+
         public MainWindow()
         {
             InitializeComponent();
-
-            const int borderThickness = 5;
-            const int spacingBetweenElements = 20;
 
             // Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
@@ -40,8 +42,8 @@ namespace Tetris.UI
                 Background = Brushes.Black
             };
 
-            Border gameCanvasBorder = BuildBorderForFrameworkElement(gameCanvas, borderThickness);
-            gameCanvasBorder.Margin = new Thickness(spacingBetweenElements);
+            Border gameCanvasBorder = BuildBorderForFrameworkElement(gameCanvas, ElementsBorderThickness);
+            gameCanvasBorder.Margin = new Thickness(ElementsSpacing);
 
             // Dependency injection of GameBoard into NextPieceCanvas
             NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(_gameBoard, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols)
@@ -51,41 +53,41 @@ namespace Tetris.UI
                 Background = Brushes.Black
             };
 
-            Border nextPieceCanvasBorder = BuildBorderForFrameworkElement(nextPieceCanvas, borderThickness);
-            nextPieceCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+            Border nextPieceCanvasBorder = BuildBorderForFrameworkElement(nextPieceCanvas, ElementsBorderThickness);
+            nextPieceCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // Dependency injection of GameBoard into StatisticsCanvas
             StatisticsCanvas statisticsCanvas = new StatisticsCanvas(_gameBoard)
             {
-                Height = 95, // TODO! Before: = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - spacingBetweenElements - 2 * borderThickness,
+                Height = 94,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
-            Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsCanvas, borderThickness);
-            statisticsCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + 2 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+            Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsCanvas, ElementsBorderThickness);
+            statisticsCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // Dependency injection of HighScoreList into HighScoresCanvas
             HighScoresCanvas highScoresCanvas = new HighScoresCanvas(_highScoreList)
             {
-                Height = 136, // TODO
+                Height = 135,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
-            Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresCanvas, borderThickness);
-            highScoresCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+            Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresCanvas, ElementsBorderThickness);
+            highScoresCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // ButtonsUserControl
-            ButtonsUserControl buttonsUserControl = new ButtonsUserControl()
+            _buttonsUserControl = new ButtonsUserControl()
             {
-                // Height // TODO
+                Height = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - statisticsCanvasBorder.Height - highScoresCanvasBorder.Height - 3 * ElementsSpacing - 2 * ElementsBorderThickness,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
-            Border buttonsUserControlBorder = BuildBorderForFrameworkElement(buttonsUserControl, borderThickness);
-            buttonsUserControlBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + highScoresCanvasBorder.Height + 4 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+            Border buttonsUserControlBorder = BuildBorderForFrameworkElement(_buttonsUserControl, ElementsBorderThickness);
+            buttonsUserControlBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + highScoresCanvasBorder.Height + 4 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             Grid2.Children.Add(gameCanvasBorder);
             Grid2.Children.Add(nextPieceCanvasBorder);
@@ -93,8 +95,8 @@ namespace Tetris.UI
             Grid2.Children.Add(highScoresCanvasBorder);
             Grid2.Children.Add(buttonsUserControlBorder);
 
-            buttonsUserControl.ButtonNewGame.Click += ButtonNewGame_Click;
-            buttonsUserControl.ButtonPauseResume.Click += ButtonPauseResume_Click;
+            _buttonsUserControl.ButtonNewGame.Click += ButtonNewGame_Click;
+            _buttonsUserControl.ButtonPauseResume.Click += ButtonPauseResume_Click;
 
             _gameBoard.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
@@ -117,10 +119,13 @@ namespace Tetris.UI
         private void ButtonNewGame_Click(object sender, RoutedEventArgs e)
         {
             _gameBoard.StartNewGame();
+            _buttonsUserControl.ButtonPauseResume.Content = "Pause";
         }
 
         private void ButtonPauseResume_Click(object sender, RoutedEventArgs e)
         {
+            _gameBoard.PauseResumeGame();
+            _buttonsUserControl.ButtonPauseResume.Content = _gameBoard.IsGamePaused ? "Resume" : "Pause";
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)

@@ -21,8 +21,9 @@ namespace Tetris.Models
         public Piece CurrentPiece { get; private set; }
         public Piece NextPiece { get; private set; }
 
-        public bool HasGameBeenStartedAtLeastOnce { get; set; }
-        private bool _isGameOver;
+        public bool IsGamePaused { get; private set; }
+        public bool IsGameOver { get; private set; }
+
         private readonly Random _random = new Random();
 
         // TimeSpans and Timers:
@@ -72,20 +73,15 @@ namespace Tetris.Models
             _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
             _timerMovePieceDown.Tick += (sender, args) => TryMovePieceDown();
             _timerSecondsGameHasBeenRunning.Tick += (sender, args) => IncrementGameTime();
+
+            StartNewGame();
         }
 
         public void StartNewGame()
         {
-            HasGameBeenStartedAtLeastOnce = true;
-
             LockedBlocks = new int[Rows, Cols];
             CurrentPiece = BuildRandomPiece();
             NextPiece = BuildRandomPiece();
-
-            _isLeftKeyDown = false;
-            _isRightKeyDown = false;
-            _leftKeyHasPriority = false;
-            _isSoftDropping = false;
 
             Level = 1;
             Score = 0;
@@ -97,10 +93,44 @@ namespace Tetris.Models
             RaiseNextPieceChangedEvent();
             RaiseStatisticsChangedEvent();
 
-            // Timers
-            _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
-            _timerMovePieceDown.Start();
-            _timerSecondsGameHasBeenRunning.Start();
+            // Calling PauseResumeGame will "resume" the game, in other words start it
+            IsGameOver = false;
+            IsGamePaused = true;
+            PauseResumeGame();
+        }
+
+        public void PauseResumeGame()
+        {
+            if (IsGameOver)
+                return;
+
+            _timerMovePieceLeftOrRight.Stop();
+            _timerRotatePiece.Stop();
+
+            if (IsGamePaused)
+            {
+                // Resume game
+                IsGamePaused = false;
+
+                _isLeftKeyDown = false;
+                _isRightKeyDown = false;
+                _leftKeyHasPriority = false;
+                _isSoftDropping = false;
+
+                // Timers
+                _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
+                _timerMovePieceDown.Start();
+                _timerSecondsGameHasBeenRunning.Start();
+            }
+            else
+            {
+                // Pause game
+                IsGamePaused = true;
+
+                //Timers
+                _timerMovePieceDown.Stop();
+                _timerSecondsGameHasBeenRunning.Stop();
+            }
         }
 
         private Piece BuildRandomPiece()
@@ -140,7 +170,7 @@ namespace Tetris.Models
 
         public void KeyDown(Key key, bool isRepeat)
         {
-            if (_isGameOver || isRepeat)
+            if (IsGameOver || IsGamePaused || isRepeat)
                 return;
 
             switch (key)
@@ -175,7 +205,7 @@ namespace Tetris.Models
 
         public void KeyUp(Key key)
         {
-            if (_isGameOver)
+            if (IsGameOver || IsGamePaused)
                 return;
 
             switch (key)
@@ -321,7 +351,7 @@ namespace Tetris.Models
                 if (nextPieceCollidesWithLockedBlocks)
                 {
                     // Game Over: Stop all timers, and raise GameOver event (in order to eventually add high score)
-                    _isGameOver = true;
+                    IsGameOver = true;
                     _timerMovePieceLeftOrRight.Stop();
                     _timerRotatePiece.Stop();
                     _timerMovePieceDown.Stop();
