@@ -93,6 +93,9 @@ namespace Tetris.UI
             Grid2.Children.Add(highScoresCanvasBorder);
             Grid2.Children.Add(buttonsUserControlBorder);
 
+            buttonsUserControl.ButtonNewGame.Click += ButtonNewGame_Click;
+            buttonsUserControl.ButtonPauseResume.Click += ButtonPauseResume_Click;
+
             _gameBoard.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
         }
@@ -109,6 +112,15 @@ namespace Tetris.UI
                 VerticalAlignment = VerticalAlignment.Top,
                 Child = element
             };
+        }
+
+        private void ButtonNewGame_Click(object sender, RoutedEventArgs e)
+        {
+            _gameBoard.StartNewGame();
+        }
+
+        private void ButtonPauseResume_Click(object sender, RoutedEventArgs e)
+        {
         }
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)

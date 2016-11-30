@@ -21,6 +21,7 @@ namespace Tetris.Models
         public Piece CurrentPiece { get; private set; }
         public Piece NextPiece { get; private set; }
 
+        public bool HasGameBeenStartedAtLeastOnce { get; set; }
         private bool _isGameOver;
         private readonly Random _random = new Random();
 
@@ -52,6 +53,7 @@ namespace Tetris.Models
         public int Score { get; private set; }
         public int Lines { get; private set; }
         public int Time { get; private set; }
+
         private const int MaximumLevel = 15;
         private const int NumberOfRowsToIncreaseLevel = 10;
         private readonly int[] _scoresToAddForCompletingRows = { 100, 300, 500, 800 };
@@ -62,25 +64,20 @@ namespace Tetris.Models
             Rows = rows;
             Cols = cols;
 
-            ResetState();
-
             // Timers
             _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
             _timerRotatePiece.Interval = _timeSpanRotatePiece;
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
-
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
             _timerMovePieceDown.Tick += (sender, args) => TryMovePieceDown();
             _timerSecondsGameHasBeenRunning.Tick += (sender, args) => IncrementGameTime();
-
-            // TODO: Also do this when restarting game
-            _timerMovePieceDown.Start();
-            _timerSecondsGameHasBeenRunning.Start();
         }
 
-        private void ResetState()
+        public void StartNewGame()
         {
+            HasGameBeenStartedAtLeastOnce = true;
+
             LockedBlocks = new int[Rows, Cols];
             CurrentPiece = BuildRandomPiece();
             NextPiece = BuildRandomPiece();
@@ -95,8 +92,15 @@ namespace Tetris.Models
             Lines = 0;
             Time = 0;
 
+            // Raise events
+            RaiseChangedEvent();
+            RaiseNextPieceChangedEvent();
+            RaiseStatisticsChangedEvent();
+
             // Timers
             _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
+            _timerMovePieceDown.Start();
+            _timerSecondsGameHasBeenRunning.Start();
         }
 
         private Piece BuildRandomPiece()
