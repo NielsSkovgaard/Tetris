@@ -36,7 +36,9 @@ namespace Tetris.Models
         private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
 
         // - to add gravity to CurrentPiece. It will move down faster when soft dropping (by holding down the down key)
-        private readonly int[] _movePieceDownIntervalsInMilisecondsPerLevel = { 887, 820, 753, 686, 619, 552, 469, 368, 285, 184, 167, 151, 134, 117, 100 }; // See http://tetrisconcept.net/wiki/index.php?title=Tetris_(Game_Boy)
+        // Every level increases the speed by 18%. Notice that the max level speed is equal to the soft drop speed
+        private readonly int[] _movePieceDownIntervalsInMilisecondsPerLevel = { 800, 656, 538, 441, 362, 297, 243, 199, 164, 134, 110, 90, 74, 61, 50 };
+
         private readonly TimeSpan _timeSpanMovePieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
         private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
 
