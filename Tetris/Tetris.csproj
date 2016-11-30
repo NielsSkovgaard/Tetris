@@ -60,6 +60,9 @@
     </ApplicationDefinition>
     <Compile Include="Models\Block.cs" />
     <Compile Include="Models\GameBoard.cs" />
+    <Compile Include="UI\ButtonsUserControl.xaml.cs">
+      <DependentUpon>ButtonsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\GameCanvas.cs" />
     <Compile Include="UI\GraphicsConstants.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
@@ -71,6 +74,10 @@
     <Compile Include="UI\StatisticsCanvas.cs" />
     <Compile Include="UI\NextPieceCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
+    <Page Include="UI\ButtonsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\HighScoreInputUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

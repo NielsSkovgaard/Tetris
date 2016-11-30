@@ -76,10 +76,22 @@ namespace Tetris.UI
             Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresCanvas, borderThickness);
             highScoresCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
 
+            // ButtonsUserControl
+            ButtonsUserControl buttonsUserControl = new ButtonsUserControl()
+            {
+                // Height // TODO
+                Width = nextPieceCanvas.Width, // Usually 120px
+                Background = Brushes.Black
+            };
+
+            Border buttonsUserControlBorder = BuildBorderForFrameworkElement(buttonsUserControl, borderThickness);
+            buttonsUserControlBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * spacingBetweenElements, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + highScoresCanvasBorder.Height + 4 * spacingBetweenElements, spacingBetweenElements, spacingBetweenElements);
+
             Grid2.Children.Add(gameCanvasBorder);
             Grid2.Children.Add(nextPieceCanvasBorder);
             Grid2.Children.Add(statisticsCanvasBorder);
             Grid2.Children.Add(highScoresCanvasBorder);
+            Grid2.Children.Add(buttonsUserControlBorder);
 
             _gameBoard.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
