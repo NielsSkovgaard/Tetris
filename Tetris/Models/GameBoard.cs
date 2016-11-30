@@ -358,7 +358,7 @@ namespace Tetris.Models
                     RaiseNextPieceChangedEvent();
                 }
 
-                // Raise the changed event if any rows have been completed or CurrentPiece has been updated
+                // Raise the changed event if any rows have been completed or CurrentPiece has been set to refer to NextPiece
                 if (rowsOccupiedByPieceAndAreComplete.Any() || !nextPieceCollidesWithLockedBlocks)
                     RaiseChangedEvent();
             }
