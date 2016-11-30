@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Tetris.UI.GameOverUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Tetris.UI"
+             mc:Ignorable="d">
+    <Grid Background="Black" HorizontalAlignment="Left" Height="112" Width="170">
+        <Border BorderBrush="White" BorderThickness="1"/>
+        <TextBlock x:Name="TextBlockMessage" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            <Run Foreground="White" FontSize="15" FontFamily="Consolas, Courier New" Text="Game Over!"/>
+            <LineBreak/>
+            <Run Foreground="White" FontSize="11" FontFamily="Consolas, Courier New"/>
+            <LineBreak/>
+            <Run Foreground="White" FontSize="11" FontFamily="Consolas, Courier New" Text="Let's try one more time!"/>
+        </TextBlock>
+        <Button x:Name="ButtonNewGame" Content="New Game" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,70,0,0" Width="70" FontSize="11" FontFamily="Consolas, Courier New" VerticalContentAlignment="Center" Height="20" IsDefault="True"/>
+    </Grid>
+</UserControl>

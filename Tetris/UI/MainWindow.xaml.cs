@@ -95,11 +95,12 @@ namespace Tetris.UI
             Grid2.Children.Add(highScoresCanvasBorder);
             Grid2.Children.Add(buttonsUserControlBorder);
 
-            _buttonsUserControl.ButtonNewGame.Click += ButtonNewGame_Click;
-            _buttonsUserControl.ButtonPauseResume.Click += ButtonPauseResume_Click;
+            _buttonsUserControl.ButtonNewGame.Click += ButtonsUserControl_ButtonNewGame_Click;
+            _buttonsUserControl.ButtonPauseResume.Click += ButtonsUserControl_ButtonPauseResume_Click;
 
             _gameBoard.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
+            GameOverUserControl1.ButtonNewGame.Click += GameOverUserControl1_ButtonNewGame_Click;
         }
 
         private Border BuildBorderForFrameworkElement(FrameworkElement element, int borderWidth)
@@ -116,13 +117,13 @@ namespace Tetris.UI
             };
         }
 
-        private void ButtonNewGame_Click(object sender, RoutedEventArgs e)
+        private void ButtonsUserControl_ButtonNewGame_Click(object sender, RoutedEventArgs e)
         {
             _gameBoard.StartNewGame();
             _buttonsUserControl.ButtonPauseResume.Content = "Pause";
         }
 
-        private void ButtonPauseResume_Click(object sender, RoutedEventArgs e)
+        private void ButtonsUserControl_ButtonPauseResume_Click(object sender, RoutedEventArgs e)
         {
             _gameBoard.PauseResumeGame();
             _buttonsUserControl.ButtonPauseResume.Content = _gameBoard.IsGamePaused ? "Resume" : "Pause";
@@ -147,7 +148,12 @@ namespace Tetris.UI
 
                 RectangleOverlay.Visibility = Visibility.Visible;
                 HighScoreInputUserControl1.Visibility = Visibility.Visible;
-                HighScoreInputUserControl1.TextBoxInitials.Focus();
+                HighScoreInputUserControl1.TextBoxInitials.Focus(); // TODO: Doesn't set focus to the TextBox
+            }
+            else
+            {
+                RectangleOverlay.Visibility = Visibility.Visible;
+                GameOverUserControl1.Visibility = Visibility.Visible;
             }
         }
 
@@ -157,6 +163,14 @@ namespace Tetris.UI
 
             RectangleOverlay.Visibility = Visibility.Collapsed;
             HighScoreInputUserControl1.Visibility = Visibility.Collapsed;
+        }
+
+        private void GameOverUserControl1_ButtonNewGame_Click(object sender, RoutedEventArgs e)
+        {
+            _gameBoard.StartNewGame();
+
+            RectangleOverlay.Visibility = Visibility.Collapsed;
+            GameOverUserControl1.Visibility = Visibility.Collapsed;
         }
     }
 }

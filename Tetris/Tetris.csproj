@@ -67,6 +67,9 @@
     <Compile Include="UI\GraphicsConstants.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
+    <Compile Include="UI\GameOverUserControl.xaml.cs">
+      <DependentUpon>GameOverUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\HighScoreInputUserControl.xaml.cs">
       <DependentUpon>HighScoreInputUserControl.xaml</DependentUpon>
     </Compile>
@@ -77,6 +80,10 @@
     <Page Include="UI\ButtonsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\GameOverUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\HighScoreInputUserControl.xaml">
       <SubType>Designer</SubType>
