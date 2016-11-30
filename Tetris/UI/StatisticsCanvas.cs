@@ -8,17 +8,17 @@ namespace Tetris.UI
 {
     internal class StatisticsCanvas : Canvas
     {
-        private readonly GameBoard _gameBoard;
+        private readonly Statistics _statistics;
 
         private readonly TextBlock _textBlockLevel;
         private readonly TextBlock _textBlockScore;
         private readonly TextBlock _textBlockLines;
         private readonly TextBlock _textBlockTime;
 
-        // Dependency injection of GameBoard into StatisticsCanvas
-        public StatisticsCanvas(GameBoard gameBoard)
+        // Dependency injection of Statistics into StatisticsCanvas
+        public StatisticsCanvas(Statistics statistics)
         {
-            _gameBoard = gameBoard;
+            _statistics = statistics;
 
             // Level, Score, Lines, Time
             _textBlockLevel = BuildTextBlockAndAddToChildren(10);
@@ -26,12 +26,12 @@ namespace Tetris.UI
             _textBlockLines = BuildTextBlockAndAddToChildren(50);
             _textBlockTime = BuildTextBlockAndAddToChildren(70);
 
-            _gameBoard.StatisticsChanged += GameBoard_StatisticsChanged;
+            _statistics.Changed += Statistics_Changed;
         }
 
-        // Update the UI (StatisticsCanvas) every time the model (GameBoard properties Level, Score, Lines, and Time) changes
+        // Update the UI (StatisticsCanvas) every time the model (Statistics) changes
         // Soon after, the OnRender method is called
-        private void GameBoard_StatisticsChanged(object sender, EventArgs e)
+        private void Statistics_Changed(object sender, EventArgs e)
         {
             InvalidateVisual();
         }
@@ -41,10 +41,10 @@ namespace Tetris.UI
             base.OnRender(dc);
 
             // Level, Score, Lines, Time
-            _textBlockLevel.Text = GetText("Level:", _gameBoard.Level.ToString(CultureInfo.InvariantCulture));
-            _textBlockScore.Text = GetText("Score:", _gameBoard.Score.ToString(CultureInfo.InvariantCulture));
-            _textBlockLines.Text = GetText("Lines:", _gameBoard.Lines.ToString(CultureInfo.InvariantCulture));
-            _textBlockTime.Text = GetText("Time:", TimeSpan.FromSeconds(_gameBoard.Time).ToString("mm\\:ss"));
+            _textBlockLevel.Text = GetText("Level:", _statistics.Level.ToString(CultureInfo.InvariantCulture));
+            _textBlockScore.Text = GetText("Score:", _statistics.Score.ToString(CultureInfo.InvariantCulture));
+            _textBlockLines.Text = GetText("Lines:", _statistics.Lines.ToString(CultureInfo.InvariantCulture));
+            _textBlockTime.Text = GetText("Time:", TimeSpan.FromSeconds(_statistics.Time).ToString("mm\\:ss"));
         }
 
         // ----------------------------------------------------------------------------------------

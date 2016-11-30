@@ -10,12 +10,14 @@ namespace Tetris.Models
     {
         public event EventHandler Changed;
         public event EventHandler NextPieceChanged;
-        public event EventHandler StatisticsChanged;
         public event EventHandler<int> GameOver;
 
         // Input parameters
         public int Rows { get; } // Usually 20
         public int Cols { get; } // Usually 10
+
+        // Statistics (Level, Score, Lines, Time)
+        private readonly Statistics _statistics;
 
         public int[,] LockedBlocks { get; private set; }
         public Piece CurrentPiece { get; private set; }
@@ -49,21 +51,14 @@ namespace Tetris.Models
         // Priority horizontal direction when moving left and right at the same time
         private bool _leftKeyHasPriority;
 
-        // Level, Score, Lines, Time
-        public int Level { get; private set; } // Between 1 and 15
-        public int Score { get; private set; }
-        public int Lines { get; private set; }
-        public int Time { get; private set; }
-
-        private const int MaximumLevel = 15;
-        private const int NumberOfRowsToIncreaseLevel = 10;
-        private readonly int[] _scoresToAddForCompletingRows = { 100, 300, 500, 800 };
         private bool _isSoftDropping;
 
-        public GameBoard(int rows, int cols)
+        // Dependency injection of Statistics into GameBoard
+        public GameBoard(int rows, int cols, Statistics statistics)
         {
             Rows = rows;
             Cols = cols;
+            _statistics = statistics;
 
             // Timers
             _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
@@ -72,7 +67,7 @@ namespace Tetris.Models
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
             _timerRotatePiece.Tick += (sender, args) => TryRotatePiece();
             _timerMovePieceDown.Tick += (sender, args) => TryMovePieceDown();
-            _timerSecondsGameHasBeenRunning.Tick += (sender, args) => IncrementGameTime();
+            _timerSecondsGameHasBeenRunning.Tick += (sender, args) => _statistics.IncrementTime();
 
             StartNewGame();
         }
@@ -83,15 +78,11 @@ namespace Tetris.Models
             CurrentPiece = BuildRandomPiece();
             NextPiece = BuildRandomPiece();
 
-            Level = 1;
-            Score = 0;
-            Lines = 0;
-            Time = 0;
+            _statistics.Reset();
 
             // Raise events
             RaiseChangedEvent();
             RaiseNextPieceChangedEvent();
-            RaiseStatisticsChangedEvent();
 
             // Calling PauseResumeGame when IsGamePaused is true will "resume" the game, or in other words start it
             IsGameOver = false;
@@ -145,7 +136,7 @@ namespace Tetris.Models
 
         private TimeSpan GetMovePieceDownTimerIntervalBasedOnLevel()
         {
-            return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[Level - 1]);
+            return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[_statistics.Level - 1]);
         }
 
         protected virtual void RaiseChangedEvent()
@@ -158,14 +149,9 @@ namespace Tetris.Models
             NextPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void RaiseStatisticsChangedEvent()
-        {
-            StatisticsChanged?.Invoke(this, EventArgs.Empty);
-        }
-
         protected virtual void RaiseGameOverEvent()
         {
-            GameOver?.Invoke(this, Score);
+            GameOver?.Invoke(this, _statistics.Score);
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -294,8 +280,7 @@ namespace Tetris.Models
                 if (_isSoftDropping)
                 {
                     // Award points for soft dropping CurrentPiece
-                    Score++;
-                    RaiseStatisticsChangedEvent();
+                    _statistics.IncrementScoreForSoftDroppingOneLine();
                 }
 
                 CurrentPiece.MoveDown();
@@ -342,7 +327,12 @@ namespace Tetris.Models
                 }
 
                 // Update Level, Score, and Lines
-                UpdateLevelScoreAndLines(rowsOccupiedByPieceAndAreComplete.Count);
+                // If reaching a new level, make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
+                int levelBefore = _statistics.Level;
+                _statistics.UpdateOnCompletingRows(rowsOccupiedByPieceAndAreComplete.Count);
+                int levelAfter = _statistics.Level;
+                if (levelAfter > levelBefore && !_isSoftDropping)
+                    _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
 
                 // Game Over if NextPiece collides with LockedBlocks array
                 bool nextPieceCollidesWithLockedBlocks = NextPiece.Blocks.Any(block =>
@@ -370,37 +360,6 @@ namespace Tetris.Models
                 if (rowsOccupiedByPieceAndAreComplete.Any() || !nextPieceCollidesWithLockedBlocks)
                     RaiseChangedEvent();
             }
-        }
-
-        private void UpdateLevelScoreAndLines(int numberOfCompleteRows)
-        {
-            if (numberOfCompleteRows > 0)
-            {
-                Lines += numberOfCompleteRows;
-                Score += _scoresToAddForCompletingRows[numberOfCompleteRows - 1];
-
-                if (Level < MaximumLevel)
-                {
-                    int newLevel = Lines / NumberOfRowsToIncreaseLevel + 1;
-
-                    if (newLevel > Level)
-                    {
-                        Level = newLevel;
-
-                        // Make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
-                        if (!_isSoftDropping)
-                            _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
-                    }
-                }
-
-                RaiseStatisticsChangedEvent();
-            }
-        }
-
-        private void IncrementGameTime()
-        {
-            Time++;
-            RaiseStatisticsChangedEvent();
         }
     }
 }

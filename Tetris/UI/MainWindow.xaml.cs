@@ -20,9 +20,9 @@ namespace Tetris.UI
         private const int NextPieceCols = 6;
         private const int NextPieceBlockSizeInPixels = 20;
 
+        private readonly GameBoard _gameBoard;
+        private readonly Statistics _statistics = new Statistics();
         private const string HighScoreListFilePath = "tetris_highscores.txt";
-
-        private readonly GameBoard _gameBoard = new GameBoard(Rows, Cols);
         private readonly HighScoreList _highScoreList = new HighScoreList(HighScoreListFilePath);
 
         private const int ElementsBorderThickness = 6;
@@ -33,6 +33,9 @@ namespace Tetris.UI
         public MainWindow()
         {
             InitializeComponent();
+
+            // Dependency injection of Statistics into GameBoard
+            _gameBoard = new GameBoard(Rows, Cols, _statistics);
 
             // Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
@@ -56,8 +59,8 @@ namespace Tetris.UI
             Border nextPieceCanvasBorder = BuildBorderForFrameworkElement(nextPieceCanvas, ElementsBorderThickness);
             nextPieceCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
-            // Dependency injection of GameBoard into StatisticsCanvas
-            StatisticsCanvas statisticsCanvas = new StatisticsCanvas(_gameBoard)
+            // Dependency injection of Statistics into StatisticsCanvas
+            StatisticsCanvas statisticsCanvas = new StatisticsCanvas(_statistics)
             {
                 Height = 94,
                 Width = nextPieceCanvas.Width, // Usually 120px
