@@ -12,7 +12,6 @@ namespace Tetris.Views
         private readonly NextPieceViewModel _nextPieceViewModel;
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        // Dependency injection of NextPieceViewModel into NextPieceCanvas
         public NextPieceCanvas(NextPieceViewModel nextPieceViewModel)
         {
             _nextPieceViewModel = nextPieceViewModel;
@@ -46,7 +45,7 @@ namespace Tetris.Views
                     (nextPieceCoordsY + block.CoordsY) * blockSizeInPixels,
                     blockSizeInPixels, blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)nextPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)nextPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

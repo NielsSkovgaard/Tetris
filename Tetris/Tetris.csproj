@@ -62,6 +62,7 @@
     <Compile Include="Models\GameBoard.cs" />
     <Compile Include="Models\GameBoardCore.cs" />
     <Compile Include="Models\Statistics.cs" />
+    <Compile Include="ViewModels\HighScoresViewModel.cs" />
     <Compile Include="Views\NextPieceCanvas.cs" />
     <Compile Include="ViewModels\NextPieceViewModel.cs" />
     <Compile Include="ViewModels\StatisticsViewModel.cs" />
@@ -69,7 +70,7 @@
       <DependentUpon>ButtonsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LockedBlocksAndCurrentPieceCanvas.cs" />
-    <Compile Include="Views\GraphicsConstants.cs" />
+    <Compile Include="Views\GraphicsTools.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
     <Compile Include="Views\GameOverUserControl.xaml.cs">

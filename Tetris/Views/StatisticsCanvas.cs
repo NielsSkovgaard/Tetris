@@ -14,16 +14,15 @@ namespace Tetris.Views
         private readonly TextBlock _textBlockLines;
         private readonly TextBlock _textBlockTime;
 
-        // Dependency injection of StatisticsViewModel into StatisticsCanvas
         public StatisticsCanvas(StatisticsViewModel statisticsViewModel)
         {
             _statisticsViewModel = statisticsViewModel;
 
             // Level, Score, Lines, Time
-            _textBlockLevel = BuildTextBlockAndAddToChildren(10);
-            _textBlockScore = BuildTextBlockAndAddToChildren(30);
-            _textBlockLines = BuildTextBlockAndAddToChildren(50);
-            _textBlockTime = BuildTextBlockAndAddToChildren(70);
+            _textBlockLevel = GraphicsTools.BuildTextBlockAndAddToChildren(this, 10);
+            _textBlockScore = GraphicsTools.BuildTextBlockAndAddToChildren(this, 30);
+            _textBlockLines = GraphicsTools.BuildTextBlockAndAddToChildren(this, 50);
+            _textBlockTime = GraphicsTools.BuildTextBlockAndAddToChildren(this, 70);
 
             _statisticsViewModel.Statistics.Changed += StatisticsViewModel_Statistics_Changed;
         }
@@ -39,24 +38,10 @@ namespace Tetris.Views
         {
             base.OnRender(dc);
 
-            // Level, Score, Lines, Time
             _textBlockLevel.Text = _statisticsViewModel.LevelText;
             _textBlockScore.Text = _statisticsViewModel.ScoreText;
             _textBlockLines.Text = _statisticsViewModel.LinesText;
             _textBlockTime.Text = _statisticsViewModel.TimeText;
-        }
-
-        // ----------------------------------------------------------------------------------------
-        // HELPER METHODS (same in StatisticsCanvas and HighScoresCanvas)
-        // ----------------------------------------------------------------------------------------
-
-        private TextBlock BuildTextBlockAndAddToChildren(double top, string text = null)
-        {
-            TextBlock textBlock = new TextBlock { Text = text ?? string.Empty, Foreground = Brushes.White, FontFamily = new FontFamily("Consolas, Courier New") };
-            SetTop(textBlock, top);
-            SetLeft(textBlock, 10);
-            Children.Add(textBlock);
-            return textBlock;
         }
     }
 }

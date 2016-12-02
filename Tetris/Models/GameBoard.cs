@@ -41,7 +41,6 @@ namespace Tetris.Models
 
         private bool _isSoftDropping;
 
-        // Dependency injection of GameBoardCore and Statistics into GameBoard
         public GameBoard(GameBoardCore gameBoardCore, Statistics statistics)
         {
             _gameBoardCore = gameBoardCore;

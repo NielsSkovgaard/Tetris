@@ -7,7 +7,7 @@ namespace Tetris.ViewModels
     internal class StatisticsViewModel
     {
         public Statistics Statistics { get; }
-        const int TotalTextLength = 15;
+        private const int TotalTextLength = 15;
 
         public StatisticsViewModel(Statistics statistics)
         {

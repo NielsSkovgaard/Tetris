@@ -38,7 +38,7 @@ namespace Tetris.Views
             InitializeComponent();
 
             // ------------------------------------------------------------------------------------
-            // GameBoardCore/LockedBlocksAndCurrentPieceCanvas: Model, ViewModel, and View (making the dependency injections)
+            // GameBoardCore/LockedBlocksAndCurrentPieceCanvas: MVVM dependency injections
             // ------------------------------------------------------------------------------------
 
             // TODO: Rename to LockedBlocksAndCurrentPieceModel?
@@ -58,7 +58,7 @@ namespace Tetris.Views
             lockedBlocksAndCurrentPieceCanvasBorder.Margin = new Thickness(ElementsSpacing);
 
             // ------------------------------------------------------------------------------------
-            // NextPiece: Model, ViewModel, and View (making the dependency injections)
+            // NextPiece: MVVM dependency injections
             // ------------------------------------------------------------------------------------
 
             NextPieceViewModel nextPieceViewModel = new NextPieceViewModel(gameBoardCore, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols);
@@ -74,7 +74,7 @@ namespace Tetris.Views
             nextPieceCanvasBorder.Margin = new Thickness(lockedBlocksAndCurrentPieceCanvasBorder.Width + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // ------------------------------------------------------------------------------------
-            // Statistics: Model, ViewModel, and Model (making the dependency injections)
+            // Statistics: MVVM dependency injections
             // ------------------------------------------------------------------------------------
 
             StatisticsViewModel statisticsViewModel = new StatisticsViewModel(_statistics);
@@ -90,10 +90,12 @@ namespace Tetris.Views
             statisticsCanvasBorder.Margin = new Thickness(lockedBlocksAndCurrentPieceCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // ------------------------------------------------------------------------------------
-            // HighScores: Model, ViewModel, and Model (making the dependency injections)
+            // HighScores: MVVM dependency injections
             // ------------------------------------------------------------------------------------
 
-            HighScoresCanvas highScoresCanvas = new HighScoresCanvas(_highScoreList)
+            HighScoresViewModel highScoresViewModel = new HighScoresViewModel(_highScoreList);
+
+            HighScoresCanvas highScoresCanvas = new HighScoresCanvas(highScoresViewModel)
             {
                 Height = 135,
                 Width = nextPieceCanvas.Width, // Usually 120px

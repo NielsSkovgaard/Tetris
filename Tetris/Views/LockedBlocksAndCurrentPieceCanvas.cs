@@ -13,7 +13,6 @@ namespace Tetris.Views
 
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        // Dependency injection of GameBoardCore into LockedBlocksAndCurrentPieceCanvas
         public LockedBlocksAndCurrentPieceCanvas(GameBoardCore gameBoardCore, int blockSizeInPixels)
         {
             _gameBoardCore = gameBoardCore;
@@ -47,7 +46,7 @@ namespace Tetris.Views
                             row * _blockSizeInPixels,
                             _blockSizeInPixels, _blockSizeInPixels);
 
-                        dc.DrawRectangle(GraphicsConstants.BlockBrushes[blockType - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(GraphicsTools.BlockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
                 }
             }
@@ -60,7 +59,7 @@ namespace Tetris.Views
                     (_gameBoardCore.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoardCore.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)_gameBoardCore.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }
