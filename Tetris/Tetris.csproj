@@ -60,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Block.cs" />
     <Compile Include="Models\GameBoard.cs" />
+    <Compile Include="Models\GameBoardCore.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="UI\ButtonsUserControl.xaml.cs">
       <DependentUpon>ButtonsUserControl.xaml</DependentUpon>

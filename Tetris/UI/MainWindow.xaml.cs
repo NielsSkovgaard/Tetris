@@ -36,8 +36,9 @@ namespace Tetris.UI
         {
             InitializeComponent();
 
-            // Dependency injection of Statistics into GameBoard
-            _gameBoard = new GameBoard(Rows, Cols, _statistics);
+            // Dependency injection of GameBoardCore and Statistics into GameBoard
+            GameBoardCore gameBoardCore = new GameBoardCore(Rows, Cols);
+            _gameBoard = new GameBoard(gameBoardCore, _statistics);
 
             // Dependency injection of GameBoard into GameCanvas
             GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)

@@ -19,12 +19,12 @@ namespace Tetris.UI
             _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
 
-            _gameBoard.Changed += GameBoard_Changed;
+            _gameBoard.LockedBlocksOrCurrentPieceChanged += GameBoard_LockedBlocksOrCurrentPieceChanged;
         }
 
         // Update the UI (GameCanvas) every time the model (GameBoard) changes
         // Soon after, the OnRender method is called
-        private void GameBoard_Changed(object sender, EventArgs e)
+        private void GameBoard_LockedBlocksOrCurrentPieceChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
         }
@@ -34,11 +34,11 @@ namespace Tetris.UI
             base.OnRender(dc);
 
             // Render the LockedBlocks array
-            for (int row = 0; row < _gameBoard.Rows; row++)
+            for (int row = 0; row < _gameBoard.GameBoardCore.Rows; row++)
             {
-                for (int col = 0; col < _gameBoard.Cols; col++)
+                for (int col = 0; col < _gameBoard.GameBoardCore.Cols; col++)
                 {
-                    int blockType = _gameBoard.LockedBlocks[row, col];
+                    int blockType = _gameBoard.GameBoardCore.LockedBlocks[row, col];
 
                     if (blockType != 0)
                     {
@@ -53,14 +53,14 @@ namespace Tetris.UI
             }
 
             // Render CurrentPiece
-            foreach (Block block in _gameBoard.CurrentPiece.Blocks)
+            foreach (Block block in _gameBoard.GameBoardCore.CurrentPiece.Blocks)
             {
                 Rect rect = new Rect(
-                    (_gameBoard.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
-                    (_gameBoard.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    (_gameBoard.GameBoardCore.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (_gameBoard.GameBoardCore.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.GameBoardCore.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }
