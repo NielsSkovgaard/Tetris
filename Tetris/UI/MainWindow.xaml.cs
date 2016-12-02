@@ -40,8 +40,8 @@ namespace Tetris.UI
             GameBoardCore gameBoardCore = new GameBoardCore(Rows, Cols);
             _gameBoard = new GameBoard(gameBoardCore, _statistics);
 
-            // Dependency injection of GameBoard into GameCanvas
-            GameCanvas gameCanvas = new GameCanvas(_gameBoard, BlockSizeInPixels)
+            // Dependency injection of GameBoardCore into GameCanvas
+            GameCanvas gameCanvas = new GameCanvas(gameBoardCore, BlockSizeInPixels)
             {
                 Height = Rows * BlockSizeInPixels, // Usually 500px
                 Width = Cols * BlockSizeInPixels, // Usually 250px
@@ -51,8 +51,8 @@ namespace Tetris.UI
             Border gameCanvasBorder = BuildBorderForFrameworkElement(gameCanvas, ElementsBorderThickness);
             gameCanvasBorder.Margin = new Thickness(ElementsSpacing);
 
-            // Dependency injection of GameBoard into NextPieceCanvas
-            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(_gameBoard, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols)
+            // Dependency injection of GameBoardCore into NextPieceCanvas
+            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(gameBoardCore, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols)
             {
                 Height = NextPieceRows * NextPieceBlockSizeInPixels, // Usually 120px
                 Width = NextPieceCols * NextPieceBlockSizeInPixels, // Usually 120px
@@ -104,7 +104,7 @@ namespace Tetris.UI
             _buttonsUserControl.ButtonNewGame.Click += ButtonsUserControl_ButtonNewGame_Click;
             _buttonsUserControl.ButtonPauseResume.Click += ButtonsUserControl_ButtonPauseResume_Click;
 
-            _gameBoard.GameOver += GameBoard_GameOver;
+            _gameBoard.GameBoardCore.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
             GameOverUserControl1.ButtonNewGame.Click += GameOverUserControl1_ButtonNewGame_Click;
         }

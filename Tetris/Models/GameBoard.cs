@@ -6,10 +6,6 @@ namespace Tetris.Models
 {
     internal class GameBoard
     {
-        public event EventHandler LockedBlocksOrCurrentPieceChanged;
-        public event EventHandler NextPieceChanged;
-        public event EventHandler<int> GameOver;
-
         public GameBoardCore GameBoardCore { get; }
 
         // Statistics (Level, Score, Lines, Time)
@@ -17,8 +13,6 @@ namespace Tetris.Models
 
         public bool IsGamePaused { get; private set; }
         public bool IsGameOver { get; private set; }
-
-        //private readonly Random _random = new Random();
 
         // TimeSpans and Timers:
         // - for holding down a key to repeat a command (move left/right or rotate) every x milliseconds
@@ -63,7 +57,7 @@ namespace Tetris.Models
             {
                 bool canRotateCurrentPiece = GameBoardCore.TryRotateCurrentPiece();
                 if (canRotateCurrentPiece)
-                    RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
             };
 
             _timerMovePieceDown.Tick += (sender, args) => MoveCurrentPieceDownProcess();
@@ -75,12 +69,11 @@ namespace Tetris.Models
         public void StartNewGame()
         {
             GameBoardCore.Reset();
-
             _statistics.Reset();
 
             // Raise events
-            RaiseLockedBlocksOrCurrentPieceChangedEvent();
-            RaiseNextPieceChangedEvent();
+            GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
+            GameBoardCore.RaiseNextPieceChangedEvent();
 
             // Calling PauseResumeGame() when IsGamePaused is true will "resume" the game, or in other words start it
             IsGameOver = false;
@@ -127,21 +120,6 @@ namespace Tetris.Models
             return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[_statistics.Level - 1]);
         }
 
-        protected virtual void RaiseLockedBlocksOrCurrentPieceChangedEvent()
-        {
-            LockedBlocksOrCurrentPieceChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected virtual void RaiseNextPieceChangedEvent()
-        {
-            NextPieceChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected virtual void RaiseGameOverEvent()
-        {
-            GameOver?.Invoke(this, _statistics.Score);
-        }
-
         public void KeyDown(Key key, bool isRepeat)
         {
             if (IsGameOver || IsGamePaused || isRepeat)
@@ -155,7 +133,7 @@ namespace Tetris.Models
                     _leftKeyHasPriority = true;
                     bool canMoveCurrentPieceLeft = GameBoardCore.TryMoveCurrentPieceLeft();
                     if (canMoveCurrentPieceLeft)
-                        RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                        GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
                     _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Right:
@@ -164,14 +142,14 @@ namespace Tetris.Models
                     _leftKeyHasPriority = false;
                     bool canMoveCurrentPieceRight = GameBoardCore.TryMoveCurrentPieceRight();
                     if (canMoveCurrentPieceRight)
-                        RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                        GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
                     _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Up:
                 case Key.W:
                     bool canRotateCurrentPiece = GameBoardCore.TryRotateCurrentPiece();
                     if (canRotateCurrentPiece)
-                        RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                        GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
                     _timerRotatePiece.Start();
                     break;
                 case Key.Down:
@@ -224,13 +202,13 @@ namespace Tetris.Models
             {
                 bool canMoveCurrentPieceLeft = GameBoardCore.TryMoveCurrentPieceLeft();
                 if (canMoveCurrentPieceLeft)
-                    RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
             }
             else
             {
                 bool canMoveCurrentPieceRight = GameBoardCore.TryMoveCurrentPieceRight();
                 if (canMoveCurrentPieceRight)
-                    RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
             }
         }
 
@@ -240,7 +218,7 @@ namespace Tetris.Models
 
             if (canMoveDown)
             {
-                RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
 
                 if (_isSoftDropping)
                 {
@@ -274,18 +252,18 @@ namespace Tetris.Models
                     _timerRotatePiece.Stop();
                     _timerMovePieceDown.Stop();
                     _timerSecondsGameHasBeenRunning.Stop();
-                    RaiseGameOverEvent();
+                    GameBoardCore.RaiseGameOverEvent(_statistics.Score);
                 }
                 else
                 {
                     // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
                     GameBoardCore.UpdateCurrentPieceAndNextPiece();
-                    RaiseNextPieceChangedEvent();
+                    GameBoardCore.RaiseNextPieceChangedEvent();
                 }
 
                 // Raise the LockedBlocksOrCurrentPieceChanged event if any rows have been completed or CurrentPiece has been set to refer to NextPiece
                 if (numberOfCompleteRows > 0 || !nextPieceCollidesWithLockedBlocks)
-                    RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
             }
         }
     }

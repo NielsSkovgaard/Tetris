@@ -8,22 +8,22 @@ namespace Tetris.UI
 {
     internal class NextPieceCanvas : Canvas
     {
-        private readonly GameBoard _gameBoard;
+        private readonly GameBoardCore _gameBoardCore;
         private readonly int _blockSizeInPixels; // Usually 20px
         private readonly int _rows; // Usually 6
         private readonly int _cols; // Usually 6
 
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        // Dependency injection of GameBoard into NextPieceCanvas
-        public NextPieceCanvas(GameBoard gameBoard, int blockSizeInPixels, int rows, int cols)
+        // Dependency injection of GameBoardCore into NextPieceCanvas
+        public NextPieceCanvas(GameBoardCore gameBoardCore, int blockSizeInPixels, int rows, int cols)
         {
-            _gameBoard = gameBoard;
+            _gameBoardCore = gameBoardCore;
             _blockSizeInPixels = blockSizeInPixels;
             _rows = rows;
             _cols = cols;
 
-            _gameBoard.NextPieceChanged += GameBoard_NextPieceChanged;
+            _gameBoardCore.NextPieceChanged += GameBoard_NextPieceChanged;
         }
 
         // Update the UI (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
@@ -39,17 +39,17 @@ namespace Tetris.UI
 
             // Calculate NextPiece coordinates on the NextPieceCanvas
             // Because the _gameBoard.NextPiece.CoordsY and CoordsX coordinates are only used on the GameCanvas
-            double nextPieceCoordsY = (_rows - PieceBlockManager.GetHeightOfBlockArray(_gameBoard.GameBoardCore.NextPiece.PieceType)) / 2d;
-            double nextPieceCoordsX = (_cols - PieceBlockManager.GetWidthOfBlockArray(_gameBoard.GameBoardCore.NextPiece.PieceType)) / 2d;
+            double nextPieceCoordsY = (_rows - PieceBlockManager.GetHeightOfBlockArray(_gameBoardCore.NextPiece.PieceType)) / 2d;
+            double nextPieceCoordsX = (_cols - PieceBlockManager.GetWidthOfBlockArray(_gameBoardCore.NextPiece.PieceType)) / 2d;
 
-            foreach (Block block in _gameBoard.GameBoardCore.NextPiece.Blocks)
+            foreach (Block block in _gameBoardCore.NextPiece.Blocks)
             {
                 Rect rect = new Rect(
                     (nextPieceCoordsX + block.CoordsX) * _blockSizeInPixels,
                     (nextPieceCoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.GameBoardCore.NextPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoardCore.NextPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

@@ -6,6 +6,10 @@ namespace Tetris.Models
 {
     internal class GameBoardCore
     {
+        public event EventHandler LockedBlocksOrCurrentPieceChanged;
+        public event EventHandler NextPieceChanged;
+        public event EventHandler<int> GameOver;
+
         // Input parameters
         public int Rows { get; } // Usually 20
         public int Cols { get; } // Usually 10
@@ -39,6 +43,21 @@ namespace Tetris.Models
             // Position the Piece in the top middle of the game board
             piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(piece.PieceType)) / 2;
             return piece;
+        }
+
+        public virtual void RaiseLockedBlocksOrCurrentPieceChangedEvent()
+        {
+            LockedBlocksOrCurrentPieceChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public virtual void RaiseNextPieceChangedEvent()
+        {
+            NextPieceChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public virtual void RaiseGameOverEvent(int score)
+        {
+            GameOver?.Invoke(this, score);
         }
 
         public bool TryMoveCurrentPieceLeft()

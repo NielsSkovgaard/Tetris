@@ -8,18 +8,18 @@ namespace Tetris.UI
 {
     internal class GameCanvas : Canvas
     {
-        private readonly GameBoard _gameBoard;
+        private readonly GameBoardCore _gameBoardCore;
         private readonly int _blockSizeInPixels; // Usually 25px
 
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        // Dependency injection of GameBoard into GameCanvas
-        public GameCanvas(GameBoard gameBoard, int blockSizeInPixels)
+        // Dependency injection of GameBoardCore into GameCanvas
+        public GameCanvas(GameBoardCore gameBoardCore, int blockSizeInPixels)
         {
-            _gameBoard = gameBoard;
+            _gameBoardCore = gameBoardCore;
             _blockSizeInPixels = blockSizeInPixels;
 
-            _gameBoard.LockedBlocksOrCurrentPieceChanged += GameBoard_LockedBlocksOrCurrentPieceChanged;
+            _gameBoardCore.LockedBlocksOrCurrentPieceChanged += GameBoard_LockedBlocksOrCurrentPieceChanged;
         }
 
         // Update the UI (GameCanvas) every time the model (GameBoard) changes
@@ -34,11 +34,11 @@ namespace Tetris.UI
             base.OnRender(dc);
 
             // Render the LockedBlocks array
-            for (int row = 0; row < _gameBoard.GameBoardCore.Rows; row++)
+            for (int row = 0; row < _gameBoardCore.Rows; row++)
             {
-                for (int col = 0; col < _gameBoard.GameBoardCore.Cols; col++)
+                for (int col = 0; col < _gameBoardCore.Cols; col++)
                 {
-                    int blockType = _gameBoard.GameBoardCore.LockedBlocks[row, col];
+                    int blockType = _gameBoardCore.LockedBlocks[row, col];
 
                     if (blockType != 0)
                     {
@@ -53,14 +53,14 @@ namespace Tetris.UI
             }
 
             // Render CurrentPiece
-            foreach (Block block in _gameBoard.GameBoardCore.CurrentPiece.Blocks)
+            foreach (Block block in _gameBoardCore.CurrentPiece.Blocks)
             {
                 Rect rect = new Rect(
-                    (_gameBoard.GameBoardCore.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
-                    (_gameBoard.GameBoardCore.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    (_gameBoardCore.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (_gameBoardCore.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoard.GameBoardCore.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsConstants.BlockBrushes[(int)_gameBoardCore.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }
