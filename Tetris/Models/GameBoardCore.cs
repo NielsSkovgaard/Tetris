@@ -33,6 +33,10 @@ namespace Tetris.Models
             LockedBlocks = new int[Rows, Cols];
             CurrentPiece = BuildRandomPiece();
             NextPiece = BuildRandomPiece();
+
+            // Raise events
+            RaiseLockedBlocksOrCurrentPieceChangedEvent();
+            RaiseNextPieceChangedEvent();
         }
 
         private Piece BuildRandomPiece()
@@ -67,6 +71,7 @@ namespace Tetris.Models
                 LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX - 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
                 CurrentPiece.MoveLeft();
+                RaiseLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -80,6 +85,7 @@ namespace Tetris.Models
                 LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX + 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
                 CurrentPiece.MoveRight();
+                RaiseLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -97,12 +103,13 @@ namespace Tetris.Models
             if (isNextRotationInValidPosition)
             {
                 CurrentPiece.Rotate();
+                RaiseLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
             return false;
         }
-        
+
         public bool TryMovePieceDown()
         {
             bool canMovePieceDown = CurrentPiece.Blocks.All(block =>
@@ -112,6 +119,7 @@ namespace Tetris.Models
             if (canMovePieceDown)
             {
                 CurrentPiece.MoveDown();
+                RaiseLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -175,6 +183,7 @@ namespace Tetris.Models
             // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
             CurrentPiece = NextPiece;
             NextPiece = BuildRandomPiece();
+            RaiseNextPieceChangedEvent();
         }
     }
 }

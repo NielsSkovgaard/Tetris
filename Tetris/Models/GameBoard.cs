@@ -52,14 +52,7 @@ namespace Tetris.Models
             _timerRotatePiece.Interval = _timeSpanRotatePiece;
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
-
-            _timerRotatePiece.Tick += (sender, args) =>
-            {
-                bool canRotateCurrentPiece = GameBoardCore.TryRotateCurrentPiece();
-                if (canRotateCurrentPiece)
-                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
-            };
-
+            _timerRotatePiece.Tick += (sender, args) => GameBoardCore.TryRotateCurrentPiece();
             _timerMovePieceDown.Tick += (sender, args) => MoveCurrentPieceDownProcess();
             _timerSecondsGameHasBeenRunning.Tick += (sender, args) => _statistics.IncrementTime();
 
@@ -70,10 +63,6 @@ namespace Tetris.Models
         {
             GameBoardCore.Reset();
             _statistics.Reset();
-
-            // Raise events
-            GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
-            GameBoardCore.RaiseNextPieceChangedEvent();
 
             // Calling PauseResumeGame() when IsGamePaused is true will "resume" the game, or in other words start it
             IsGameOver = false;
@@ -131,25 +120,19 @@ namespace Tetris.Models
                 case Key.A:
                     _isLeftKeyDown = true;
                     _leftKeyHasPriority = true;
-                    bool canMoveCurrentPieceLeft = GameBoardCore.TryMoveCurrentPieceLeft();
-                    if (canMoveCurrentPieceLeft)
-                        GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.TryMoveCurrentPieceLeft();
                     _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Right:
                 case Key.D:
                     _isRightKeyDown = true;
                     _leftKeyHasPriority = false;
-                    bool canMoveCurrentPieceRight = GameBoardCore.TryMoveCurrentPieceRight();
-                    if (canMoveCurrentPieceRight)
-                        GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.TryMoveCurrentPieceRight();
                     _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Up:
                 case Key.W:
-                    bool canRotateCurrentPiece = GameBoardCore.TryRotateCurrentPiece();
-                    if (canRotateCurrentPiece)
-                        GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    GameBoardCore.TryRotateCurrentPiece();
                     _timerRotatePiece.Start();
                     break;
                 case Key.Down:
@@ -199,17 +182,9 @@ namespace Tetris.Models
         private void TryMovePieceLeftOrRight()
         {
             if (_leftKeyHasPriority)
-            {
-                bool canMoveCurrentPieceLeft = GameBoardCore.TryMoveCurrentPieceLeft();
-                if (canMoveCurrentPieceLeft)
-                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
-            }
+                GameBoardCore.TryMoveCurrentPieceLeft();
             else
-            {
-                bool canMoveCurrentPieceRight = GameBoardCore.TryMoveCurrentPieceRight();
-                if (canMoveCurrentPieceRight)
-                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
-            }
+                GameBoardCore.TryMoveCurrentPieceRight();
         }
 
         private void MoveCurrentPieceDownProcess()
@@ -218,8 +193,6 @@ namespace Tetris.Models
 
             if (canMoveDown)
             {
-                GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
-
                 if (_isSoftDropping)
                 {
                     // Award points for soft dropping CurrentPiece
@@ -258,7 +231,6 @@ namespace Tetris.Models
                 {
                     // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
                     GameBoardCore.UpdateCurrentPieceAndNextPiece();
-                    GameBoardCore.RaiseNextPieceChangedEvent();
                 }
 
                 // Raise the LockedBlocksOrCurrentPieceChanged event if any rows have been completed or CurrentPiece has been set to refer to NextPiece
