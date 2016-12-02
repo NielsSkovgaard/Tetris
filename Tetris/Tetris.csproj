@@ -62,36 +62,38 @@
     <Compile Include="Models\GameBoard.cs" />
     <Compile Include="Models\GameBoardCore.cs" />
     <Compile Include="Models\Statistics.cs" />
-    <Compile Include="UI\ButtonsUserControl.xaml.cs">
+    <Compile Include="Views\NextPieceCanvas.cs" />
+    <Compile Include="ViewModels\NextPieceViewModel.cs" />
+    <Compile Include="ViewModels\StatisticsViewModel.cs" />
+    <Compile Include="Views\ButtonsUserControl.xaml.cs">
       <DependentUpon>ButtonsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\GameCanvas.cs" />
-    <Compile Include="UI\GraphicsConstants.cs" />
+    <Compile Include="Views\LockedBlocksAndCurrentPieceCanvas.cs" />
+    <Compile Include="Views\GraphicsConstants.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
-    <Compile Include="UI\GameOverUserControl.xaml.cs">
+    <Compile Include="Views\GameOverUserControl.xaml.cs">
       <DependentUpon>GameOverUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\HighScoreInputUserControl.xaml.cs">
+    <Compile Include="Views\HighScoreInputUserControl.xaml.cs">
       <DependentUpon>HighScoreInputUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\HighScoresCanvas.cs" />
-    <Compile Include="UI\StatisticsCanvas.cs" />
-    <Compile Include="UI\NextPieceCanvas.cs" />
+    <Compile Include="Views\HighScoresCanvas.cs" />
+    <Compile Include="Views\StatisticsCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
-    <Page Include="UI\ButtonsUserControl.xaml">
+    <Page Include="Views\ButtonsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\GameOverUserControl.xaml">
+    <Page Include="Views\GameOverUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\HighScoreInputUserControl.xaml">
+    <Page Include="Views\HighScoreInputUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -99,7 +101,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -137,6 +139,7 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

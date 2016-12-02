@@ -4,27 +4,27 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
 
-namespace Tetris.UI
+namespace Tetris.Views
 {
-    internal class GameCanvas : Canvas
+    internal class LockedBlocksAndCurrentPieceCanvas : Canvas
     {
         private readonly GameBoardCore _gameBoardCore;
         private readonly int _blockSizeInPixels; // Usually 25px
 
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        // Dependency injection of GameBoardCore into GameCanvas
-        public GameCanvas(GameBoardCore gameBoardCore, int blockSizeInPixels)
+        // Dependency injection of GameBoardCore into LockedBlocksAndCurrentPieceCanvas
+        public LockedBlocksAndCurrentPieceCanvas(GameBoardCore gameBoardCore, int blockSizeInPixels)
         {
             _gameBoardCore = gameBoardCore;
             _blockSizeInPixels = blockSizeInPixels;
 
-            _gameBoardCore.LockedBlocksOrCurrentPieceChanged += GameBoard_LockedBlocksOrCurrentPieceChanged;
+            _gameBoardCore.LockedBlocksOrCurrentPieceChanged += GameBoardCore_LockedBlocksOrCurrentPieceChanged;
         }
 
-        // Update the UI (GameCanvas) every time the model (GameBoard) changes
+        // Update the View (LockedBlocksAndCurrentPieceCanvas) every time the model (GameBoardCore) changes
         // Soon after, the OnRender method is called
-        private void GameBoard_LockedBlocksOrCurrentPieceChanged(object sender, EventArgs e)
+        private void GameBoardCore_LockedBlocksOrCurrentPieceChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
         }

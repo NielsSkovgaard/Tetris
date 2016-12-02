@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace Tetris.UI
+namespace Tetris.Views
 {
     internal static class GraphicsConstants
     {

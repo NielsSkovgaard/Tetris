@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
 
-namespace Tetris.UI
+namespace Tetris.Views
 {
     internal class HighScoresCanvas : Canvas
     {
@@ -24,7 +24,7 @@ namespace Tetris.UI
             _highScoreList.Changed += HighScoreList_Changed;
         }
 
-        // Update the UI (HighScoresCanvas) every time the model (HighScoreList) changes
+        // Update the View (HighScoresCanvas) every time the model (HighScoreList) changes
         // Soon after, the OnRender method is called
         private void HighScoreList_Changed(object sender, EventArgs e)
         {

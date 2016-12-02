@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Tetris.UI
+namespace Tetris.Views
 {
     /// <summary>
     /// Interaction logic for HighScoreInputUserControl.xaml

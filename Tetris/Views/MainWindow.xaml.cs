@@ -5,8 +5,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Tetris.Models;
+using Tetris.ViewModels;
 
-namespace Tetris.UI
+namespace Tetris.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -36,23 +37,33 @@ namespace Tetris.UI
         {
             InitializeComponent();
 
-            // Dependency injection of GameBoardCore and Statistics into GameBoard
+            // ------------------------------------------------------------------------------------
+            // GameBoardCore/LockedBlocksAndCurrentPieceCanvas: Model, ViewModel, and View (making the dependency injections)
+            // ------------------------------------------------------------------------------------
+
+            // TODO: Rename to LockedBlocksAndCurrentPieceModel?
             GameBoardCore gameBoardCore = new GameBoardCore(Rows, Cols);
+
+            // TODO: Rename to GameBoardViewModel or maybe LockedBlocksAndCurrentPieceViewModel?
             _gameBoard = new GameBoard(gameBoardCore, _statistics);
 
-            // Dependency injection of GameBoardCore into GameCanvas
-            GameCanvas gameCanvas = new GameCanvas(gameBoardCore, BlockSizeInPixels)
+            LockedBlocksAndCurrentPieceCanvas lockedBlocksAndCurrentPieceCanvas = new LockedBlocksAndCurrentPieceCanvas(gameBoardCore, BlockSizeInPixels)
             {
                 Height = Rows * BlockSizeInPixels, // Usually 500px
                 Width = Cols * BlockSizeInPixels, // Usually 250px
                 Background = Brushes.Black
             };
 
-            Border gameCanvasBorder = BuildBorderForFrameworkElement(gameCanvas, ElementsBorderThickness);
-            gameCanvasBorder.Margin = new Thickness(ElementsSpacing);
+            Border lockedBlocksAndCurrentPieceCanvasBorder = BuildBorderForFrameworkElement(lockedBlocksAndCurrentPieceCanvas, ElementsBorderThickness);
+            lockedBlocksAndCurrentPieceCanvasBorder.Margin = new Thickness(ElementsSpacing);
 
-            // Dependency injection of GameBoardCore into NextPieceCanvas
-            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(gameBoardCore, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols)
+            // ------------------------------------------------------------------------------------
+            // NextPiece: Model, ViewModel, and View (making the dependency injections)
+            // ------------------------------------------------------------------------------------
+
+            NextPieceViewModel nextPieceViewModel = new NextPieceViewModel(gameBoardCore, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols);
+
+            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(nextPieceViewModel)
             {
                 Height = NextPieceRows * NextPieceBlockSizeInPixels, // Usually 120px
                 Width = NextPieceCols * NextPieceBlockSizeInPixels, // Usually 120px
@@ -60,10 +71,15 @@ namespace Tetris.UI
             };
 
             Border nextPieceCanvasBorder = BuildBorderForFrameworkElement(nextPieceCanvas, ElementsBorderThickness);
-            nextPieceCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing, ElementsSpacing);
+            nextPieceCanvasBorder.Margin = new Thickness(lockedBlocksAndCurrentPieceCanvasBorder.Width + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
-            // Dependency injection of Statistics into StatisticsCanvas
-            StatisticsCanvas statisticsCanvas = new StatisticsCanvas(_statistics)
+            // ------------------------------------------------------------------------------------
+            // Statistics: Model, ViewModel, and Model (making the dependency injections)
+            // ------------------------------------------------------------------------------------
+
+            StatisticsViewModel statisticsViewModel = new StatisticsViewModel(_statistics);
+
+            StatisticsCanvas statisticsCanvas = new StatisticsCanvas(statisticsViewModel)
             {
                 Height = 94,
                 Width = nextPieceCanvas.Width, // Usually 120px
@@ -71,9 +87,12 @@ namespace Tetris.UI
             };
 
             Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsCanvas, ElementsBorderThickness);
-            statisticsCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
+            statisticsCanvasBorder.Margin = new Thickness(lockedBlocksAndCurrentPieceCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
-            // Dependency injection of HighScoreList into HighScoresCanvas
+            // ------------------------------------------------------------------------------------
+            // HighScores: Model, ViewModel, and Model (making the dependency injections)
+            // ------------------------------------------------------------------------------------
+
             HighScoresCanvas highScoresCanvas = new HighScoresCanvas(_highScoreList)
             {
                 Height = 135,
@@ -82,24 +101,35 @@ namespace Tetris.UI
             };
 
             Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresCanvas, ElementsBorderThickness);
-            highScoresCanvasBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
+            highScoresCanvasBorder.Margin = new Thickness(lockedBlocksAndCurrentPieceCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
+            // ------------------------------------------------------------------------------------
             // ButtonsUserControl
+            // ------------------------------------------------------------------------------------
+
             _buttonsUserControl = new ButtonsUserControl
             {
-                Height = gameCanvasBorder.Height - nextPieceCanvasBorder.Height - statisticsCanvasBorder.Height - highScoresCanvasBorder.Height - 3 * ElementsSpacing - 2 * ElementsBorderThickness,
+                Height = lockedBlocksAndCurrentPieceCanvasBorder.Height - nextPieceCanvasBorder.Height - statisticsCanvasBorder.Height - highScoresCanvasBorder.Height - 3 * ElementsSpacing - 2 * ElementsBorderThickness,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
             Border buttonsUserControlBorder = BuildBorderForFrameworkElement(_buttonsUserControl, ElementsBorderThickness);
-            buttonsUserControlBorder.Margin = new Thickness(gameCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + highScoresCanvasBorder.Height + 4 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
+            buttonsUserControlBorder.Margin = new Thickness(lockedBlocksAndCurrentPieceCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + highScoresCanvasBorder.Height + 4 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
-            Grid2.Children.Add(gameCanvasBorder);
+            // ------------------------------------------------------------------------------------
+            // Add controls to grid
+            // ------------------------------------------------------------------------------------
+
+            Grid2.Children.Add(lockedBlocksAndCurrentPieceCanvasBorder);
             Grid2.Children.Add(nextPieceCanvasBorder);
             Grid2.Children.Add(statisticsCanvasBorder);
             Grid2.Children.Add(highScoresCanvasBorder);
             Grid2.Children.Add(buttonsUserControlBorder);
+
+            // ------------------------------------------------------------------------------------
+            // Event handling
+            // ------------------------------------------------------------------------------------
 
             _buttonsUserControl.ButtonNewGame.Click += ButtonsUserControl_ButtonNewGame_Click;
             _buttonsUserControl.ButtonPauseResume.Click += ButtonsUserControl_ButtonPauseResume_Click;
@@ -223,4 +253,4 @@ namespace Tetris.UI
 
 // TODO: Have a Tetris lock delay? See: http://harddrop.com/wiki/Lock_delay
 // TODO: Define WPF controls with XAML
-// TODO: Consider having a grid with 10x20 predefined rectangles to color in the GameCanvas.OnRender method, instead of generating them on every rendering
+// TODO: Consider having a grid with 10x20 predefined rectangles to color in the LockedBlocksAndCurrentPieceCanvas.OnRender method, instead of generating them on every rendering

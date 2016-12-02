@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Tetris.Models;
+using Tetris.ViewModels;
 
-namespace Tetris.UI
+namespace Tetris.Views
 {
     internal class StatisticsCanvas : Canvas
     {
-        private readonly Statistics _statistics;
+        private readonly StatisticsViewModel _statisticsViewModel;
 
         private readonly TextBlock _textBlockLevel;
         private readonly TextBlock _textBlockScore;
         private readonly TextBlock _textBlockLines;
         private readonly TextBlock _textBlockTime;
 
-        // Dependency injection of Statistics into StatisticsCanvas
-        public StatisticsCanvas(Statistics statistics)
+        // Dependency injection of StatisticsViewModel into StatisticsCanvas
+        public StatisticsCanvas(StatisticsViewModel statisticsViewModel)
         {
-            _statistics = statistics;
+            _statisticsViewModel = statisticsViewModel;
 
             // Level, Score, Lines, Time
             _textBlockLevel = BuildTextBlockAndAddToChildren(10);
@@ -26,12 +25,12 @@ namespace Tetris.UI
             _textBlockLines = BuildTextBlockAndAddToChildren(50);
             _textBlockTime = BuildTextBlockAndAddToChildren(70);
 
-            _statistics.Changed += Statistics_Changed;
+            _statisticsViewModel.Statistics.Changed += StatisticsViewModel_Statistics_Changed;
         }
 
-        // Update the UI (StatisticsCanvas) every time the model (Statistics) changes
+        // Update the View (StatisticsCanvas) every time the model (Statistics) changes
         // Soon after, the OnRender method is called
-        private void Statistics_Changed(object sender, EventArgs e)
+        private void StatisticsViewModel_Statistics_Changed(object sender, EventArgs e)
         {
             InvalidateVisual();
         }
@@ -41,10 +40,10 @@ namespace Tetris.UI
             base.OnRender(dc);
 
             // Level, Score, Lines, Time
-            _textBlockLevel.Text = GetText("Level:", _statistics.Level.ToString(CultureInfo.InvariantCulture));
-            _textBlockScore.Text = GetText("Score:", _statistics.Score.ToString(CultureInfo.InvariantCulture));
-            _textBlockLines.Text = GetText("Lines:", _statistics.Lines.ToString(CultureInfo.InvariantCulture));
-            _textBlockTime.Text = GetText("Time:", TimeSpan.FromSeconds(_statistics.Time).ToString("mm\\:ss"));
+            _textBlockLevel.Text = _statisticsViewModel.LevelText;
+            _textBlockScore.Text = _statisticsViewModel.ScoreText;
+            _textBlockLines.Text = _statisticsViewModel.LinesText;
+            _textBlockTime.Text = _statisticsViewModel.TimeText;
         }
 
         // ----------------------------------------------------------------------------------------
@@ -58,12 +57,6 @@ namespace Tetris.UI
             SetLeft(textBlock, 10);
             Children.Add(textBlock);
             return textBlock;
-        }
-
-        private string GetText(string labelText, string value)
-        {
-            const int totalTextLength = 15;
-            return $"{labelText.PadRight(totalTextLength - value.Length, ' ')}{value}";
         }
     }
 }
