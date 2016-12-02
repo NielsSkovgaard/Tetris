@@ -59,8 +59,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Block.cs" />
+    <Compile Include="ViewModels\GameBoardViewModel.cs" />
     <Compile Include="Models\GameBoard.cs" />
-    <Compile Include="Models\GameBoardCore.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="ViewModels\HighScoresViewModel.cs" />
     <Compile Include="Views\NextPieceCanvas.cs" />
@@ -69,7 +69,7 @@
     <Compile Include="Views\ButtonsUserControl.xaml.cs">
       <DependentUpon>ButtonsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\LockedBlocksAndCurrentPieceCanvas.cs" />
+    <Compile Include="Views\GameBoardCanvas.cs" />
     <Compile Include="Views\GraphicsTools.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />

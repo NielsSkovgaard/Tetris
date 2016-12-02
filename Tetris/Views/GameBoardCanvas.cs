@@ -6,24 +6,24 @@ using Tetris.Models;
 
 namespace Tetris.Views
 {
-    internal class LockedBlocksAndCurrentPieceCanvas : Canvas
+    internal class GameBoardCanvas : Canvas
     {
-        private readonly GameBoardCore _gameBoardCore;
+        private readonly GameBoard _gameBoard;
         private readonly int _blockSizeInPixels; // Usually 25px
 
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        public LockedBlocksAndCurrentPieceCanvas(GameBoardCore gameBoardCore, int blockSizeInPixels)
+        public GameBoardCanvas(GameBoard gameBoard, int blockSizeInPixels)
         {
-            _gameBoardCore = gameBoardCore;
+            _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
 
-            _gameBoardCore.LockedBlocksOrCurrentPieceChanged += GameBoardCore_LockedBlocksOrCurrentPieceChanged;
+            _gameBoard.Changed += GameBoard_Changed;
         }
 
-        // Update the View (LockedBlocksAndCurrentPieceCanvas) every time the model (GameBoardCore) changes
+        // Update the View (GameBoardCanvas) every time the model (GameBoard) changes
         // Soon after, the OnRender method is called
-        private void GameBoardCore_LockedBlocksOrCurrentPieceChanged(object sender, EventArgs e)
+        private void GameBoard_Changed(object sender, EventArgs e)
         {
             InvalidateVisual();
         }
@@ -33,11 +33,11 @@ namespace Tetris.Views
             base.OnRender(dc);
 
             // Render the LockedBlocks array
-            for (int row = 0; row < _gameBoardCore.Rows; row++)
+            for (int row = 0; row < _gameBoard.Rows; row++)
             {
-                for (int col = 0; col < _gameBoardCore.Cols; col++)
+                for (int col = 0; col < _gameBoard.Cols; col++)
                 {
-                    int blockType = _gameBoardCore.LockedBlocks[row, col];
+                    int blockType = _gameBoard.LockedBlocks[row, col];
 
                     if (blockType != 0)
                     {
@@ -52,14 +52,14 @@ namespace Tetris.Views
             }
 
             // Render CurrentPiece
-            foreach (Block block in _gameBoardCore.CurrentPiece.Blocks)
+            foreach (Block block in _gameBoard.CurrentPiece.Blocks)
             {
                 Rect rect = new Rect(
-                    (_gameBoardCore.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
-                    (_gameBoardCore.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    (_gameBoard.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (_gameBoard.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)_gameBoardCore.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)_gameBoard.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

@@ -16,12 +16,12 @@ namespace Tetris.Views
         {
             _nextPieceViewModel = nextPieceViewModel;
 
-            _nextPieceViewModel.GameBoardCore.NextPieceChanged += NextPieceViewModel_GameBoardCore_NextPieceChanged;
+            _nextPieceViewModel.GameBoard.NextPieceChanged += NextPieceViewModel_GameBoard_NextPieceChanged;
         }
 
-        // Update the View (NextPieceCanvas) every time the model (GameBoardCore.NextPiece) changes
+        // Update the View (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
         // Soon after, the OnRender method is called
-        private void NextPieceViewModel_GameBoardCore_NextPieceChanged(object sender, EventArgs e)
+        private void NextPieceViewModel_GameBoard_NextPieceChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
         }
@@ -30,11 +30,11 @@ namespace Tetris.Views
         {
             base.OnRender(dc);
 
-            Piece nextPiece = _nextPieceViewModel.GameBoardCore.NextPiece;
+            Piece nextPiece = _nextPieceViewModel.GameBoard.NextPiece;
             int blockSizeInPixels = _nextPieceViewModel.BlockSizeInPixels;
 
             // Calculate NextPiece coordinates on the NextPieceCanvas
-            // Because the NextPiece.CoordsY and NextPiece.CoordsX refer to coordinates on the LockedBlocksAndCurrentPieceCanvas
+            // Because the NextPiece.CoordsY and NextPiece.CoordsX refer to coordinates on the GameBoardCanvas
             double nextPieceCoordsY = _nextPieceViewModel.NextPieceCoordsY;
             double nextPieceCoordsX = _nextPieceViewModel.NextPieceCoordsX;
 

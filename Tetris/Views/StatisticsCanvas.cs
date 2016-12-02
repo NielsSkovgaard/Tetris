@@ -18,7 +18,6 @@ namespace Tetris.Views
         {
             _statisticsViewModel = statisticsViewModel;
 
-            // Level, Score, Lines, Time
             _textBlockLevel = GraphicsTools.BuildTextBlockAndAddToChildren(this, 10);
             _textBlockScore = GraphicsTools.BuildTextBlockAndAddToChildren(this, 30);
             _textBlockLines = GraphicsTools.BuildTextBlockAndAddToChildren(this, 50);
