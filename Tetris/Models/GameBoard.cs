@@ -221,11 +221,13 @@ namespace Tetris.Models
                 {
                     // Game Over: Stop all timers, and raise GameOver event (in order to eventually add high score)
                     IsGameOver = true;
+
                     _timerMovePieceLeftOrRight.Stop();
                     _timerRotatePiece.Stop();
                     _timerMovePieceDown.Stop();
                     _timerSecondsGameHasBeenRunning.Stop();
-                    _gameBoardCore.RaiseGameOverEvent(_statistics.Score);
+
+                    _gameBoardCore.OnGameOverEvent(_statistics.Score);
                 }
                 else
                 {
@@ -235,7 +237,7 @@ namespace Tetris.Models
 
                 // Raise the LockedBlocksOrCurrentPieceChanged event if any rows have been completed or CurrentPiece has been set to refer to NextPiece
                 if (numberOfCompleteRows > 0 || !nextPieceCollidesWithLockedBlocks)
-                    _gameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    _gameBoardCore.OnLockedBlocksOrCurrentPieceChangedEvent();
             }
         }
     }

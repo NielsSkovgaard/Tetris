@@ -20,7 +20,7 @@ namespace Tetris.Models
             Reset();
         }
 
-        protected virtual void RaiseChangedEvent()
+        protected virtual void OnChangedEvent()
         {
             Changed?.Invoke(this, EventArgs.Empty);
         }
@@ -32,19 +32,19 @@ namespace Tetris.Models
             Lines = 0;
             Time = 0;
 
-            RaiseChangedEvent();
+            OnChangedEvent();
         }
 
         public void IncrementScoreForSoftDroppingOneLine()
         {
             Score++;
-            RaiseChangedEvent();
+            OnChangedEvent();
         }
 
         public void IncrementTime()
         {
             Time++;
-            RaiseChangedEvent();
+            OnChangedEvent();
         }
 
         public void UpdateOnCompletingRows(int numberOfCompleteRows)
@@ -55,7 +55,7 @@ namespace Tetris.Models
                 Score += _scoresToAddForCompletingRows[numberOfCompleteRows - 1];
                 Level = Math.Min(Lines / NumberOfRowsToIncreaseLevel + 1, MaximumLevel);
 
-                RaiseChangedEvent();
+                OnChangedEvent();
             }
         }
     }

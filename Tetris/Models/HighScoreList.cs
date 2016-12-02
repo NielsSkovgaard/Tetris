@@ -19,7 +19,7 @@ namespace Tetris.Models
             BuildListFromFileOrDefault();
         }
 
-        protected virtual void RaiseChangedEvent()
+        protected virtual void OnChangedEvent()
         {
             Changed?.Invoke(this, EventArgs.Empty);
         }
@@ -77,7 +77,7 @@ namespace Tetris.Models
             List.RemoveAt(List.Count - 1);
 
             SaveToFile();
-            RaiseChangedEvent();
+            OnChangedEvent();
         }
     }
 }

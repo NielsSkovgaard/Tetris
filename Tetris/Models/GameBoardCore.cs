@@ -35,8 +35,8 @@ namespace Tetris.Models
             NextPiece = BuildRandomPiece();
 
             // Raise events
-            RaiseLockedBlocksOrCurrentPieceChangedEvent();
-            RaiseNextPieceChangedEvent();
+            OnLockedBlocksOrCurrentPieceChangedEvent();
+            OnNextPieceChangedEvent();
         }
 
         private Piece BuildRandomPiece()
@@ -49,17 +49,17 @@ namespace Tetris.Models
             return piece;
         }
 
-        public virtual void RaiseLockedBlocksOrCurrentPieceChangedEvent()
+        public virtual void OnLockedBlocksOrCurrentPieceChangedEvent()
         {
             LockedBlocksOrCurrentPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void RaiseNextPieceChangedEvent()
+        public virtual void OnNextPieceChangedEvent()
         {
             NextPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void RaiseGameOverEvent(int score)
+        public virtual void OnGameOverEvent(int score)
         {
             GameOver?.Invoke(this, score);
         }
@@ -71,7 +71,7 @@ namespace Tetris.Models
                 LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX - 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
                 CurrentPiece.MoveLeft();
-                RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                OnLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -85,7 +85,7 @@ namespace Tetris.Models
                 LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX + 1] == 0)) // Check that CurrentPiece won't collide with the locked blocks
             {
                 CurrentPiece.MoveRight();
-                RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                OnLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -103,7 +103,7 @@ namespace Tetris.Models
             if (isNextRotationInValidPosition)
             {
                 CurrentPiece.Rotate();
-                RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                OnLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -119,7 +119,7 @@ namespace Tetris.Models
             if (canMovePieceDown)
             {
                 CurrentPiece.MoveDown();
-                RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                OnLockedBlocksOrCurrentPieceChangedEvent();
                 return true;
             }
 
@@ -183,7 +183,7 @@ namespace Tetris.Models
             // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
             CurrentPiece = NextPiece;
             NextPiece = BuildRandomPiece();
-            RaiseNextPieceChangedEvent();
+            OnNextPieceChangedEvent();
         }
     }
 }
