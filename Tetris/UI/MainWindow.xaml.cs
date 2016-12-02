@@ -104,7 +104,7 @@ namespace Tetris.UI
             _buttonsUserControl.ButtonNewGame.Click += ButtonsUserControl_ButtonNewGame_Click;
             _buttonsUserControl.ButtonPauseResume.Click += ButtonsUserControl_ButtonPauseResume_Click;
 
-            _gameBoard.GameBoardCore.GameOver += GameBoard_GameOver;
+            gameBoardCore.GameOver += GameBoard_GameOver;
             HighScoreInputUserControl1.ButtonOk.Click += HighScoreInputUserControl1_ButtonOk_Click;
             GameOverUserControl1.ButtonNewGame.Click += GameOverUserControl1_ButtonNewGame_Click;
         }

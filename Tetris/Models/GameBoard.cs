@@ -6,7 +6,7 @@ namespace Tetris.Models
 {
     internal class GameBoard
     {
-        public GameBoardCore GameBoardCore { get; }
+        private readonly GameBoardCore _gameBoardCore;
 
         // Statistics (Level, Score, Lines, Time)
         private readonly Statistics _statistics;
@@ -44,7 +44,7 @@ namespace Tetris.Models
         // Dependency injection of GameBoardCore and Statistics into GameBoard
         public GameBoard(GameBoardCore gameBoardCore, Statistics statistics)
         {
-            GameBoardCore = gameBoardCore;
+            _gameBoardCore = gameBoardCore;
             _statistics = statistics;
 
             // Timers
@@ -52,7 +52,7 @@ namespace Tetris.Models
             _timerRotatePiece.Interval = _timeSpanRotatePiece;
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
             _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
-            _timerRotatePiece.Tick += (sender, args) => GameBoardCore.TryRotateCurrentPiece();
+            _timerRotatePiece.Tick += (sender, args) => _gameBoardCore.TryRotateCurrentPiece();
             _timerMovePieceDown.Tick += (sender, args) => MoveCurrentPieceDownProcess();
             _timerSecondsGameHasBeenRunning.Tick += (sender, args) => _statistics.IncrementTime();
 
@@ -61,7 +61,7 @@ namespace Tetris.Models
 
         public void StartNewGame()
         {
-            GameBoardCore.Reset();
+            _gameBoardCore.Reset();
             _statistics.Reset();
 
             // Calling PauseResumeGame() when IsGamePaused is true will "resume" the game, or in other words start it
@@ -120,19 +120,19 @@ namespace Tetris.Models
                 case Key.A:
                     _isLeftKeyDown = true;
                     _leftKeyHasPriority = true;
-                    GameBoardCore.TryMoveCurrentPieceLeft();
+                    _gameBoardCore.TryMoveCurrentPieceLeft();
                     _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Right:
                 case Key.D:
                     _isRightKeyDown = true;
                     _leftKeyHasPriority = false;
-                    GameBoardCore.TryMoveCurrentPieceRight();
+                    _gameBoardCore.TryMoveCurrentPieceRight();
                     _timerMovePieceLeftOrRight.Start();
                     break;
                 case Key.Up:
                 case Key.W:
-                    GameBoardCore.TryRotateCurrentPiece();
+                    _gameBoardCore.TryRotateCurrentPiece();
                     _timerRotatePiece.Start();
                     break;
                 case Key.Down:
@@ -182,14 +182,14 @@ namespace Tetris.Models
         private void TryMovePieceLeftOrRight()
         {
             if (_leftKeyHasPriority)
-                GameBoardCore.TryMoveCurrentPieceLeft();
+                _gameBoardCore.TryMoveCurrentPieceLeft();
             else
-                GameBoardCore.TryMoveCurrentPieceRight();
+                _gameBoardCore.TryMoveCurrentPieceRight();
         }
 
         private void MoveCurrentPieceDownProcess()
         {
-            bool canMoveDown = GameBoardCore.TryMovePieceDown();
+            bool canMoveDown = _gameBoardCore.TryMovePieceDown();
 
             if (canMoveDown)
             {
@@ -204,7 +204,7 @@ namespace Tetris.Models
                 // In this case, all CurrentPiece blocks were just added to the LockedBlocks array
 
                 // Remove complete rows
-                int numberOfCompleteRows = GameBoardCore.AddCurrentPieceToLockedBlocksAndRemoveCompleteRows();
+                int numberOfCompleteRows = _gameBoardCore.AddCurrentPieceToLockedBlocksAndRemoveCompleteRows();
 
                 // Update Level, Score, and Lines
                 // If reaching a new level, make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
@@ -215,7 +215,7 @@ namespace Tetris.Models
                     _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
 
                 // Check if NextPiece collides with LockedBlocks (= Game Over)
-                bool nextPieceCollidesWithLockedBlocks = GameBoardCore.NextPieceCollidesWithLockedBlocks();
+                bool nextPieceCollidesWithLockedBlocks = _gameBoardCore.NextPieceCollidesWithLockedBlocks();
 
                 if (nextPieceCollidesWithLockedBlocks)
                 {
@@ -225,17 +225,17 @@ namespace Tetris.Models
                     _timerRotatePiece.Stop();
                     _timerMovePieceDown.Stop();
                     _timerSecondsGameHasBeenRunning.Stop();
-                    GameBoardCore.RaiseGameOverEvent(_statistics.Score);
+                    _gameBoardCore.RaiseGameOverEvent(_statistics.Score);
                 }
                 else
                 {
                     // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
-                    GameBoardCore.UpdateCurrentPieceAndNextPiece();
+                    _gameBoardCore.UpdateCurrentPieceAndNextPiece();
                 }
 
                 // Raise the LockedBlocksOrCurrentPieceChanged event if any rows have been completed or CurrentPiece has been set to refer to NextPiece
                 if (numberOfCompleteRows > 0 || !nextPieceCollidesWithLockedBlocks)
-                    GameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
+                    _gameBoardCore.RaiseLockedBlocksOrCurrentPieceChangedEvent();
             }
         }
     }
