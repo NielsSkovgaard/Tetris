@@ -98,7 +98,7 @@ namespace Tetris.Models
                 // Pause game
                 IsGamePaused = true;
 
-                //Timers
+                // Timers
                 _timerMovePieceDown.Stop();
                 _timerSecondsGameHasBeenRunning.Stop();
             }
