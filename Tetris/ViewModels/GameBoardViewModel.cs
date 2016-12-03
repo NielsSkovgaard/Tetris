@@ -34,7 +34,7 @@ namespace Tetris.ViewModels
         private readonly TimeSpan _timeSpanSecondsGameHasBeenRunning = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
         private readonly DispatcherTimer _timerSecondsGameHasBeenRunning = new DispatcherTimer();
 
-        // Handle that _timerMovePieceLeftOrRight runs when moving left or right; otherwise, it should be stopped
+        // For handling that _timerMovePieceLeftOrRight runs when moving left or right; otherwise, the timer should be stopped
         private bool _isLeftKeyDown;
         private bool _isRightKeyDown;
 
@@ -143,7 +143,7 @@ namespace Tetris.ViewModels
                     _timerMoveCurrentPieceDown.Interval = _timeSpanMoveCurrentPieceDownSoftDrop;
                     break;
                 case Key.Space:
-                    // TODO: Hard drop the CurrentPiece (handle that it won't result in clicking the buttons)
+                    // TODO: Hard drop the CurrentPiece (and handle that it won't result in clicking the buttons)
                     break;
             }
         }
