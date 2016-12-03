@@ -2,18 +2,18 @@
 {
     internal class Block
     {
-        public int CoordsY { get; }
-        public int CoordsX { get; }
+        public int OffsetY { get; }
+        public int OffsetX { get; }
 
-        public Block(int coordsY, int coordsX)
+        public Block(int offsetY, int offsetX)
         {
-            CoordsY = coordsY;
-            CoordsX = coordsX;
+            OffsetY = offsetY;
+            OffsetX = offsetX;
         }
 
         protected bool Equals(Block other)
         {
-            return CoordsY == other.CoordsY && CoordsX == other.CoordsX;
+            return OffsetY == other.OffsetY && OffsetX == other.OffsetX;
         }
 
         public override bool Equals(object obj)
@@ -28,8 +28,8 @@
         {
             unchecked
             {
-                var hashCode = CoordsY;
-                hashCode = (hashCode * 397) ^ CoordsX;
+                var hashCode = OffsetY;
+                hashCode = (hashCode * 397) ^ OffsetX;
                 return hashCode;
             }
         }

@@ -209,7 +209,7 @@ namespace Tetris.ViewModels
                 // Game Over if either:
                 // - not all CurrentPiece blocks fit on the game board when trying to lock them (some of them are outside in the top)
                 // - NextPiece would collide with LockedBlocks if added
-                bool allCurrentPieceBlocksFitOnGameBoard = _gameBoard.CurrentPiece.Blocks.All(block => _gameBoard.CurrentPiece.CoordsY + block.CoordsY >= 0);
+                bool allCurrentPieceBlocksFitOnGameBoard = _gameBoard.CurrentPiece.Blocks.All(block => _gameBoard.CurrentPiece.CoordsY + block.OffsetY >= 0);
                 bool nextPieceCollidesWithLockedBlocks = _gameBoard.NextPieceCollidesWithLockedBlocks();
 
                 // TODO: The first situation could actually be legal (therefore, extend LockedBlocks, but don't render the first few rows in the top)

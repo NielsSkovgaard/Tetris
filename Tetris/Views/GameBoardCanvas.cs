@@ -55,11 +55,11 @@ namespace Tetris.Views
             // Render CurrentPiece (only blocks that are within the GameBoard)
             Piece currentPiece = _gameBoard.CurrentPiece;
 
-            foreach (Block block in currentPiece.Blocks.Where(block => currentPiece.CoordsY + block.CoordsY >= 0))
+            foreach (Block block in currentPiece.Blocks.Where(block => currentPiece.CoordsY + block.OffsetY >= 0))
             {
                 Rect rect = new Rect(
-                    (currentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
-                    (currentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    (currentPiece.CoordsX + block.OffsetX) * _blockSizeInPixels,
+                    (currentPiece.CoordsY + block.OffsetY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
                 dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)currentPiece.PieceType - 1], _blockBorderPen, rect);

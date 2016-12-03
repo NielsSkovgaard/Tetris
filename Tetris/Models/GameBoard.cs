@@ -45,7 +45,7 @@ namespace Tetris.Models
             Piece piece = new Piece((PieceType)_random.Next(1, 8));
 
             // Position the Piece in the top middle of the game board
-            piece.CoordsY = 0 - piece.Blocks.Max(block => block.CoordsY);
+            piece.CoordsY = 0 - piece.Blocks.Max(block => block.OffsetY);
             piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(piece.PieceType)) / 2;
             return piece;
         }
@@ -68,14 +68,14 @@ namespace Tetris.Models
         public bool TryMoveCurrentPieceLeft()
         {
             // Check that CurrentPiece is not up against the left side
-            bool notUpAgainstLeftSide = CurrentPiece.Blocks.All(block => CurrentPiece.CoordsX + block.CoordsX >= 1);
+            bool notUpAgainstLeftSide = CurrentPiece.Blocks.All(block => CurrentPiece.CoordsX + block.OffsetX >= 1);
 
             if (notUpAgainstLeftSide)
             {
                 // Check that none of the CurrentPiece.Blocks that have entered the game board so far will collide with the locked blocks when moving left
                 bool lockedBlocksAreNotInTheWay = CurrentPiece.Blocks
-                    .Where(block => CurrentPiece.CoordsY + block.CoordsY >= 0)
-                    .All(block => LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX - 1] == 0);
+                    .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0)
+                    .All(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX - 1] == 0);
 
                 if (lockedBlocksAreNotInTheWay)
                 {
@@ -91,14 +91,14 @@ namespace Tetris.Models
         public bool TryMoveCurrentPieceRight()
         {
             // Check that CurrentPiece is not up against the right side
-            bool notUpAgainstRightSide = CurrentPiece.Blocks.All(block => CurrentPiece.CoordsX + block.CoordsX + 2 <= Cols);
+            bool notUpAgainstRightSide = CurrentPiece.Blocks.All(block => CurrentPiece.CoordsX + block.OffsetX + 2 <= Cols);
 
             if (notUpAgainstRightSide)
             {
                 // Check that none of the CurrentPiece.Blocks that have entered the game board so far will collide with the locked blocks when moving right
                 bool lockedBlocksAreNotInTheWay = CurrentPiece.Blocks
-                    .Where(block => CurrentPiece.CoordsY + block.CoordsY >= 0)
-                    .All(block => LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX + 1] == 0);
+                    .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0)
+                    .All(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX + 1] == 0);
 
                 if (lockedBlocksAreNotInTheWay)
                 {
@@ -115,16 +115,16 @@ namespace Tetris.Models
         {
             bool nextRotationNotUpAgainstLeftRightOrBottom = CurrentPiece.BlocksInNextRotation
                 .All(block =>
-                    CurrentPiece.CoordsX + block.CoordsX >= 0 && // Check that the next rotation will be within the bounds in the left side
-                    CurrentPiece.CoordsX + block.CoordsX + 1 <= Cols && // Check that the next rotation will be within the bounds in the right side
-                    CurrentPiece.CoordsY + block.CoordsY + 1 <= Rows); // Check that the next rotation will be within the bounds in the bottom
+                    CurrentPiece.CoordsX + block.OffsetX >= 0 && // Check that the next rotation will be within the bounds in the left side
+                    CurrentPiece.CoordsX + block.OffsetX + 1 <= Cols && // Check that the next rotation will be within the bounds in the right side
+                    CurrentPiece.CoordsY + block.OffsetY + 1 <= Rows); // Check that the next rotation will be within the bounds in the bottom
 
             if (nextRotationNotUpAgainstLeftRightOrBottom)
             {
                 // Check that the next rotation won't collide with the locked blocks
                 bool lockedBlocksAreNotInTheWay = CurrentPiece.BlocksInNextRotation
-                    .Where(block => CurrentPiece.CoordsY + block.CoordsY >= 0) // Only check those blocks that after next rotation will be within the game board (i.e. not outside in the top)
-                    .All(block => LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX] == 0);
+                    .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0) // Only check those blocks that after next rotation will be within the game board (i.e. not outside in the top)
+                    .All(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX] == 0);
 
                 if (lockedBlocksAreNotInTheWay)
                 {
@@ -140,10 +140,10 @@ namespace Tetris.Models
         public bool TryMoveCurrentPieceDown()
         {
             bool canMoveDown = CurrentPiece.Blocks
-                .Where(block => CurrentPiece.CoordsY + block.CoordsY >= -1) // Only check those blocks that after next move down will have entered the game board
+                .Where(block => CurrentPiece.CoordsY + block.OffsetY >= -1) // Only check those blocks that after next move down will have entered the game board
                 .All(block =>
-                    CurrentPiece.CoordsY + block.CoordsY + 2 <= Rows && // Check that CurrentPiece is not on the bottom row (e.g. 15 + 3 + 2 <= 20 = true)
-                    LockedBlocks[CurrentPiece.CoordsY + block.CoordsY + 1, CurrentPiece.CoordsX + block.CoordsX] == 0); // Check that CurrentPiece won't collide with the locked blocks
+                    CurrentPiece.CoordsY + block.OffsetY + 2 <= Rows && // Check that CurrentPiece is not on the bottom row (e.g. 15 + 3 + 2 <= 20 = true)
+                    LockedBlocks[CurrentPiece.CoordsY + block.OffsetY + 1, CurrentPiece.CoordsX + block.OffsetX] == 0); // Check that CurrentPiece won't collide with the locked blocks
 
             if (canMoveDown)
             {
@@ -159,13 +159,13 @@ namespace Tetris.Models
         {
             // Add all CurrentPiece blocks to the LockedBlocks array
             foreach (Block block in CurrentPiece.Blocks)
-                LockedBlocks[CurrentPiece.CoordsY + block.CoordsY, CurrentPiece.CoordsX + block.CoordsX] = (int)CurrentPiece.PieceType;
+                LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX] = (int)CurrentPiece.PieceType;
 
             // Build HashSet of row numbers occupied by CurrentPiece and that are complete
             // Complete rows should be removed from the LockedBlocks array, and then points should be awarded
             HashSet<int> rowsOccupiedByPieceAndAreComplete = new HashSet<int>(
                 CurrentPiece.Blocks
-                    .Select(block => CurrentPiece.CoordsY + block.CoordsY)
+                    .Select(block => CurrentPiece.CoordsY + block.OffsetY)
                     .Where(row => Enumerable
                         .Range(0, Cols)
                         .All(col => LockedBlocks[row, col] != 0)));
@@ -202,8 +202,8 @@ namespace Tetris.Models
         {
             // Game Over if NextPiece collides with LockedBlocks array
             bool nextPieceCollidesWithLockedBlocks = NextPiece.Blocks
-                .Where(block => NextPiece.CoordsY + block.CoordsY >= 0)
-                .Any(block => LockedBlocks[NextPiece.CoordsY + block.CoordsY, NextPiece.CoordsX + block.CoordsX] != 0);
+                .Where(block => NextPiece.CoordsY + block.OffsetY >= 0)
+                .Any(block => LockedBlocks[NextPiece.CoordsY + block.OffsetY, NextPiece.CoordsX + block.OffsetX] != 0);
 
             return nextPieceCollidesWithLockedBlocks;
         }

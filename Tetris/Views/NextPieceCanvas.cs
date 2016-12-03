@@ -41,8 +41,8 @@ namespace Tetris.Views
             foreach (Block block in nextPiece.Blocks)
             {
                 Rect rect = new Rect(
-                    (nextPieceCoordsX + block.CoordsX) * blockSizeInPixels,
-                    (nextPieceCoordsY + block.CoordsY) * blockSizeInPixels,
+                    (nextPieceCoordsX + block.OffsetX) * blockSizeInPixels,
+                    (nextPieceCoordsY + block.OffsetY) * blockSizeInPixels,
                     blockSizeInPixels, blockSizeInPixels);
 
                 dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)nextPiece.PieceType - 1], _blockBorderPen, rect);
