@@ -224,7 +224,7 @@ namespace Tetris.ViewModels
                     _timerMoveCurrentPieceDown.Stop();
                     _timerSecondsGameHasBeenRunning.Stop();
 
-                    _gameBoard.OnGameOverEvent(_statistics.Score);
+                    _gameBoard.OnGameOver(_statistics.Score);
                 }
                 else
                 {
@@ -242,7 +242,7 @@ namespace Tetris.ViewModels
                     if (levelAfter > levelBefore && !_isSoftDropping)
                         _timerMoveCurrentPieceDown.Interval = GetMoveCurrentPieceDownTimerIntervalBasedOnLevel();
 
-                    _gameBoard.OnChangedEvent();
+                    _gameBoard.OnChanged();
                 }
             }
         }

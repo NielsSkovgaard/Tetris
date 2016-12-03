@@ -35,8 +35,8 @@ namespace Tetris.Models
             NextPiece = BuildRandomPiece();
 
             // Raise events
-            OnChangedEvent();
-            OnNextPieceChangedEvent();
+            OnChanged();
+            OnNextPieceChanged();
         }
 
         private Piece BuildRandomPiece()
@@ -50,17 +50,17 @@ namespace Tetris.Models
             return piece;
         }
 
-        public virtual void OnChangedEvent()
+        public virtual void OnChanged()
         {
             Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void OnNextPieceChangedEvent()
+        public virtual void OnNextPieceChanged()
         {
             NextPieceChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void OnGameOverEvent(int score)
+        public virtual void OnGameOver(int score)
         {
             GameOver?.Invoke(this, score);
         }
@@ -80,7 +80,7 @@ namespace Tetris.Models
                 if (lockedBlocksAreNotInTheWay)
                 {
                     CurrentPiece.MoveLeft();
-                    OnChangedEvent();
+                    OnChanged();
                     return true;
                 }
             }
@@ -103,7 +103,7 @@ namespace Tetris.Models
                 if (lockedBlocksAreNotInTheWay)
                 {
                     CurrentPiece.MoveRight();
-                    OnChangedEvent();
+                    OnChanged();
                     return true;
                 }
             }
@@ -129,7 +129,7 @@ namespace Tetris.Models
                 if (lockedBlocksAreNotInTheWay)
                 {
                     CurrentPiece.Rotate();
-                    OnChangedEvent();
+                    OnChanged();
                     return true;
                 }
             }
@@ -148,7 +148,7 @@ namespace Tetris.Models
             if (canMoveDown)
             {
                 CurrentPiece.MoveDown();
-                OnChangedEvent();
+                OnChanged();
                 return true;
             }
 
@@ -213,7 +213,7 @@ namespace Tetris.Models
             // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
             CurrentPiece = NextPiece;
             NextPiece = BuildRandomPiece();
-            OnNextPieceChangedEvent();
+            OnNextPieceChanged();
         }
     }
 }
