@@ -34,7 +34,7 @@ namespace Tetris.Views
             int blockSizeInPixels = _nextPieceViewModel.BlockSizeInPixels;
 
             // Calculate NextPiece coordinates on the NextPieceCanvas
-            // Because the NextPiece.CoordsY and NextPiece.CoordsX refer to coordinates on the GameBoardCanvas
+            // Because NextPiece.CoordsY and NextPiece.CoordsX refer to coordinates on GameBoardCanvas
             double nextPieceCoordsY = _nextPieceViewModel.NextPieceCoordsY;
             double nextPieceCoordsX = _nextPieceViewModel.NextPieceCoordsX;
 
