@@ -53,14 +53,16 @@ namespace Tetris.Views
             }
 
             // Render CurrentPiece (only blocks that are within the GameBoard)
-            foreach (Block block in _gameBoard.CurrentPiece.Blocks.Where(block => _gameBoard.CurrentPiece.CoordsY + block.CoordsY >= 0))
+            Piece currentPiece = _gameBoard.CurrentPiece;
+
+            foreach (Block block in currentPiece.Blocks.Where(block => currentPiece.CoordsY + block.CoordsY >= 0))
             {
                 Rect rect = new Rect(
-                    (_gameBoard.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
-                    (_gameBoard.CurrentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
+                    (currentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,
+                    (currentPiece.CoordsY + block.CoordsY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)_gameBoard.CurrentPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)currentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }
