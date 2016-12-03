@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -51,8 +52,8 @@ namespace Tetris.Views
                 }
             }
 
-            // Render CurrentPiece
-            foreach (Block block in _gameBoard.CurrentPiece.Blocks)
+            // Render CurrentPiece (only blocks that are within the GameBoard)
+            foreach (Block block in _gameBoard.CurrentPiece.Blocks.Where(block => _gameBoard.CurrentPiece.CoordsY + block.CoordsY >= 0))
             {
                 Rect rect = new Rect(
                     (_gameBoard.CurrentPiece.CoordsX + block.CoordsX) * _blockSizeInPixels,

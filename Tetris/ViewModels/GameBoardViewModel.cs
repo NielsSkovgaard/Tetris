@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Tetris.Models;
@@ -17,17 +18,17 @@ namespace Tetris.ViewModels
 
         // TimeSpans and Timers:
         // - for holding down a key to repeat a command (move left/right or rotate) every x milliseconds
-        private readonly TimeSpan _timeSpanMovePieceLeftOrRight = TimeSpan.FromMilliseconds(100); // 100 ms = 10 FPS
-        private readonly TimeSpan _timeSpanRotatePiece = TimeSpan.FromMilliseconds(250); // 250 ms = 4 FPS
-        private readonly DispatcherTimer _timerMovePieceLeftOrRight = new DispatcherTimer();
-        private readonly DispatcherTimer _timerRotatePiece = new DispatcherTimer();
+        private readonly TimeSpan _timeSpanMoveCurrentPieceLeftOrRight = TimeSpan.FromMilliseconds(100); // 100 ms = 10 FPS
+        private readonly TimeSpan _timeSpanRotateCurrentPiece = TimeSpan.FromMilliseconds(250); // 250 ms = 4 FPS
+        private readonly DispatcherTimer _timerMoveCurrentPieceLeftOrRight = new DispatcherTimer();
+        private readonly DispatcherTimer _timerRotateCurrentPiece = new DispatcherTimer();
 
         // - to add gravity to CurrentPiece. It will move down faster when soft dropping (by holding down the down key)
         // Every level increases the speed by 18%. Notice that the max level speed is equal to the soft drop speed
-        private readonly int[] _movePieceDownIntervalsInMilisecondsPerLevel = { 800, 656, 538, 441, 362, 297, 243, 199, 164, 134, 110, 90, 74, 61, 50 };
+        private readonly int[] _moveCurrentPieceDownIntervalsInMilisecondsPerLevel = { 800, 656, 538, 441, 362, 297, 243, 199, 164, 134, 110, 90, 74, 61, 50 };
 
-        private readonly TimeSpan _timeSpanMovePieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
-        private readonly DispatcherTimer _timerMovePieceDown = new DispatcherTimer();
+        private readonly TimeSpan _timeSpanMoveCurrentPieceDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
+        private readonly DispatcherTimer _timerMoveCurrentPieceDown = new DispatcherTimer();
 
         // - to count the number of seconds the game has been running
         private readonly TimeSpan _timeSpanSecondsGameHasBeenRunning = TimeSpan.FromMilliseconds(1000); // 1000 ms = 1 FPS
@@ -48,12 +49,12 @@ namespace Tetris.ViewModels
             _statistics = statistics;
 
             // Timers
-            _timerMovePieceLeftOrRight.Interval = _timeSpanMovePieceLeftOrRight;
-            _timerRotatePiece.Interval = _timeSpanRotatePiece;
+            _timerMoveCurrentPieceLeftOrRight.Interval = _timeSpanMoveCurrentPieceLeftOrRight;
+            _timerRotateCurrentPiece.Interval = _timeSpanRotateCurrentPiece;
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
-            _timerMovePieceLeftOrRight.Tick += (sender, args) => TryMovePieceLeftOrRight();
-            _timerRotatePiece.Tick += (sender, args) => _gameBoard.TryRotateCurrentPiece();
-            _timerMovePieceDown.Tick += (sender, args) => MoveCurrentPieceDownProcess();
+            _timerMoveCurrentPieceLeftOrRight.Tick += (sender, args) => TryMoveCurrentPieceLeftOrRight();
+            _timerRotateCurrentPiece.Tick += (sender, args) => _gameBoard.TryRotateCurrentPiece();
+            _timerMoveCurrentPieceDown.Tick += (sender, args) => MoveCurrentPieceDownProcess();
             _timerSecondsGameHasBeenRunning.Tick += (sender, args) => _statistics.IncrementTime();
 
             StartNewGame();
@@ -75,8 +76,8 @@ namespace Tetris.ViewModels
             if (IsGameOver)
                 return;
 
-            _timerMovePieceLeftOrRight.Stop();
-            _timerRotatePiece.Stop();
+            _timerMoveCurrentPieceLeftOrRight.Stop();
+            _timerRotateCurrentPiece.Stop();
 
             if (IsGamePaused)
             {
@@ -89,8 +90,8 @@ namespace Tetris.ViewModels
                 _isSoftDropping = false;
 
                 // Timers
-                _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
-                _timerMovePieceDown.Start();
+                _timerMoveCurrentPieceDown.Interval = GetMoveCurrentPieceDownTimerIntervalBasedOnLevel();
+                _timerMoveCurrentPieceDown.Start();
                 _timerSecondsGameHasBeenRunning.Start();
             }
             else
@@ -99,14 +100,14 @@ namespace Tetris.ViewModels
                 IsGamePaused = true;
 
                 // Timers
-                _timerMovePieceDown.Stop();
+                _timerMoveCurrentPieceDown.Stop();
                 _timerSecondsGameHasBeenRunning.Stop();
             }
         }
 
-        private TimeSpan GetMovePieceDownTimerIntervalBasedOnLevel()
+        private TimeSpan GetMoveCurrentPieceDownTimerIntervalBasedOnLevel()
         {
-            return TimeSpan.FromMilliseconds(_movePieceDownIntervalsInMilisecondsPerLevel[_statistics.Level - 1]);
+            return TimeSpan.FromMilliseconds(_moveCurrentPieceDownIntervalsInMilisecondsPerLevel[_statistics.Level - 1]);
         }
 
         public void KeyDown(Key key, bool isRepeat)
@@ -121,25 +122,28 @@ namespace Tetris.ViewModels
                     _isLeftKeyDown = true;
                     _leftKeyHasPriority = true;
                     _gameBoard.TryMoveCurrentPieceLeft();
-                    _timerMovePieceLeftOrRight.Start();
+                    _timerMoveCurrentPieceLeftOrRight.Start();
                     break;
                 case Key.Right:
                 case Key.D:
                     _isRightKeyDown = true;
                     _leftKeyHasPriority = false;
                     _gameBoard.TryMoveCurrentPieceRight();
-                    _timerMovePieceLeftOrRight.Start();
+                    _timerMoveCurrentPieceLeftOrRight.Start();
                     break;
                 case Key.Up:
                 case Key.W:
                     _gameBoard.TryRotateCurrentPiece();
-                    _timerRotatePiece.Start();
+                    _timerRotateCurrentPiece.Start();
                     break;
                 case Key.Down:
                 case Key.S:
                     _isSoftDropping = true;
                     MoveCurrentPieceDownProcess();
-                    _timerMovePieceDown.Interval = _timeSpanMovePieceDownSoftDrop;
+                    _timerMoveCurrentPieceDown.Interval = _timeSpanMoveCurrentPieceDownSoftDrop;
+                    break;
+                case Key.Space:
+                    // TODO: Hard drop the CurrentPiece (handle that it won't result in clicking the buttons)
                     break;
             }
         }
@@ -157,7 +161,7 @@ namespace Tetris.ViewModels
                     _leftKeyHasPriority = false;
 
                     if (!_isRightKeyDown)
-                        _timerMovePieceLeftOrRight.Stop();
+                        _timerMoveCurrentPieceLeftOrRight.Stop();
                     break;
                 case Key.Right:
                 case Key.D:
@@ -165,21 +169,21 @@ namespace Tetris.ViewModels
                     _leftKeyHasPriority = true;
 
                     if (!_isLeftKeyDown)
-                        _timerMovePieceLeftOrRight.Stop();
+                        _timerMoveCurrentPieceLeftOrRight.Stop();
                     break;
                 case Key.Up:
                 case Key.W:
-                    _timerRotatePiece.Stop();
+                    _timerRotateCurrentPiece.Stop();
                     break;
                 case Key.Down:
                 case Key.S:
                     _isSoftDropping = false;
-                    _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
+                    _timerMoveCurrentPieceDown.Interval = GetMoveCurrentPieceDownTimerIntervalBasedOnLevel();
                     break;
             }
         }
 
-        private void TryMovePieceLeftOrRight()
+        private void TryMoveCurrentPieceLeftOrRight()
         {
             if (_leftKeyHasPriority)
                 _gameBoard.TryMoveCurrentPieceLeft();
@@ -189,7 +193,8 @@ namespace Tetris.ViewModels
 
         private void MoveCurrentPieceDownProcess()
         {
-            bool canMoveDown = _gameBoard.TryMovePieceDown();
+            // TODO: Check inside this method that if not all CurrentPiece.Blocks fit on the GameBoard, then don't move it down, but it's game over
+            bool canMoveDown = _gameBoard.TryMoveCurrentPieceDown();
 
             if (canMoveDown)
             {
@@ -201,43 +206,44 @@ namespace Tetris.ViewModels
             }
             else
             {
-                // In this case, all CurrentPiece blocks were just added to the LockedBlocks array
-
-                // Remove complete rows
-                int numberOfCompleteRows = _gameBoard.AddCurrentPieceToLockedBlocksAndRemoveCompleteRows();
-
-                // Update Level, Score, and Lines
-                // If reaching a new level, make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
-                int levelBefore = _statistics.Level;
-                _statistics.UpdateOnCompletingRows(numberOfCompleteRows);
-                int levelAfter = _statistics.Level;
-                if (levelAfter > levelBefore && !_isSoftDropping)
-                    _timerMovePieceDown.Interval = GetMovePieceDownTimerIntervalBasedOnLevel();
-
-                // Check if NextPiece collides with LockedBlocks (= Game Over)
+                // Game Over if either:
+                // - not all CurrentPiece blocks fit on the game board when trying to lock them (some of them are outside in the top)
+                // - NextPiece would collide with LockedBlocks if added
+                bool allCurrentPieceBlocksFitOnGameBoard = _gameBoard.CurrentPiece.Blocks.All(block => _gameBoard.CurrentPiece.CoordsY + block.CoordsY >= 0);
                 bool nextPieceCollidesWithLockedBlocks = _gameBoard.NextPieceCollidesWithLockedBlocks();
 
-                if (nextPieceCollidesWithLockedBlocks)
+                // TODO: The first situation could actually be legal (therefore, extend LockedBlocks, but don't render the first few rows in the top)
+
+                if (!allCurrentPieceBlocksFitOnGameBoard || nextPieceCollidesWithLockedBlocks)
                 {
                     // Game Over: Stop all timers, and raise GameOver event (in order to eventually add high score)
                     IsGameOver = true;
 
-                    _timerMovePieceLeftOrRight.Stop();
-                    _timerRotatePiece.Stop();
-                    _timerMovePieceDown.Stop();
+                    _timerMoveCurrentPieceLeftOrRight.Stop();
+                    _timerRotateCurrentPiece.Stop();
+                    _timerMoveCurrentPieceDown.Stop();
                     _timerSecondsGameHasBeenRunning.Stop();
 
                     _gameBoard.OnGameOverEvent(_statistics.Score);
                 }
                 else
                 {
+                    // Add CurrentPiece to LockedBlocks and remove complete rows
+                    int numberOfCompleteRows = _gameBoard.AddCurrentPieceToLockedBlocksAndRemoveCompleteRows();
+
                     // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
                     _gameBoard.UpdateCurrentPieceAndNextPiece();
-                }
 
-                // Raise the LockedBlocksOrCurrentPieceChanged event if any rows have been completed or CurrentPiece has been set to refer to NextPiece
-                if (numberOfCompleteRows > 0 || !nextPieceCollidesWithLockedBlocks)
+                    // Update Level, Score, and Lines
+                    // If reaching a new level, make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
+                    int levelBefore = _statistics.Level;
+                    _statistics.UpdateOnCompletingRows(numberOfCompleteRows);
+                    int levelAfter = _statistics.Level;
+                    if (levelAfter > levelBefore && !_isSoftDropping)
+                        _timerMoveCurrentPieceDown.Interval = GetMoveCurrentPieceDownTimerIntervalBasedOnLevel();
+
                     _gameBoard.OnChangedEvent();
+                }
             }
         }
     }

@@ -242,7 +242,7 @@ namespace Tetris.Views
 // TODO LIST:
 // ------------------------------------------------------------------------------------------------
 
-// TODO: Organize project using MVVM or MVVMC pattern (this is work-in-progress)
+// TODO: Organize project using MVVM or MVVMC pattern (Status: DONE!)
 // - http://www.markwithall.com/programming/2013/03/01/worlds-simplest-csharp-wpf-mvvm-example.html
 // - https://msdn.microsoft.com/en-us/library/ff798384.aspx
 // - http://skimp-blog.blogspot.dk/2012/02/mvvm-is-dead-long-live-mvvmc.html
