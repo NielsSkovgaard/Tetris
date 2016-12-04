@@ -13,5 +13,10 @@ namespace Tetris.Views
         {
             InitializeComponent();
         }
+
+        private void TextBoxInitials_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            ButtonOk.IsEnabled = TextBoxInitials.Text.Length != 0;
+        }
     }
 }

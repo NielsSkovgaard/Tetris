@@ -63,11 +63,6 @@ namespace Tetris.Models
             {
                 if (score > List[i].Score)
                 {
-                    // Format input initials
-                    initials = initials.Trim();
-                    if (initials.Length == 0)
-                        initials = "?";
-
                     List.Insert(i, new HighScoreEntry(initials, score));
                     break;
                 }
