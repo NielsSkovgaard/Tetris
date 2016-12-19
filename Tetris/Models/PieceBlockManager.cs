@@ -12,21 +12,14 @@ namespace Tetris.Models
             BuildOptimizedBlocks();
         }
 
-        public static Block[] GetBlocks(PieceType pieceType, int rotation)
+        public static Block[] Blocks(PieceType pieceType, int rotation)
         {
             Block[][] blocksForAllRotations = _optimizedBlocks[(int)pieceType - 1];
             return blocksForAllRotations[rotation % blocksForAllRotations.Length];
         }
 
-        public static int GetHeightOfBlockArray(PieceType pieceType)
-        {
-            return _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(0);
-        }
-
-        public static int GetWidthOfBlockArray(PieceType pieceType)
-        {
-            return _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(1);
-        }
+        public static int NumberOfRowsOfBlockArray(PieceType pieceType) => _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(0);
+        public static int NumberOfColsOfBlockArray(PieceType pieceType) => _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(1);
 
         private static void BuildBlocksBeforeOptimization()
         {

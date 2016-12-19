@@ -1,4 +1,6 @@
-﻿namespace Tetris.Models
+﻿using System;
+
+namespace Tetris.Models
 {
     internal class Piece
     {
@@ -8,10 +10,20 @@
         public int Rotation { get; private set; }
         public Block[] Blocks { get; private set; }
 
+        private static readonly Random Random = new Random();
+
         public Piece(PieceType pieceType)
         {
             PieceType = pieceType;
-            UpdateCurrentBlocks();
+            Blocks = BlocksInCurrentRotation;
+        }
+
+        public static Piece BuildRandomPiece()
+        {
+            // randomNumber is >= 1 and < 8, i.e. in the interval 1..7
+            int numberOfPieceTypes = Enum.GetNames(typeof(PieceType)).Length; // Usually 8
+            int randomNumber = Random.Next(1, numberOfPieceTypes);
+            return new Piece((PieceType)randomNumber);
         }
 
         public void MoveLeft() => CoordsX--;
@@ -21,11 +33,10 @@
         public void Rotate()
         {
             Rotation++;
-            UpdateCurrentBlocks();
+            Blocks = BlocksInCurrentRotation;
         }
 
-        private void UpdateCurrentBlocks() => Blocks = PieceBlockManager.GetBlocks(PieceType, Rotation);
-
-        public Block[] BlocksInNextRotation => PieceBlockManager.GetBlocks(PieceType, Rotation + 1);
+        public Block[] BlocksInCurrentRotation => PieceBlockManager.Blocks(PieceType, Rotation);
+        public Block[] BlocksInNextRotation => PieceBlockManager.Blocks(PieceType, Rotation + 1);
     }
 }

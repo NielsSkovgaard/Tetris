@@ -18,52 +18,36 @@ namespace Tetris.Models
         public Piece CurrentPiece { get; private set; }
         public Piece NextPiece { get; private set; }
 
-        private readonly Random _random = new Random();
-
         public GameBoard(int rows, int cols)
         {
             Rows = rows;
             Cols = cols;
-
             Reset();
         }
 
         public void Reset()
         {
             LockedBlocks = new int[Rows, Cols];
-            CurrentPiece = BuildRandomPiece();
-            NextPiece = BuildRandomPiece();
+            CurrentPiece = BuildAndPositionRandomPiece();
+            NextPiece = BuildAndPositionRandomPiece();
 
             // Raise events
             OnChanged();
             OnNextPieceChanged();
         }
 
-        private Piece BuildRandomPiece()
+        private Piece BuildAndPositionRandomPiece()
         {
-            // The random number is >= 1 and < 8, i.e. in the interval 1..7
-            Piece piece = new Piece((PieceType)_random.Next(1, 8));
-
-            // Position the Piece in the top middle of the game board
+            // Build random piece, and position it in the top middle of the game board
+            Piece piece = Piece.BuildRandomPiece();
             piece.CoordsY = 0 - piece.Blocks.Max(block => block.OffsetY);
-            piece.CoordsX = (Cols - PieceBlockManager.GetWidthOfBlockArray(piece.PieceType)) / 2;
+            piece.CoordsX = (Cols - PieceBlockManager.NumberOfColsOfBlockArray(piece.PieceType)) / 2;
             return piece;
         }
 
-        public virtual void OnChanged()
-        {
-            Changed?.Invoke(this, EventArgs.Empty);
-        }
-
-        public virtual void OnNextPieceChanged()
-        {
-            NextPieceChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public virtual void OnGameOver(int score)
-        {
-            GameOver?.Invoke(this, score);
-        }
+        public virtual void OnChanged() => Changed?.Invoke(this, EventArgs.Empty);
+        public virtual void OnNextPieceChanged() => NextPieceChanged?.Invoke(this, EventArgs.Empty);
+        public virtual void OnGameOver(int score) => GameOver?.Invoke(this, score);
 
         public bool TryMoveCurrentPieceLeft()
         {
@@ -212,7 +196,7 @@ namespace Tetris.Models
         {
             // Make CurrentPiece refer to NextPiece. Then build a new NextPiece
             CurrentPiece = NextPiece;
-            NextPiece = BuildRandomPiece();
+            NextPiece = BuildAndPositionRandomPiece();
             OnNextPieceChanged();
         }
     }

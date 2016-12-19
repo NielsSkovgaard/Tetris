@@ -17,7 +17,7 @@ namespace Tetris.ViewModels
             _cols = cols;
         }
 
-        public double NextPieceCoordsY => (_rows - PieceBlockManager.GetHeightOfBlockArray(GameBoard.NextPiece.PieceType)) / 2d;
-        public double NextPieceCoordsX => (_cols - PieceBlockManager.GetWidthOfBlockArray(GameBoard.NextPiece.PieceType)) / 2d;
+        public double NextPieceCoordsY => (_rows - PieceBlockManager.NumberOfRowsOfBlockArray(GameBoard.NextPiece.PieceType)) / 2d;
+        public double NextPieceCoordsX => (_cols - PieceBlockManager.NumberOfColsOfBlockArray(GameBoard.NextPiece.PieceType)) / 2d;
     }
 }
