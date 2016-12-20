@@ -48,12 +48,12 @@ namespace Tetris.ViewModels
             _gameBoard = gameBoard;
             _statistics = statistics;
 
-            // Timer.Interval
+            // DispatcherTimer.Interval
             _timerMoveCurrentPieceLeftOrRight.Interval = _timeSpanMoveCurrentPieceLeftOrRight;
             _timerRotateCurrentPiece.Interval = _timeSpanRotateCurrentPiece;
             _timerSecondsGameHasBeenRunning.Interval = _timeSpanSecondsGameHasBeenRunning;
 
-            // Timer.Tick
+            // DispatcherTimer.Tick
             _timerMoveCurrentPieceLeftOrRight.Tick += (sender, args) => TryMoveCurrentPieceLeftOrRight();
             _timerRotateCurrentPiece.Tick += (sender, args) => _gameBoard.TryRotateCurrentPiece();
             _timerMoveCurrentPieceDown.Tick += (sender, args) => MoveCurrentPieceDownProcess();
