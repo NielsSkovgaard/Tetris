@@ -187,6 +187,7 @@ namespace Tetris.Models
         public bool NextPieceCollidesWithLockedBlocks()
         {
             // Game Over if NextPiece collides with LockedBlocks array
+            // Only check those blocks that are on the game board when the NextPiece is added
             bool nextPieceCollidesWithLockedBlocks = NextPiece.Blocks
                 .Where(block => NextPiece.CoordsY + block.OffsetY >= 0)
                 .Any(block => LockedBlocks[NextPiece.CoordsY + block.OffsetY, NextPiece.CoordsX + block.OffsetX] != 0);
