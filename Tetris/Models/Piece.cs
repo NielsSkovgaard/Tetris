@@ -10,6 +10,7 @@ namespace Tetris.Models
         public int Rotation { get; private set; }
         public Block[] Blocks { get; private set; }
 
+        private static readonly int NumberOfPieceTypes = Enum.GetNames(typeof(PieceType)).Length; // Usually 7
         private static readonly Random Random = new Random();
 
         public Piece(PieceType pieceType)
@@ -20,10 +21,8 @@ namespace Tetris.Models
 
         public static Piece BuildRandomPiece()
         {
-            // randomNumber is >= 1 and < 8, i.e. in the interval 1..7
-            int numberOfPieceTypes = Enum.GetNames(typeof(PieceType)).Length; // Usually 8
-            int randomNumber = Random.Next(1, numberOfPieceTypes);
-            return new Piece((PieceType)randomNumber);
+            // The random number is >= 1 and < (7 + 1), i.e. in the range 1..7
+            return new Piece((PieceType)Random.Next(1, NumberOfPieceTypes + 1));
         }
 
         public void MoveLeft() => CoordsX--;
