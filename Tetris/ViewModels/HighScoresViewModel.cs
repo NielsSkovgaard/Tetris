@@ -19,11 +19,13 @@ namespace Tetris.ViewModels
             get
             {
                 return HighScoreList.List
-                    .Select(entry => BuildText(entry.Initials, entry.Score.ToString(CultureInfo.InvariantCulture)))
+                    .Select(entry =>
+                    {
+                        string scoreString = entry.Score.ToString(CultureInfo.InvariantCulture);
+                        return $"{entry.Initials.PadRight(TotalTextLength - scoreString.Length, ' ')}{scoreString}";
+                    })
                     .ToArray();
             }
         }
-
-        private static string BuildText(string labelText, string value) => $"{labelText.PadRight(TotalTextLength - value.Length, ' ')}{value}";
     }
 }

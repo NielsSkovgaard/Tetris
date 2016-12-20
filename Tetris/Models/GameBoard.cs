@@ -22,6 +22,7 @@ namespace Tetris.Models
         {
             Rows = rows;
             Cols = cols;
+
             Reset();
         }
 

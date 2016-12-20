@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -19,14 +18,9 @@ namespace Tetris.Views
             _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
 
-            _gameBoard.Changed += GameBoard_Changed;
-        }
-
-        // Update the View (GameBoardCanvas) every time the model (GameBoard) changes
-        // Soon after, the OnRender method is called
-        private void GameBoard_Changed(object sender, EventArgs e)
-        {
-            InvalidateVisual();
+            // Update the View (GameBoardCanvas) every time the model (GameBoard) changes
+            // Soon after, the OnRender method is called
+            _gameBoard.Changed += (sender, e) => InvalidateVisual();
         }
 
         protected override void OnRender(DrawingContext dc)

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.ViewModels;
@@ -9,25 +9,21 @@ namespace Tetris.Views
     {
         private readonly HighScoresViewModel _highScoresViewModel;
 
-        private readonly TextBlock[] _textBlockArrayHighScores = new TextBlock[5];
+        private readonly TextBlock[] _textBlockArrayHighScores;
 
         public HighScoresCanvas(HighScoresViewModel highScoresViewModel)
         {
             _highScoresViewModel = highScoresViewModel;
 
+            // Build and add TextBlocks
             GraphicsTools.BuildTextBlockAndAddToChildren(this, 10, "HIGH SCORES:");
+            _textBlockArrayHighScores = _highScoresViewModel.HighScoreList.List
+                .Select((entry, index) => GraphicsTools.BuildTextBlockAndAddToChildren(this, 30 + index * 20))
+                .ToArray();
 
-            for (int i = 0; i < _highScoresViewModel.HighScoreList.List.Count; i++)
-                _textBlockArrayHighScores[i] = GraphicsTools.BuildTextBlockAndAddToChildren(this, 30 + i * 20);
-
-            _highScoresViewModel.HighScoreList.Changed += HighScoreViewModel_HighScoreList_Changed;
-        }
-
-        // Update the View (HighScoresCanvas) every time the model (HighScoreList) changes
-        // Soon after, the OnRender method is called
-        private void HighScoreViewModel_HighScoreList_Changed(object sender, EventArgs e)
-        {
-            InvalidateVisual();
+            // Update the View (HighScoresCanvas) every time the model (HighScoreList) changes
+            // Soon after, the OnRender method is called
+            _highScoresViewModel.HighScoreList.Changed += (sender, e) => InvalidateVisual();
         }
 
         protected override void OnRender(DrawingContext dc)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.ViewModels;
 
@@ -23,14 +22,9 @@ namespace Tetris.Views
             _textBlockLines = GraphicsTools.BuildTextBlockAndAddToChildren(this, 50);
             _textBlockTime = GraphicsTools.BuildTextBlockAndAddToChildren(this, 70);
 
-            _statisticsViewModel.Statistics.Changed += StatisticsViewModel_Statistics_Changed;
-        }
-
-        // Update the View (StatisticsCanvas) every time the model (Statistics) changes
-        // Soon after, the OnRender method is called
-        private void StatisticsViewModel_Statistics_Changed(object sender, EventArgs e)
-        {
-            InvalidateVisual();
+            // Update the View (StatisticsCanvas) every time the model (Statistics) changes
+            // Soon after, the OnRender method is called
+            _statisticsViewModel.Statistics.Changed += (sender, e) => InvalidateVisual();
         }
 
         protected override void OnRender(DrawingContext dc)

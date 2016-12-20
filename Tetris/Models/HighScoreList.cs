@@ -8,60 +8,46 @@ namespace Tetris.Models
     internal class HighScoreList
     {
         public event EventHandler Changed;
-
         private readonly string _fileName;
+
         public List<HighScoreEntry> List { get; private set; } // Always sorted from highest to lowest score
 
         public HighScoreList(string fileName)
         {
             _fileName = fileName;
 
-            BuildListFromFileOrDefault();
+            List = BuildListFromFileOrDefault();
         }
 
-        protected virtual void OnChanged()
-        {
-            Changed?.Invoke(this, EventArgs.Empty);
-        }
+        protected virtual void OnChanged() => Changed?.Invoke(this, EventArgs.Empty);
 
-        private void BuildListFromFileOrDefault()
+        private List<HighScoreEntry> BuildListFromFileOrDefault()
         {
             if (!File.Exists(_fileName))
-            {
-                List = new List<HighScoreEntry>
-                {
-                    new HighScoreEntry("-", 0),
-                    new HighScoreEntry("-", 0),
-                    new HighScoreEntry("-", 0),
-                    new HighScoreEntry("-", 0),
-                    new HighScoreEntry("-", 0)
-                };
-            }
-            else
-            {
-                string[] lines = File.ReadLines(_fileName).ToArray();
+                return Enumerable.Repeat(new HighScoreEntry("-", 0), 5).ToList();
 
-                List = lines.Select(line =>
-                {
-                    string[] s = line.Split('\t');
-                    return new HighScoreEntry(s[0], Convert.ToInt32(s[1]));
-                }).ToList();
-            }
+            return File.ReadLines(_fileName)
+                .Select(line => line.Split('\t'))
+                .Select(subStrings => new HighScoreEntry(subStrings[0], Convert.ToInt32(subStrings[1])))
+                .ToList();
         }
 
         private void SaveToFile()
         {
-            string[] lines = List.Select(entry => $"{entry.Initials}\t{entry.Score}").ToArray();
+            IEnumerable<string> lines = List.Select(entry => $"{entry.Initials}\t{entry.Score}");
             File.WriteAllLines(_fileName, lines);
         }
 
-        public bool IsRecord(int score) => score > List.Last().Score;
+        public bool IsRecord(int score) => score >= List.Last().Score;
 
         public void Add(string initials, int score)
         {
+            if (!IsRecord(score))
+                return;
+
             for (int i = 0; i < List.Count; i++)
             {
-                if (score > List[i].Score)
+                if (score >= List[i].Score)
                 {
                     List.Insert(i, new HighScoreEntry(initials, score));
                     break;

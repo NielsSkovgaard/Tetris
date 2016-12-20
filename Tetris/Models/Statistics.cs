@@ -20,11 +20,8 @@ namespace Tetris.Models
             Reset();
         }
 
-        protected virtual void OnChanged()
-        {
-            Changed?.Invoke(this, EventArgs.Empty);
-        }
-        
+        protected virtual void OnChanged() => Changed?.Invoke(this, EventArgs.Empty);
+
         public void Reset()
         {
             Level = 1;

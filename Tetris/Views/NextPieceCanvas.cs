@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Tetris.Models;
@@ -16,14 +15,9 @@ namespace Tetris.Views
         {
             _nextPieceViewModel = nextPieceViewModel;
 
-            _nextPieceViewModel.GameBoard.NextPieceChanged += NextPieceViewModel_GameBoard_NextPieceChanged;
-        }
-
-        // Update the View (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
-        // Soon after, the OnRender method is called
-        private void NextPieceViewModel_GameBoard_NextPieceChanged(object sender, EventArgs e)
-        {
-            InvalidateVisual();
+            // Update the View (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
+            // Soon after, the OnRender method is called
+            _nextPieceViewModel.GameBoard.NextPieceChanged += (sender, e) => InvalidateVisual();
         }
 
         protected override void OnRender(DrawingContext dc)
