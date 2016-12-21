@@ -10,13 +10,15 @@ namespace Tetris.Views
     {
         private readonly GameBoard _gameBoard;
         private readonly int _blockSizeInPixels; // Usually 25px
+        private readonly SolidColorBrush[] _blockBrushes;
 
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        public GameBoardCanvas(GameBoard gameBoard, int blockSizeInPixels)
+        public GameBoardCanvas(GameBoard gameBoard, int blockSizeInPixels, SolidColorBrush[] blockBrushes)
         {
             _gameBoard = gameBoard;
             _blockSizeInPixels = blockSizeInPixels;
+            _blockBrushes = blockBrushes;
 
             // Update the View (GameBoardCanvas) every time the model (GameBoard) changes
             // Soon after, the OnRender method is called
@@ -41,7 +43,7 @@ namespace Tetris.Views
                             row * _blockSizeInPixels,
                             _blockSizeInPixels, _blockSizeInPixels);
 
-                        dc.DrawRectangle(GraphicsTools.BlockBrushes[blockType - 1], _blockBorderPen, rect);
+                        dc.DrawRectangle(_blockBrushes[blockType - 1], _blockBorderPen, rect);
                     }
                 }
             }
@@ -56,7 +58,7 @@ namespace Tetris.Views
                     (currentPiece.CoordsY + block.OffsetY) * _blockSizeInPixels,
                     _blockSizeInPixels, _blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)currentPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(_blockBrushes[(int)currentPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

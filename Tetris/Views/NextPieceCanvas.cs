@@ -9,11 +9,13 @@ namespace Tetris.Views
     internal class NextPieceCanvas : Canvas
     {
         private readonly NextPieceViewModel _nextPieceViewModel;
+        private readonly SolidColorBrush[] _blockBrushes;
         private readonly Pen _blockBorderPen = new Pen { Brush = Brushes.White };
 
-        public NextPieceCanvas(NextPieceViewModel nextPieceViewModel)
+        public NextPieceCanvas(NextPieceViewModel nextPieceViewModel, SolidColorBrush[] blockBrushes)
         {
             _nextPieceViewModel = nextPieceViewModel;
+            _blockBrushes = blockBrushes;
 
             // Update the View (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
             // Soon after, the OnRender method is called
@@ -39,7 +41,7 @@ namespace Tetris.Views
                     (nextPieceCoordsY + block.OffsetY) * blockSizeInPixels,
                     blockSizeInPixels, blockSizeInPixels);
 
-                dc.DrawRectangle(GraphicsTools.BlockBrushes[(int)nextPiece.PieceType - 1], _blockBorderPen, rect);
+                dc.DrawRectangle(_blockBrushes[(int)nextPiece.PieceType - 1], _blockBorderPen, rect);
             }
         }
     }

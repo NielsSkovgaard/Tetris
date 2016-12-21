@@ -31,6 +31,17 @@ namespace Tetris.Views
         private GameBoardViewModel _gameBoardViewModel;
         private ButtonsUserControl _buttonsUserControl;
 
+        private static readonly SolidColorBrush[] BlockBrushes =
+        {
+            Brushes.Cyan,
+            Brushes.Yellow,
+            Brushes.Purple,
+            Brushes.Blue,
+            Brushes.Orange,
+            Brushes.Green,
+            Brushes.Red
+        };
+
         public MainWindow()
         {
             InitializeComponent();
@@ -42,7 +53,7 @@ namespace Tetris.Views
             GameBoard gameBoard = new GameBoard(Rows, Cols);
             _gameBoardViewModel = new GameBoardViewModel(gameBoard, _statistics);
 
-            GameBoardCanvas gameBoardCanvas = new GameBoardCanvas(gameBoard, BlockSizeInPixels)
+            GameBoardCanvas gameBoardCanvas = new GameBoardCanvas(gameBoard, BlockSizeInPixels, BlockBrushes)
             {
                 Height = Rows * BlockSizeInPixels, // Usually 500px
                 Width = Cols * BlockSizeInPixels // Usually 250px
@@ -54,7 +65,7 @@ namespace Tetris.Views
             // NextPiece
             NextPieceViewModel nextPieceViewModel = new NextPieceViewModel(gameBoard, NextPieceBlockSizeInPixels, NextPieceRows, NextPieceCols);
 
-            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(nextPieceViewModel)
+            NextPieceCanvas nextPieceCanvas = new NextPieceCanvas(nextPieceViewModel, BlockBrushes)
             {
                 Height = NextPieceRows * NextPieceBlockSizeInPixels, // Usually 120px
                 Width = NextPieceCols * NextPieceBlockSizeInPixels // Usually 120px

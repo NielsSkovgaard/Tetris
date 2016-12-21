@@ -73,7 +73,6 @@
       <DependentUpon>ButtonsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GameBoardCanvas.cs" />
-    <Compile Include="Views\GraphicsTools.cs" />
     <Compile Include="Models\HighScoreEntry.cs" />
     <Compile Include="Models\HighScoreList.cs" />
     <Compile Include="Views\GameOverUserControl.xaml.cs">
