@@ -6,8 +6,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="94" d:DesignWidth="120"
-             FontFamily="Consolas,Courier New" Foreground="White">
-    <Grid Height="94" Width="120" VerticalAlignment="Top">
+             FontFamily="Consolas, Courier New" Foreground="White">
+    <Grid Height="94" Width="120">
         <TextBlock x:Name="TextBlockLevelLabel" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Level:" VerticalAlignment="Top"/>
         <TextBlock x:Name="TextBlockScoreLabel" HorizontalAlignment="Left" Margin="10,30,0,0" TextWrapping="Wrap" Text="Score:" VerticalAlignment="Top"/>
         <TextBlock x:Name="TextBlockLinesLabel" HorizontalAlignment="Left" Margin="10,50,0,0" TextWrapping="Wrap" Text="Lines:" VerticalAlignment="Top"/>

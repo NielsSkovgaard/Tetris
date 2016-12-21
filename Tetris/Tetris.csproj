@@ -63,6 +63,9 @@
     <Compile Include="Models\GameBoard.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="ViewModels\HighScoresViewModel.cs" />
+    <Compile Include="Views\HighScoresUserControl.xaml.cs">
+      <DependentUpon>HighScoresUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NextPieceCanvas.cs" />
     <Compile Include="ViewModels\NextPieceViewModel.cs" />
     <Compile Include="ViewModels\StatisticsViewModel.cs" />
@@ -79,7 +82,6 @@
     <Compile Include="Views\HighScoreInputUserControl.xaml.cs">
       <DependentUpon>HighScoreInputUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\HighScoresCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
     <Compile Include="Views\StatisticsUserControl.xaml.cs">
       <DependentUpon>StatisticsUserControl.xaml</DependentUpon>
@@ -93,6 +95,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\HighScoreInputUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HighScoresUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

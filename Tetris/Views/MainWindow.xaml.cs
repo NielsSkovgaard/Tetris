@@ -96,14 +96,14 @@ namespace Tetris.Views
 
             HighScoresViewModel highScoresViewModel = new HighScoresViewModel(_highScoreList);
 
-            HighScoresCanvas highScoresCanvas = new HighScoresCanvas(highScoresViewModel)
+            HighScoresUserControl highScoresUserControl = new HighScoresUserControl(highScoresViewModel)
             {
                 Height = 135,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
-            Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresCanvas, ElementsBorderThickness);
+            Border highScoresCanvasBorder = BuildBorderForFrameworkElement(highScoresUserControl, ElementsBorderThickness);
             highScoresCanvasBorder.Margin = new Thickness(gameBoardCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + statisticsCanvasBorder.Height + 3 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // ------------------------------------------------------------------------------------
