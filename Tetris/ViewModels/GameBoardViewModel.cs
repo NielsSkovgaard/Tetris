@@ -14,7 +14,6 @@ namespace Tetris.ViewModels
         private readonly Statistics _statistics;
 
         public bool IsGamePaused { get; private set; }
-        public bool IsGameOver { get; private set; }
 
         // TimeSpans and Timers:
         // - for holding down a key to repeat a command (move left/right or rotate) every x milliseconds
@@ -67,44 +66,33 @@ namespace Tetris.ViewModels
             _gameBoard.Reset();
             _statistics.Reset();
 
-            // Calling PauseResumeGame() when IsGamePaused is true will "resume" the game, or in other words start it
-            IsGameOver = false;
-            IsGamePaused = true;
-            PauseResumeGame();
+            PauseGame();
+            ResumeGame();
         }
 
-        public void PauseResumeGame()
+        public void PauseGame()
         {
-            if (IsGameOver)
-                return;
+            IsGamePaused = true;
 
+            _isLeftKeyDown = false;
+            _isRightKeyDown = false;
+            _isSoftDropping = false;
+
+            // Timers
             _timerMoveCurrentPieceLeftOrRight.Stop();
             _timerRotateCurrentPiece.Stop();
+            _timerMoveCurrentPieceDown.Stop();
+            _timerSecondsGameHasBeenRunning.Stop();
+        }
 
-            if (IsGamePaused)
-            {
-                // Resume game
-                IsGamePaused = false;
+        public void ResumeGame()
+        {
+            IsGamePaused = false;
 
-                _isLeftKeyDown = false;
-                _isRightKeyDown = false;
-                _leftKeyHasPriority = false;
-                _isSoftDropping = false;
-
-                // Timers
-                _timerMoveCurrentPieceDown.Interval = GetMoveCurrentPieceDownTimerIntervalBasedOnLevel();
-                _timerMoveCurrentPieceDown.Start();
-                _timerSecondsGameHasBeenRunning.Start();
-            }
-            else
-            {
-                // Pause game
-                IsGamePaused = true;
-
-                // Timers
-                _timerMoveCurrentPieceDown.Stop();
-                _timerSecondsGameHasBeenRunning.Stop();
-            }
+            // Timers
+            _timerMoveCurrentPieceDown.Interval = GetMoveCurrentPieceDownTimerIntervalBasedOnLevel();
+            _timerMoveCurrentPieceDown.Start();
+            _timerSecondsGameHasBeenRunning.Start();
         }
 
         private TimeSpan GetMoveCurrentPieceDownTimerIntervalBasedOnLevel()
@@ -114,7 +102,7 @@ namespace Tetris.ViewModels
 
         public void KeyDown(Key key, bool isRepeat)
         {
-            if (IsGameOver || IsGamePaused || isRepeat)
+            if (IsGamePaused || isRepeat)
                 return;
 
             switch (key)
@@ -152,7 +140,7 @@ namespace Tetris.ViewModels
 
         public void KeyUp(Key key)
         {
-            if (IsGameOver || IsGamePaused)
+            if (IsGamePaused)
                 return;
 
             switch (key)
@@ -219,13 +207,7 @@ namespace Tetris.ViewModels
                 if (!allCurrentPieceBlocksFitOnGameBoard || nextPieceCollidesWithLockedBlocks)
                 {
                     // Game Over: Stop all timers, and raise GameOver event (in order to eventually add high score)
-                    IsGameOver = true;
-
-                    _timerMoveCurrentPieceLeftOrRight.Stop();
-                    _timerRotateCurrentPiece.Stop();
-                    _timerMoveCurrentPieceDown.Stop();
-                    _timerSecondsGameHasBeenRunning.Stop();
-
+                    PauseGame();
                     _gameBoard.OnGameOver(_statistics.Score);
                 }
                 else
