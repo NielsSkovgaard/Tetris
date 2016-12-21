@@ -80,8 +80,10 @@
       <DependentUpon>HighScoreInputUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HighScoresCanvas.cs" />
-    <Compile Include="Views\StatisticsCanvas.cs" />
     <Compile Include="Models\Piece.cs" />
+    <Compile Include="Views\StatisticsUserControl.xaml.cs">
+      <DependentUpon>StatisticsUserControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\ButtonsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -106,6 +108,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\StatisticsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\PieceBlockManager.cs" />

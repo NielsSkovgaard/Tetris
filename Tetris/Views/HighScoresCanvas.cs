@@ -16,9 +16,9 @@ namespace Tetris.Views
             _highScoresViewModel = highScoresViewModel;
 
             // Build and add TextBlocks
-            GraphicsTools.BuildTextBlockAndAddToChildren(this, 10, "HIGH SCORES:");
+            BuildTextBlockAndAddToChildren(10, "HIGH SCORES:");
             _textBlockArrayHighScores = _highScoresViewModel.HighScoreList.List
-                .Select((entry, index) => GraphicsTools.BuildTextBlockAndAddToChildren(this, 30 + index * 20))
+                .Select((entry, index) => BuildTextBlockAndAddToChildren(30 + index * 20))
                 .ToArray();
 
             // Update the View (HighScoresCanvas) every time the model (HighScoreList) changes
@@ -34,6 +34,21 @@ namespace Tetris.Views
 
             for (int i = 0; i < _textBlockArrayHighScores.Length; i++)
                 _textBlockArrayHighScores[i].Text = highScoreEntriesFormated[i];
+        }
+
+        private TextBlock BuildTextBlockAndAddToChildren(double top, string text = null)
+        {
+            TextBlock textBlock = new TextBlock
+            {
+                Text = text ?? string.Empty,
+                Foreground = Brushes.White,
+                FontFamily = new FontFamily("Consolas, Courier New")
+            };
+
+            SetTop(textBlock, top);
+            SetLeft(textBlock, 10);
+            Children.Add(textBlock);
+            return textBlock;
         }
     }
 }

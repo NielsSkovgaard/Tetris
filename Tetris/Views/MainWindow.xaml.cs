@@ -12,7 +12,7 @@ namespace Tetris.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    internal partial class MainWindow : Window
     {
         // Input parameters
         private const int Rows = 20;
@@ -25,19 +25,22 @@ namespace Tetris.Views
 
         private const string HighScoreListFilePath = "tetris_highscores.txt";
 
-        private readonly GameBoardViewModel _gameBoardViewModel;
+        private GameBoardViewModel _gameBoardViewModel;
         private readonly Statistics _statistics = new Statistics();
         private readonly HighScoreList _highScoreList = new HighScoreList(HighScoreListFilePath);
 
         private const int ElementsBorderThickness = 6;
         private const int ElementsSpacing = 16;
 
-        private readonly ButtonsUserControl _buttonsUserControl;
+        private ButtonsUserControl _buttonsUserControl;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
 
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
             // ------------------------------------------------------------------------------------
             // GameBoard: MVVM dependency injections
             // ------------------------------------------------------------------------------------
@@ -77,14 +80,14 @@ namespace Tetris.Views
 
             StatisticsViewModel statisticsViewModel = new StatisticsViewModel(_statistics);
 
-            StatisticsCanvas statisticsCanvas = new StatisticsCanvas(statisticsViewModel)
+            StatisticsUserControl statisticsUserControl = new StatisticsUserControl(statisticsViewModel)
             {
                 Height = 94,
                 Width = nextPieceCanvas.Width, // Usually 120px
                 Background = Brushes.Black
             };
 
-            Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsCanvas, ElementsBorderThickness);
+            Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsUserControl, ElementsBorderThickness);
             statisticsCanvasBorder.Margin = new Thickness(gameBoardCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
             // ------------------------------------------------------------------------------------

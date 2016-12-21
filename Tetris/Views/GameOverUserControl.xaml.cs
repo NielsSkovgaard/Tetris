@@ -5,7 +5,7 @@ namespace Tetris.Views
     /// <summary>
     /// Interaction logic for GameOverUserControl.xaml
     /// </summary>
-    public partial class GameOverUserControl : UserControl
+    internal partial class GameOverUserControl : UserControl
     {
         public GameOverUserControl()
         {
