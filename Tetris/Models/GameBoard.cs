@@ -94,8 +94,10 @@ namespace Tetris.Models
 
         public bool TryRotateCurrentPiece()
         {
+            Block[] blocksInNextRotation = CurrentPiece.BlocksInNextRotation;
+
             // Not possible to rotate if next rotation has blocks outside the game board
-            bool nextRotationHasBlocksOutsideGameBoard = CurrentPiece.BlocksInNextRotation
+            bool nextRotationHasBlocksOutsideGameBoard = blocksInNextRotation
                 .Any(block =>
                     CurrentPiece.CoordsX + block.OffsetX < 0 || // Left side
                     CurrentPiece.CoordsX + block.OffsetX + 1 > Cols || // Right side
@@ -106,7 +108,7 @@ namespace Tetris.Models
 
             // Not possible to rotate if next rotation has blocks that collide with the locked blocks
             // Only check those blocks that after next rotation are within the game board in the top
-            bool nextRotationCollidesWithLockedBlocks = CurrentPiece.BlocksInNextRotation
+            bool nextRotationCollidesWithLockedBlocks = blocksInNextRotation
                 .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0)
                 .Any(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX] != 0);
 

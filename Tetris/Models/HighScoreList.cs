@@ -10,7 +10,7 @@ namespace Tetris.Models
         public event EventHandler Changed;
         private readonly string _fileName;
 
-        public List<HighScoreEntry> List { get; private set; } // Always sorted from highest to lowest score
+        public List<HighScoreEntry> List { get; } // Always sorted from highest to lowest score
 
         public HighScoreList(string fileName)
         {

@@ -17,7 +17,7 @@ namespace Tetris.ViewModels
         public string LevelText => BuildText("Level:", Statistics.Level.ToString(CultureInfo.InvariantCulture));
         public string ScoreText => BuildText("Score:", Statistics.Score.ToString(CultureInfo.InvariantCulture));
         public string LinesText => BuildText("Lines:", Statistics.Lines.ToString(CultureInfo.InvariantCulture));
-        public string TimeText => BuildText("Time:", TimeSpan.FromSeconds(Statistics.Time).ToString("mm\\:ss"));
+        public string TimeText => BuildText("Time:", TimeSpan.FromSeconds(Statistics.Time).ToString("mm\\:ss", CultureInfo.InvariantCulture));
 
         private static string BuildText(string labelText, string value) => $"{labelText.PadRight(TotalTextLength - value.Length, ' ')}{value}";
     }
