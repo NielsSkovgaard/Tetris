@@ -13,10 +13,11 @@ namespace Tetris.Models
         private readonly int[] _scoresToAddForCompletingRows = { 100, 300, 500, 800 };
         private int _level, _score, _lines, _time;
 
-        public int Level { get { return _level; } private set { if (value == _level) return; _level = value; OnPropertyChanged(); } } // Range: 1..15
-        public int Score { get { return _score; } private set { if (value == _score) return; _score = value; OnPropertyChanged(); } }
-        public int Lines { get { return _lines; } private set { if (value == _lines) return; _lines = value; OnPropertyChanged(); } }
-        public int Time { get { return _time; } private set { if (value == _time) return; _time = value; OnPropertyChanged(); } }
+        // Level range: 1..15
+        public int Level { get => _level; private set { if (value == _level) return; _level = value; OnPropertyChanged(); } }
+        public int Score { get => _score; private set { if (value == _score) return; _score = value; OnPropertyChanged(); } }
+        public int Lines { get => _lines; private set { if (value == _lines) return; _lines = value; OnPropertyChanged(); } }
+        public int Time { get => _time; private set { if (value == _time) return; _time = value; OnPropertyChanged(); } }
 
         public Statistics()
         {

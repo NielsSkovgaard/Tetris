@@ -2,13 +2,13 @@ namespace Tetris.Models
 {
     internal static class PieceBlockManager
     {
-        private static int[][][,] _blocksBeforeOptimization;
+        private static int[][][,] _nonOptimizedBlocks; // PieceType, Rotation, Block coordinates
         private static Block[][][] _optimizedBlocks;
         private const int NumberOfBlocksPerPiece = 4;
 
         static PieceBlockManager()
         {
-            BuildBlocksBeforeOptimization();
+            BuildNonOptimizedBlocks();
             BuildOptimizedBlocks();
         }
 
@@ -18,19 +18,19 @@ namespace Tetris.Models
             return blocksForAllRotations[rotation % blocksForAllRotations.Length];
         }
 
-        public static int NumberOfRowsOfBlockArray(PieceType pieceType) => _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(0);
-        public static int NumberOfColsOfBlockArray(PieceType pieceType) => _blocksBeforeOptimization[(int)pieceType - 1][0].GetLength(1);
+        public static int NumberOfRowsOfBlockArray(PieceType pieceType) => _nonOptimizedBlocks[(int)pieceType - 1][0].GetLength(0);
+        public static int NumberOfColsOfBlockArray(PieceType pieceType) => _nonOptimizedBlocks[(int)pieceType - 1][0].GetLength(1);
 
-        private static void BuildBlocksBeforeOptimization()
+        private static void BuildNonOptimizedBlocks()
         {
-            _blocksBeforeOptimization = new[]
+            _nonOptimizedBlocks = new[]
             {
                 new[] // PieceType.I (array index 0)
                 {
-                    new[,] {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}},
-                    new[,] {{0,0,1,0}, {0,0,1,0}, {0,0,1,0}, {0,0,1,0}},
-                    new[,] {{0,0,0,0}, {0,0,0,0}, {1,1,1,1}, {0,0,0,0}},
-                    new[,] {{0,1,0,0}, {0,1,0,0}, {0,1,0,0}, {0,1,0,0}}
+                    new[,] {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}}, // Rotation 0
+                    new[,] {{0,0,1,0}, {0,0,1,0}, {0,0,1,0}, {0,0,1,0}}, // Rotation 1
+                    new[,] {{0,0,0,0}, {0,0,0,0}, {1,1,1,1}, {0,0,0,0}}, // Rotation 2
+                    new[,] {{0,1,0,0}, {0,1,0,0}, {0,1,0,0}, {0,1,0,0}} // Rotation 3
                 },
                 new[] // PieceType.O (array index 1)
                 {
@@ -76,27 +76,42 @@ namespace Tetris.Models
 
         private static void BuildOptimizedBlocks()
         {
-            _optimizedBlocks = new Block[_blocksBeforeOptimization.Length][][];
+            // PieceTypes
+            int numberOfPieceTypes = _nonOptimizedBlocks.Length;
+            _optimizedBlocks = new Block[numberOfPieceTypes][][];
 
-            for (int pieceType = 0; pieceType < _blocksBeforeOptimization.Length; pieceType++)
+            for (int pieceType = 0; pieceType < numberOfPieceTypes; pieceType++)
             {
-                _optimizedBlocks[pieceType] = new Block[_blocksBeforeOptimization[pieceType].Length][];
+                // Rotations
+                int numberOfRotations = _nonOptimizedBlocks[pieceType].Length;
+                _optimizedBlocks[pieceType] = new Block[numberOfRotations][];
 
-                for (int rotation = 0; rotation < _blocksBeforeOptimization[pieceType].Length; rotation++)
+                for (int rotation = 0; rotation < numberOfRotations; rotation++)
                 {
+                    // Block coordinates
+                    int[,] blockArray = _nonOptimizedBlocks[pieceType][rotation];
+                    int numberOfRows = blockArray.GetLength(0);
+                    int numberOfCols = blockArray.GetLength(1);
+
                     _optimizedBlocks[pieceType][rotation] = new Block[NumberOfBlocksPerPiece];
+
                     int blockIndex = 0;
 
-                    for (int row = 0; row < _blocksBeforeOptimization[pieceType][rotation].GetLength(0); row++)
+                    for (int row = 0; row < numberOfRows; row++)
                     {
-                        for (int col = 0; col < _blocksBeforeOptimization[pieceType][rotation].GetLength(1); col++)
+                        for (int col = 0; col < numberOfCols; col++)
                         {
-                            int blockType = _blocksBeforeOptimization[pieceType][rotation][row, col];
-
-                            if (blockType != 0)
+                            if (blockArray[row, col] != 0)
                             {
                                 _optimizedBlocks[pieceType][rotation][blockIndex] = new Block(row, col);
                                 blockIndex++;
+
+                                // Continue with next Rotation when all four Blocks have been found for current PieceType and Rotation
+                                if (blockIndex == NumberOfBlocksPerPiece)
+                                {
+                                    row = numberOfRows;
+                                    break;
+                                }
                             }
                         }
                     }

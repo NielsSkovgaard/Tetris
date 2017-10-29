@@ -53,7 +53,7 @@ namespace Tetris.Models
         public bool TryMoveCurrentPieceLeft()
         {
             // Not possible to move left if CurrentPiece is up against left side
-            if (CurrentPiece.Blocks.Any(block => CurrentPiece.CoordsX + block.OffsetX == 0))
+            if (CurrentPiece.CoordsX + CurrentPiece.Blocks.Min(block => block.OffsetX) == 0)
                 return false;
 
             // Not possible to move left if any of CurrentPiece.Blocks has a locked block to the left
@@ -74,7 +74,7 @@ namespace Tetris.Models
         public bool TryMoveCurrentPieceRight()
         {
             // Not possible to move right if CurrentPiece is up against right side
-            if (CurrentPiece.Blocks.Any(block => CurrentPiece.CoordsX + block.OffsetX + 1 == Cols))
+            if (CurrentPiece.CoordsX + CurrentPiece.Blocks.Max(block => block.OffsetX) + 1 == Cols)
                 return false;
 
             // Not possible to move right if any of CurrentPiece.Blocks has a locked block to the right
@@ -124,7 +124,7 @@ namespace Tetris.Models
         public bool TryMoveCurrentPieceDown()
         {
             // Not possible to move down if CurrentPiece is on bottom row
-            if (CurrentPiece.Blocks.Any(block => CurrentPiece.CoordsY + block.OffsetY + 1 == Rows))
+            if (CurrentPiece.CoordsY + CurrentPiece.Blocks.Max(block => block.OffsetY) + 1 == Rows)
                 return false;
 
             // Not possible to move down if any of CurrentPiece.Blocks has a locked block below
