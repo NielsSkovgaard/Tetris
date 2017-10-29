@@ -16,7 +16,7 @@ namespace Tetris.Views
     {
         // Parameters
         private const int Rows = 20;
-        private const int Cols = 10; // Has to be >= 4
+        private const int Cols = 10; // Must be >= 4
         private const int BlockSizeInPixels = 25;
         private const int NextPieceRows = 6;
         private const int NextPieceCols = 6;
@@ -86,7 +86,7 @@ namespace Tetris.Views
             Border statisticsCanvasBorder = BuildBorderForFrameworkElement(statisticsUserControl, ElementsBorderThickness);
             statisticsCanvasBorder.Margin = new Thickness(gameBoardCanvasBorder.Width + 2 * ElementsSpacing, nextPieceCanvasBorder.Height + 2 * ElementsSpacing, ElementsSpacing, ElementsSpacing);
 
-            // Highscores
+            // HighScores
             HighScoresViewModel highScoresViewModel = new HighScoresViewModel(_highScoreList);
 
             HighScoresUserControl highScoresUserControl = new HighScoresUserControl(highScoresViewModel)
@@ -167,7 +167,7 @@ namespace Tetris.Views
 
         private void MainWindow_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            // Lines 2-3 ensure that the game doesn't pause when clicking GameOverUserControl.ButtonNewGame or when the focus returns to the window afterwards
+            // Lines 2-3 ensure that game doesn't pause when clicking GameOverUserControl.ButtonNewGame or when focus returns to window afterwards
             if (!_gameBoardViewModel.IsGamePaused &&
                 !Equals(e.KeyboardDevice.FocusedElement, _buttonsUserControl.ButtonNewGame) &&
                 !Equals(e.KeyboardDevice.FocusedElement, this))

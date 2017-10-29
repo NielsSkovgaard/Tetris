@@ -17,8 +17,8 @@ namespace Tetris.Views
             _nextPieceViewModel = nextPieceViewModel;
             _blockBrushes = blockBrushes;
 
-            // Update the View (NextPieceCanvas) every time the model (GameBoard.NextPiece) changes
-            // Soon after, the OnRender method is called
+            // Update View (NextPieceCanvas) every time model (GameBoard.NextPiece) changes
+            // Soon after, OnRender method is called
             _nextPieceViewModel.GameBoard.NextPieceChanged += (sender, e) => InvalidateVisual();
         }
 
@@ -29,7 +29,7 @@ namespace Tetris.Views
             Piece nextPiece = _nextPieceViewModel.GameBoard.NextPiece;
             int blockSizeInPixels = _nextPieceViewModel.BlockSizeInPixels;
 
-            // Calculate NextPiece coordinates on the NextPieceCanvas
+            // Calculate NextPiece coordinates on NextPieceCanvas
             // Because NextPiece.CoordsY and NextPiece.CoordsX refer to coordinates on GameBoardCanvas
             double nextPieceCoordsY = _nextPieceViewModel.NextPieceCoordsY;
             double nextPieceCoordsX = _nextPieceViewModel.NextPieceCoordsX;

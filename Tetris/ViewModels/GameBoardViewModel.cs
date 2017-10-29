@@ -16,10 +16,10 @@ namespace Tetris.ViewModels
         public bool IsGamePaused { get; private set; }
 
         // TimeSpans and DispatcherTimers:
-        // Left/right: Repeat every x milliseconds while holding down the left and/or right button
-        // Rotate: Repeat every x milliseconds while holding down the rotate button
-        // Down: Either gravity (repeat every x milliseconds) or soft dropping (repeat every x milliseconds while holding down the down button)
-        // Statistics.Time: The time the game has been running
+        // Left/right: Repeat every x milliseconds while pressing Left and/or Right button
+        // Rotate: Repeat every x milliseconds while pressing Up (rotate) button
+        // Down: Either gravity (repeat every x milliseconds) or soft dropping (repeat every x milliseconds while pressing Down button)
+        // Statistics.Time: Time the game has been running
         private readonly TimeSpan _timeSpanLeftRight = TimeSpan.FromMilliseconds(100); // 100 ms = 10 FPS
         private readonly TimeSpan _timeSpanRotate = TimeSpan.FromMilliseconds(250); // 250 ms = 4 FPS
         private readonly TimeSpan _timeSpanDownSoftDrop = TimeSpan.FromMilliseconds(50); // 50 ms = 20 FPS
@@ -30,11 +30,11 @@ namespace Tetris.ViewModels
         private readonly DispatcherTimer _timerDown = new DispatcherTimer();
         private readonly DispatcherTimer _timerStatisticsTime = new DispatcherTimer();
 
-        // For handling that _timerMovePieceLeftOrRight runs when moving left or right; otherwise, the timer should be stopped
+        // For handling that _timerMovePieceLeftOrRight runs when moving left or right; otherwise, timer should be stopped
         private bool _isLeftKeyDown;
         private bool _isRightKeyDown;
 
-        // Priority horizontal direction when moving left and right at the same time
+        // Priority horizontal direction when moving left and right at same time
         private bool _leftKeyHasPriority;
 
         private bool _isSoftDropping;
@@ -128,7 +128,7 @@ namespace Tetris.ViewModels
                     _timerDown.Interval = _timeSpanDownSoftDrop;
                     break;
                 case Key.Space:
-                    // TODO: Hard drop CurrentPiece (and handle that it won't result in clicking the buttons)
+                    // TODO: Hard drop CurrentPiece (and handle that it won't result in clicking buttons)
                     break;
             }
         }
@@ -178,7 +178,7 @@ namespace Tetris.ViewModels
 
         private void MoveDownProcess()
         {
-            // TODO: Check inside this method that if not all CurrentPiece.Blocks fit on the GameBoard, then don't move it down, but it's game over
+            // TODO: Check inside this method that if not all CurrentPiece.Blocks fit on the GameBoard, don't move it down, but it's game over
             bool canMoveDown = _gameBoard.TryMoveCurrentPieceDown();
 
             if (canMoveDown)
@@ -192,7 +192,7 @@ namespace Tetris.ViewModels
             else
             {
                 // Game Over if either:
-                // - not all CurrentPiece blocks fit on the game board when trying to lock them (some of them are outside in the top)
+                // - not all CurrentPiece blocks fit on game board when trying to lock them (some of them are outside in top)
                 // - NextPiece would collide with LockedBlocks if added
                 bool allCurrentPieceBlocksFitOnGameBoard = _gameBoard.CurrentPiece.Blocks.All(block => _gameBoard.CurrentPiece.CoordsY + block.OffsetY >= 0);
                 bool nextPieceCollidesWithLockedBlocks = _gameBoard.NextPieceCollidesWithLockedBlocks();
@@ -214,7 +214,7 @@ namespace Tetris.ViewModels
                     _gameBoard.UpdateCurrentPieceAndNextPiece();
 
                     // Update Level, Score, and Lines
-                    // If reaching a new level, make the _timerMovePieceDown tick faster (unless we are soft dropping, which is using the same timer)
+                    // If reaching new level, make _timerMovePieceDown tick faster (unless we are soft dropping, which uses same timer)
                     int levelBefore = _statistics.Level;
                     _statistics.UpdateOnCompletingRows(numberOfCompleteRows);
                     int levelAfter = _statistics.Level;

@@ -54,7 +54,7 @@ namespace Tetris.Models
                 }
             }
 
-            // Limit to 5 high scores, so when one is added, then delete the lowest one
+            // Limit to 5 high scores, so when one is added, delete the lowest one
             List.RemoveAt(List.Count - 1);
 
             SaveToFile();

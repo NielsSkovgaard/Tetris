@@ -20,8 +20,8 @@ namespace Tetris.Views
             _blockSizeInPixels = blockSizeInPixels;
             _blockBrushes = blockBrushes;
 
-            // Update the View (GameBoardCanvas) every time the model (GameBoard) changes
-            // Soon after, the OnRender method is called
+            // Update View (GameBoardCanvas) every time model (GameBoard) changes
+            // Soon after, OnRender method is called
             _gameBoard.Changed += (sender, e) => InvalidateVisual();
         }
 
@@ -29,7 +29,7 @@ namespace Tetris.Views
         {
             base.OnRender(dc);
 
-            // Render the LockedBlocks array
+            // Render LockedBlocks array
             for (int row = 0; row < _gameBoard.Rows; row++)
             {
                 for (int col = 0; col < _gameBoard.Cols; col++)
@@ -48,7 +48,7 @@ namespace Tetris.Views
                 }
             }
 
-            // Render CurrentPiece (only blocks that are within the GameBoard)
+            // Render CurrentPiece (only blocks within GameBoard)
             Piece currentPiece = _gameBoard.CurrentPiece;
 
             foreach (Block block in currentPiece.Blocks.Where(block => currentPiece.CoordsY + block.OffsetY >= 0))

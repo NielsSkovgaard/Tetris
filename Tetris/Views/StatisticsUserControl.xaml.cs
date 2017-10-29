@@ -43,7 +43,6 @@ namespace Tetris.Views
                     TextBlockTime.Text = _statisticsViewModel.TimeText;
                     break;
             }
-
         }
     }
 }

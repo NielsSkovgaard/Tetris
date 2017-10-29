@@ -21,7 +21,7 @@ namespace Tetris.Models
 
         public static Piece BuildRandomPiece()
         {
-            // The random number is >= 1 and < (7 + 1), i.e. in the range 1..7
+            // Random number >= 1 and < (7 + 1), i.e. range 1..7
             return new Piece((PieceType)Random.Next(1, NumberOfPieceTypes + 1));
         }
 

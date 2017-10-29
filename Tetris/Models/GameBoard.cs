@@ -39,7 +39,7 @@ namespace Tetris.Models
 
         private Piece BuildAndPositionRandomPiece()
         {
-            // Build random piece, and position it in the top middle of the game board
+            // Build random piece, and position it in top middle of game board
             Piece piece = Piece.BuildRandomPiece();
             piece.CoordsY = 0 - piece.Blocks.Max(block => block.OffsetY);
             piece.CoordsX = (Cols - PieceBlockManager.NumberOfColsOfBlockArray(piece.PieceType)) / 2;
@@ -52,12 +52,12 @@ namespace Tetris.Models
 
         public bool TryMoveCurrentPieceLeft()
         {
-            // Not possible to move left if CurrentPiece is up against the left side
+            // Not possible to move left if CurrentPiece is up against left side
             if (CurrentPiece.Blocks.Any(block => CurrentPiece.CoordsX + block.OffsetX == 0))
                 return false;
 
-            // Not possible to move left if any of the CurrentPiece.Blocks has a locked block to the left
-            // Only check those blocks that have entered the game board so far
+            // Not possible to move left if any of CurrentPiece.Blocks has a locked block to the left
+            // Only check blocks that have entered game board so far
             bool hasLockedBlockToTheLeft = CurrentPiece.Blocks
                 .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0)
                 .Any(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX - 1] != 0);
@@ -73,12 +73,12 @@ namespace Tetris.Models
 
         public bool TryMoveCurrentPieceRight()
         {
-            // Not possible to move right if CurrentPiece is up against the right side
+            // Not possible to move right if CurrentPiece is up against right side
             if (CurrentPiece.Blocks.Any(block => CurrentPiece.CoordsX + block.OffsetX + 1 == Cols))
                 return false;
 
-            // Not possible to move right if any of the CurrentPiece.Blocks has a locked block to the right
-            // Only check those blocks that have entered the game board so far
+            // Not possible to move right if any of CurrentPiece.Blocks has a locked block to the right
+            // Only check blocks that have entered game board so far
             bool hasLockedBlockToTheRight = CurrentPiece.Blocks
                 .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0)
                 .Any(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX + 1] != 0);
@@ -96,7 +96,7 @@ namespace Tetris.Models
         {
             Block[] blocksInNextRotation = CurrentPiece.BlocksInNextRotation;
 
-            // Not possible to rotate if next rotation has blocks outside the game board
+            // Not possible to rotate if next rotation has blocks outside game board
             bool nextRotationHasBlocksOutsideGameBoard = blocksInNextRotation
                 .Any(block =>
                     CurrentPiece.CoordsX + block.OffsetX < 0 || // Left side
@@ -106,8 +106,8 @@ namespace Tetris.Models
             if (nextRotationHasBlocksOutsideGameBoard)
                 return false;
 
-            // Not possible to rotate if next rotation has blocks that collide with the locked blocks
-            // Only check those blocks that after next rotation are within the game board in the top
+            // Not possible to rotate if next rotation has blocks that collide with locked blocks
+            // Only check blocks that after next rotation are within game board (in the top)
             bool nextRotationCollidesWithLockedBlocks = blocksInNextRotation
                 .Where(block => CurrentPiece.CoordsY + block.OffsetY >= 0)
                 .Any(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX] != 0);
@@ -123,12 +123,12 @@ namespace Tetris.Models
 
         public bool TryMoveCurrentPieceDown()
         {
-            // Not possible to move down if CurrentPiece is on the bottom row
+            // Not possible to move down if CurrentPiece is on bottom row
             if (CurrentPiece.Blocks.Any(block => CurrentPiece.CoordsY + block.OffsetY + 1 == Rows))
                 return false;
 
-            // Not possible to move down if any of the CurrentPiece.Blocks has a locked block below
-            // Only check those blocks that after moving down will have entered the game board so far
+            // Not possible to move down if any of CurrentPiece.Blocks has a locked block below
+            // Only check blocks that after moving down will have entered game board so far
             bool hasLockedBlockBelow = CurrentPiece.Blocks
                 .Where(block => CurrentPiece.CoordsY + block.OffsetY >= -1)
                 .Any(block => LockedBlocks[CurrentPiece.CoordsY + block.OffsetY + 1, CurrentPiece.CoordsX + block.OffsetX] != 0);
@@ -144,12 +144,12 @@ namespace Tetris.Models
 
         public int AddCurrentPieceToLockedBlocksAndRemoveCompleteRows()
         {
-            // Add all CurrentPiece blocks to the LockedBlocks array
+            // Add all CurrentPiece blocks to LockedBlocks array
             foreach (Block block in CurrentPiece.Blocks)
                 LockedBlocks[CurrentPiece.CoordsY + block.OffsetY, CurrentPiece.CoordsX + block.OffsetX] = (int)CurrentPiece.PieceType;
 
-            // Build HashSet of row numbers occupied by CurrentPiece and that are complete
-            // Complete rows should be removed from the LockedBlocks array, and then points should be awarded
+            // Build HashSet of row numbers occupied by CurrentPiece and are complete
+            // Complete rows should be removed from LockedBlocks array - then points should be awarded
             HashSet<int> rowsOccupiedByCurrentPieceAndAreComplete = new HashSet<int>(
                 CurrentPiece.Blocks
                     .Select(block => CurrentPiece.CoordsY + block.OffsetY)
@@ -157,7 +157,7 @@ namespace Tetris.Models
                     .Where(row => Enumerable.Range(0, Cols)
                         .All(col => LockedBlocks[row, col] != 0)));
 
-            // When a row is complete, rows above it should be moved down (in the LockedBlocks array)
+            // When row is complete, rows above it should be moved down (in LockedBlocks array)
             int completeRowsBelowAndIncludingCurrentRow = 0;
 
             for (int row = Rows - 1; row >= 0; row--)
@@ -167,8 +167,8 @@ namespace Tetris.Models
                 if (isRowComplete)
                     completeRowsBelowAndIncludingCurrentRow++;
 
-                // Move this row down a number of times, equal to the number of complete rows below
-                // However, don't consider moving down the bottom row, or rows that are complete
+                // Move row down a number of times, equal to number of complete rows below
+                // However, don't consider moving bottom row down, or complete rows
                 if (row != Rows - 1 && !isRowComplete)
                 {
                     for (int col = 0; col < Cols; col++)
@@ -176,7 +176,7 @@ namespace Tetris.Models
                 }
             }
 
-            // Clear top x rows where x is the number of rows completed by CurrentPiece
+            // Clear top x rows where x is number of rows completed by CurrentPiece
             for (int row = 0; row < rowsOccupiedByCurrentPieceAndAreComplete.Count; row++)
             {
                 for (int col = 0; col < Cols; col++)
@@ -189,7 +189,7 @@ namespace Tetris.Models
         public bool NextPieceCollidesWithLockedBlocks()
         {
             // Game Over if NextPiece collides with LockedBlocks array
-            // Only check those blocks that are on the game board when the NextPiece is added
+            // Only check blocks that are on game board when NextPiece is added
             bool nextPieceCollidesWithLockedBlocks = NextPiece.Blocks
                 .Where(block => NextPiece.CoordsY + block.OffsetY >= 0)
                 .Any(block => LockedBlocks[NextPiece.CoordsY + block.OffsetY, NextPiece.CoordsX + block.OffsetX] != 0);
